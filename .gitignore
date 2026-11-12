@@ -1,0 +1,65 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# internal pricing — never commit or ship to customers
+/pricing-internal.json
+
+# AI assistant files
+AGENTS.md
+CLAUDE.md
+
+# scratch / local tooling (not needed to build or run the site)
+/images/
+/pnpx_images/
+/screenshots/
+/mockup.html
+/PressNPeel_WebGen_Workflow.json
+/comfy_gen.py
+/gen_website_images.py
+/send_all_images.py
+/send-home-screenshot.txt
+/send-screenshots.md
+/comfyui_launch.log
+/pressnpeel-*.png
+
+# build artifacts
+*.tsbuildinfo
