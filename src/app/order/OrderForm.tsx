@@ -12,27 +12,17 @@ import {
 } from "@/lib/discount";
 import { WHATSAPP_URL } from "@/components/nav";
 
+// Only fixed-price products are sold through the Stripe checkout. Made-to-order
+// lines are quoted through each category page's custom order form.
+const BUYABLE_PRODUCTS = products.filter((p) => p.buyable);
+
 const TYPE_LABELS: Record<string, string> = {
-  signs: "Signs",
-  decals: "Vinyl Decals",
-  stickers: "Custom Stickers",
-  htv: "HTV Print",
-  laser: "Laser Engraving",
-  "nfc-keychains": "NFC Keychains",
-  "acrylic-keychains": "Acrylic Keychains",
   "printable-vinyl": "Printable Vinyl",
+  keychains: "Keychains",
+  laser: "Laser",
 };
 
-const PILLS = [
-  { id: "signs", label: "Signs" },
-  { id: "decals", label: "Vinyl Decals" },
-  { id: "stickers", label: "Custom Stickers" },
-  { id: "htv", label: "HTV Print" },
-  { id: "laser", label: "Laser Engraving" },
-  { id: "nfc-keychains", label: "NFC Keychains" },
-  { id: "acrylic-keychains", label: "Acrylic Keychains" },
-  { id: "printable-vinyl", label: "Printable Vinyl" },
-];
+const PILLS = BUYABLE_PRODUCTS.map((p) => ({ id: p.slug, label: p.name }));
 
 type Props = {
   stripeReady: boolean;
@@ -47,7 +37,7 @@ function OrderForm({ stripeReady }: Props) {
   const canceled = params.get("canceled") === "1";
 
   const [productSlug, setProductSlug] = useState(
-    products.some((p) => p.slug === preset) ? preset : ""
+    BUYABLE_PRODUCTS.some((p) => p.slug === preset) ? preset : ""
   );
   const [orderType, setOrderType] = useState(presetType || "stickers");
   const [optionId, setOptionId] = useState("");
@@ -69,8 +59,8 @@ function OrderForm({ stripeReady }: Props) {
   const [discountError, setDiscountError] = useState<string | null>(null);
 
   const chosen: ProductRow | undefined =
-    products.find((p) => p.slug === productSlug) ??
-    products.find((p) => p.category === orderType);
+    BUYABLE_PRODUCTS.find((p) => p.slug === productSlug) ??
+    BUYABLE_PRODUCTS.find((p) => p.category === orderType);
 
   const option = chosen
     ? chosen.options.find((o) => o.id === optionId) ?? chosen.options[0]
@@ -100,10 +90,10 @@ function OrderForm({ stripeReady }: Props) {
   // Sync state when the query params change (category-card links, product links).
   useEffect(() => {
     const p = params.get("product");
-    if (p && products.some((x) => x.slug === p)) {
+    if (p && BUYABLE_PRODUCTS.some((x) => x.slug === p)) {
       selectProduct(p);
       // A finish chosen on the product page carries through via ?option=.
-      const prod = products.find((x) => x.slug === p);
+      const prod = BUYABLE_PRODUCTS.find((x) => x.slug === p);
       if (presetOption && prod && prod.options.some((x) => x.id === presetOption)) {
         setOptionId(presetOption);
       }
@@ -253,11 +243,7 @@ function OrderForm({ stripeReady }: Props) {
           <button
             key={t.id}
             type="button"
-            onClick={() => {
-              setOrderType(t.id);
-              const match = products.find((p) => p.category === t.id);
-              if (match) selectProduct(match.slug);
-            }}
+            onClick={() => selectProduct(t.id)}
             className={`rounded-xl px-4 py-2.5 text-sm font-semibold transition-all ${
               orderType === t.id
                 ? "text-slate-950"
@@ -287,7 +273,7 @@ function OrderForm({ stripeReady }: Props) {
               <option value="" disabled>
                 — Select a product line —
               </option>
-              {products.map((p) => (
+              {BUYABLE_PRODUCTS.map((p) => (
                 <option key={p.slug} value={p.slug}>
                   {p.name} (min {p.min_qty})
                   {p.buyable ? ` — ${formatSGD(p.price)}` : ""}
@@ -337,6 +323,8 @@ function OrderForm({ stripeReady }: Props) {
               <span className="mb-2 block text-sm font-medium text-slate-300">
                 {chosen?.slug === "printable-vinyl"
                   ? "Quantity (packs)"
+                  : chosen?.slug === "coasters"
+                  ? "Quantity (packs of 5)"
                   : "Quantity"}
               </span>
               <input
@@ -507,7 +495,8 @@ function OrderForm({ stripeReady }: Props) {
               <dt className="text-slate-500">Quantity</dt>
               <dd className="font-medium text-white">
                 {qty}
-                {chosen?.slug === "printable-vinyl"
+                {chosen?.slug === "printable-vinyl" ||
+                chosen?.slug === "coasters"
                   ? qty === 1
                     ? " pack"
                     : " packs"

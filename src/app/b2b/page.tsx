@@ -27,14 +27,14 @@ export default function B2BPage() {
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link
-            href="/order?type=signs"
+            href="/products/signs#order"
             className="rounded-xl px-7 py-3.5 text-base font-semibold text-slate-950 shadow-lg transition-transform hover:scale-[1.03]"
             style={{ backgroundColor: "#FFD60A" }}
           >
             Request a Quote
           </Link>
           <Link
-            href="/custom?type=signs"
+            href="/products/signs#order"
             className="rounded-xl border border-slate-700 px-7 py-3.5 text-base font-medium text-slate-300 transition-colors hover:bg-slate-900/60 hover:text-white"
           >
             Upload Your Artwork

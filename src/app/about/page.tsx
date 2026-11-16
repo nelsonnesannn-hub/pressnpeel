@@ -29,7 +29,7 @@ const SERVICES = [
   },
   {
     title: "Laser Engraving",
-    body: "Laser engraving on pine — coasters, tokens, blocks, boards, and keychains with your design.",
+    body: "Laser engraving on pine — tokens, blocks, and boards with your design or message.",
     image: "/images/name-laser-blocks.jpg",
   },
 ];

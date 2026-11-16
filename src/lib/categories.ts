@@ -1,0 +1,293 @@
+// Product categories — the five shop categories, each with its own page.
+// Every category page shows samples of what is available plus a custom order
+// form, so customers can see the range and order without a separate flow.
+import { products, type PriceOption } from "./catalog";
+import { formatSGD } from "./pricing";
+
+export type CategorySample = {
+  src: string;
+  caption: string;
+  /** Price label for fixed-price products only (never invented). */
+  priceLabel?: string;
+  /** Link to the existing Stripe order flow for this sample. */
+  orderHref?: string;
+};
+
+export type CategoryOrderItem = { id: string; label: string };
+
+export type Category = {
+  slug: string;
+  /** Short label used in the header dropdown. */
+  name: string;
+  /** Page heading. */
+  title: string;
+  tagline: string;
+  description: string;
+  cardImage: string;
+  samples: CategorySample[];
+  samplesIntro?: string;
+  samplesNote?: string;
+  orderTitle: string;
+  orderSubtitle: string;
+  orderItems: CategoryOrderItem[];
+};
+
+const product = (slug: string) => {
+  const found = products.find((p) => p.slug === slug);
+  if (!found) throw new Error(`Unknown product: ${slug}`);
+  return found;
+};
+
+const option = (slug: string, optionId: string): PriceOption => {
+  const p = product(slug);
+  return p.options.find((o) => o.id === optionId) ?? p.options[0];
+};
+
+const buyHref = (slug: string, optionId?: string) =>
+  optionId
+    ? `/order?product=${slug}&option=${encodeURIComponent(optionId)}`
+    : `/order?product=${slug}`;
+
+export const categories: Category[] = [
+  {
+    slug: "printable-vinyl",
+    name: "Printable Vinyl",
+    title: "Printable Vinyl",
+    tagline: "Stickers & labels — all printed vinyls",
+    description:
+      "Printable vinyl sold by the pack — 20 A4 sheets per pack, in seven finishes. Print your own stickers and labels, or send us your design and we’ll print and cut them for you.",
+    cardImage: "/images/work/materials/03.jpg",
+    samplesIntro: "1 pack = 20 A4 sheets. Prices are per pack.",
+    samples: [
+      {
+        src: "/images/v2-matte-white-listing.jpg",
+        caption: "Matte vinyl white",
+        priceLabel: `${formatSGD(option("printable-vinyl", "matte-white").price)} per pack`,
+        orderHref: buyHref("printable-vinyl", "matte-white"),
+      },
+      {
+        src: "/images/v2-glossy-white-listing.jpg",
+        caption: "Glossy vinyl white",
+        priceLabel: `${formatSGD(option("printable-vinyl", "glossy-white").price)} per pack`,
+        orderHref: buyHref("printable-vinyl", "glossy-white"),
+      },
+      {
+        src: "/images/v2-gold-reflective-listing.jpg",
+        caption: "Gold reflective vinyl",
+        priceLabel: `${formatSGD(option("printable-vinyl", "gold-reflective").price)} per pack`,
+        orderHref: buyHref("printable-vinyl", "gold-reflective"),
+      },
+      {
+        src: "/images/v2-silver-reflective-listing.jpg",
+        caption: "Silver reflective vinyl",
+        priceLabel: `${formatSGD(option("printable-vinyl", "silver-reflective").price)} per pack`,
+        orderHref: buyHref("printable-vinyl", "silver-reflective"),
+      },
+      {
+        src: "/images/v2-silver-holographic-listing.jpg",
+        caption: "Silver holographic vinyl",
+        priceLabel: `${formatSGD(option("printable-vinyl", "silver-holographic").price)} per pack`,
+        orderHref: buyHref("printable-vinyl", "silver-holographic"),
+      },
+      {
+        src: "/images/v2-broken-glass-listing.jpg",
+        caption: "Broken glass silver holographic",
+        priceLabel: `${formatSGD(option("printable-vinyl", "broken-glass").price)} per pack`,
+        orderHref: buyHref("printable-vinyl", "broken-glass"),
+      },
+      {
+        src: "/images/v2-confetti-holographic-listing.jpg",
+        caption: "Confetti/dotted silver holographic vinyl",
+        priceLabel: `${formatSGD(option("printable-vinyl", "confetti-holographic").price)} per pack`,
+        orderHref: buyHref("printable-vinyl", "confetti-holographic"),
+      },
+    ],
+    orderTitle: "Order Printable Vinyl",
+    orderSubtitle:
+      "Tell us the finish and quantity, or upload your design and we’ll print and cut it for you.",
+    orderItems: [
+      { id: "matte-white", label: "Matte vinyl white" },
+      { id: "glossy-white", label: "Glossy vinyl white" },
+      { id: "gold-reflective", label: "Gold reflective vinyl" },
+      { id: "silver-reflective", label: "Silver reflective vinyl" },
+      { id: "silver-holographic", label: "Silver holographic vinyl" },
+      { id: "broken-glass", label: "Broken glass silver holographic" },
+      {
+        id: "confetti-holographic",
+        label: "Confetti/dotted silver holographic vinyl",
+      },
+      { id: "custom", label: "Custom size / other printed vinyl" },
+    ],
+  },
+  {
+    slug: "vinyl-decals",
+    name: "Vinyl Decals",
+    title: "Vinyl Decals & HTV",
+    tagline: "Non-printable vinyl — cut-only decals & heat transfer",
+    description:
+      "Cut-only vinyl, not printed. Vinyl decals are cut names, words, and shapes applied to bottles, vehicles, laptops, and walls. HTV (heat transfer vinyl) is cut and pressed onto fabric — shirts, jerseys, and tote bags.",
+    cardImage: "/images/decal-lifestyle.jpg",
+    samplesIntro:
+      "Decals for bottles, vehicles, laptops, and walls · HTV pressed onto fabric. Quoted per job — no published prices.",
+    samples: [
+      {
+        src: "/images/decal-listing.jpg",
+        caption: "Vinyl decal — bottle listing",
+      },
+      {
+        src: "/images/decal-lifestyle.jpg",
+        caption: "Name decal applied to a bottle",
+      },
+      {
+        src: "/images/htv-listing.jpg",
+        caption: "HTV — heat transfer vinyl on a shirt",
+      },
+      {
+        src: "/images/htv-lifestyle.jpg",
+        caption: "HTV pressed onto a folded tee",
+      },
+    ],
+    orderTitle: "Request a Quote — Decals & HTV",
+    orderSubtitle:
+      "Upload your artwork and tell us the size and quantity. We’ll reply on WhatsApp or email with a quote before any payment.",
+    orderItems: [
+      { id: "decal", label: "Vinyl decal" },
+      { id: "htv", label: "HTV / heat transfer vinyl" },
+      { id: "other", label: "Other cut-only vinyl" },
+    ],
+  },
+  {
+    slug: "keychains",
+    name: "Keychains",
+    title: "Keychains",
+    tagline: "NFC & acrylic keychains",
+    description:
+      "Custom keychains made to order in any shape. NFC keychains tap to open a link — no app needed; acrylic keychains are printed in full colour. Tell us your design and we’ll handle the rest.",
+    cardImage: "/images/work/keychains/07.jpg",
+    samplesIntro:
+      "NFC keychains $5.10 each (4cm x 4cm, min 1) · Acrylic keychains $4.20 each (5cm x 5cm, min 1).",
+    samples: [
+      {
+        src: "/images/work/keychains/07.jpg",
+        caption: "NFC Keychains — 4cm x 4cm · tap to open a link",
+        priceLabel: `${formatSGD(product("nfc-keychains").price)} each`,
+        orderHref: buyHref("nfc-keychains"),
+      },
+      {
+        src: "/images/work/keychains/04.jpg",
+        caption: "Acrylic Keychains — 5cm x 5cm · any shape",
+        priceLabel: `${formatSGD(product("acrylic-keychains").price)} each`,
+        orderHref: buyHref("acrylic-keychains"),
+      },
+      {
+        src: "/images/work/keychains/01.jpg",
+        caption: "Gold jellyfish keychain",
+      },
+      {
+        src: "/images/work/keychains/02.jpg",
+        caption: "Blue jellyfish keychain",
+      },
+      {
+        src: "/images/work/keychains/05.jpg",
+        caption: "Silver jellyfish keychain",
+      },
+      {
+        src: "/images/work/keychains/06.jpg",
+        caption: "Keychain collection",
+      },
+    ],
+    orderTitle: "Order Custom Keychains",
+    orderSubtitle:
+      "Upload your artwork and tell us the quantity. NFC link setup is included — just supply the link.",
+    orderItems: [
+      { id: "nfc", label: "NFC keychain (4cm x 4cm)" },
+      { id: "acrylic", label: "Acrylic keychain (5cm x 5cm)" },
+      { id: "other", label: "Other custom keychain" },
+    ],
+  },
+  {
+    slug: "laser",
+    name: "Laser",
+    title: "Laser — Coasters",
+    tagline: "Laser-engraved coasters",
+    description:
+      "Laser-engraved coasters made to order — birch ply, pine, or acrylic. Sold as a pack of 5 coasters, minimum order 5 pcs, with your design, name, or message.",
+    cardImage: "/images/work/coasters-pine/02.jpg",
+    samplesIntro: "Sold as a pack of 5 — minimum order 5 pcs (1 pack).",
+    samples: [
+      {
+        src: "/images/work/coasters-pine/02.jpg",
+        caption: "Birch ply — engraved coasters",
+        priceLabel: `${formatSGD(option("coasters", "birch-ply").price)} per pack of 5`,
+        orderHref: buyHref("coasters", "birch-ply"),
+      },
+      {
+        src: "/images/work/coasters-pine/01.jpg",
+        caption: "Pine — engraved coasters",
+        priceLabel: `${formatSGD(option("coasters", "pine").price)} per pack of 5`,
+        orderHref: buyHref("coasters", "pine"),
+      },
+      {
+        src: "/images/work/coasters-holo/04.jpg",
+        caption: "Acrylic — engraved coasters",
+        priceLabel: `${formatSGD(option("coasters", "acrylic").price)} per pack of 5`,
+        orderHref: buyHref("coasters", "acrylic"),
+      },
+      {
+        src: "/images/work/coasters-pine/03.jpg",
+        caption: "Engraved coasters in a row",
+      },
+      {
+        src: "/images/work/coasters-holo/02.jpg",
+        caption: "Jellyfish coaster",
+      },
+      {
+        src: "/images/work/coasters-holo/05.jpg",
+        caption: "Starfish coaster",
+      },
+    ],
+    orderTitle: "Order Custom Coasters",
+    orderSubtitle:
+      "Upload your design or message and tell us the material and quantity. We’ll confirm the proof before engraving.",
+    orderItems: [
+      { id: "birch-ply", label: "Birch ply coasters" },
+      { id: "pine", label: "Pine coasters" },
+      { id: "acrylic", label: "Acrylic coasters" },
+      { id: "other", label: "Other laser-engraved item" },
+    ],
+  },
+  {
+    slug: "signs",
+    name: "Signs",
+    title: "Signs",
+    tagline: "Printed signs & labels",
+    description:
+      "Printed signs and labels for workplaces, events, and spaces — safety signs, hazard warnings, no-smoking, and custom text. Send us your artwork or text and we’ll typeset it.",
+    cardImage: "/images/no-smoking-label.jpg",
+    samplesIntro: "Printed to order — quoted per job.",
+    samples: [
+      {
+        src: "/images/work/b2b/04.jpg",
+        caption: "Printed SWL weight sign",
+      },
+      {
+        src: "/images/no-smoking-label.jpg",
+        caption: "No-smoking sign",
+      },
+    ],
+    samplesNote: "More sign samples coming soon.",
+    orderTitle: "Request a Quote — Signs",
+    orderSubtitle:
+      "Tell us the sign text, size (A4 / A3), and quantity. We’ll reply on WhatsApp or email with a quote before any payment.",
+    orderItems: [
+      { id: "safety", label: "Safety / compliance sign" },
+      { id: "no-smoking", label: "No-smoking sign" },
+      { id: "custom", label: "Custom text sign" },
+      { id: "other", label: "Other sign" },
+    ],
+  },
+];
+
+export function categoryBySlug(slug: string): Category | undefined {
+  return categories.find((c) => c.slug === slug);
+}

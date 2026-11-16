@@ -2,18 +2,17 @@
 // Prices are stored here (SGD) and shown at checkout. They are the single
 // source of truth used by both the order summary and the Stripe integration.
 //
-// Five made-to-order lines (quoted individually):
-//   signs      — printed safety signs (A4 / A3)
-//   decals     — vinyl decals (flat colour, any size)
-//   stickers   — custom die-cut stickers (matte / glossy / reflective / holographic)
-//   htv        — heat transfer vinyl prints
-//   laser      — laser engraving on pine
-//
-// Plus three buyable products with fixed prices, sold through the Stripe
-// checkout flow (buyable: true):
+// Buyable products (fixed price, sold through the Stripe checkout):
+//   printable-vinyl   — 7 finishes, pack of 20 A4 sheets
 //   nfc-keychains     — 4cm x 4cm NFC keychains, tap to open a link
 //   acrylic-keychains — 5cm x 5cm acrylic keychains, all finishes
-//   printable-vinyl   — printable vinyl, pack of 20 A4 sheets
+//   coasters          — laser-engraved coaster pack of 5 (birch ply / pine / acrylic)
+//
+// Made-to-order lines (quoted individually — never shown with a price):
+//   signs, vinyl-decals, custom-stickers, htv-print, laser-engraving
+//
+// The shop is organised into five category pages (see ./categories):
+//   Printable Vinyl · Vinyl Decals & HTV · Keychains · Laser · Signs
 
 export type PriceOption = {
   id: string;
@@ -46,129 +45,6 @@ export type ProductRow = {
 };
 
 export const products: ProductRow[] = [
-  {
-    name: "Signs",
-    slug: "signs",
-    category: "signs",
-    description:
-      "Printed safety and compliance signs — hazard warnings, danger notices, caution signs, no-smoking, and equipment labels. A4 or A3, durable vinyl.",
-    material: "vinyl",
-    cut_type: "printed",
-    min_qty: 1,
-    available: true,
-    image: "/images/no-smoking-label.jpg",
-    price: 2.5,
-    price_unit: "per sign",
-    options: [
-      { id: "a4", label: "A4", price: 2.5 },
-      { id: "a3", label: "A3", price: 4.5 },
-    ],
-  },
-  {
-    name: "Vinyl Decals",
-    slug: "vinyl-decals",
-    category: "decals",
-    description:
-      "Flat-colour vinyl decals for bottles, vehicles, laptops, and walls. Any size, any shape, weatherproof — no white border.",
-    material: "vinyl",
-    cut_type: "die-cut",
-    min_qty: 1,
-    available: true,
-    image: "/images/name-bottle-decal.jpg",
-    price: 0.5,
-    price_unit: "per 5cm x 5cm decal",
-    options: [{ id: "5x5", label: "5cm x 5cm", price: 0.5 }],
-  },
-  {
-    name: "Custom Stickers",
-    slug: "custom-stickers",
-    category: "stickers",
-    description:
-      "Custom die-cut stickers in any shape — characters, logos, names, events, gift packaging. Matte, glossy, reflective, or holographic.",
-    material: "vinyl",
-    cut_type: "die-cut",
-    min_qty: 10,
-    min_note:
-      "Stickers are cut from a shared vinyl sheet — 10 keeps the run economical.",
-    available: true,
-    image: "/images/label-name-date-sheet.png",
-    price: 0.5,
-    price_unit: "per sticker",
-    options: [
-      { id: "matte", label: "Matte", price: 0.5 },
-      { id: "glossy", label: "Glossy", price: 0.8 },
-      { id: "reflective", label: "Reflective", price: 1.1 },
-      { id: "holographic", label: "Holographic", price: 1.5 },
-    ],
-  },
-  {
-    name: "HTV Print",
-    slug: "htv-print",
-    category: "htv",
-    description:
-      "Heat transfer vinyl prints on shirts and jerseys — names, numbers, graphics, pressed on demand.",
-    material: "HTV",
-    cut_type: "die-cut",
-    min_qty: 1,
-    available: true,
-    image: "/images/jersey-name-11.jpg",
-    price: 1.0,
-    price_unit: "per 5cm x 5cm print",
-    options: [{ id: "5x5", label: "5cm x 5cm", price: 1.0 }],
-  },
-  {
-    name: "Laser Engraving",
-    slug: "laser-engraving",
-    category: "laser",
-    description:
-      "Laser engraving on pine — coasters, tokens, blocks, boards, and keychains with your design or message.",
-    material: "pine",
-    cut_type: "laser",
-    min_qty: 1,
-    available: true,
-    image: "/images/name-laser-blocks.jpg",
-    price: 4.5,
-    price_unit: "per 5cm x 5cm piece",
-    options: [{ id: "5x5", label: "5cm x 5cm", price: 4.5 }],
-  },
-  {
-    name: "NFC Keychains",
-    slug: "nfc-keychains",
-    category: "nfc-keychains",
-    description:
-      "Acrylic NFC keychain, 4cm x 4cm. Tap any phone on the chip to open a social-media link — no app needed. Link setup is included — just supply the link you want the keychain to open. Printed in any shape with your design.",
-    material: "acrylic + NFC chip",
-    cut_type: "die-cut",
-    min_qty: 1,
-    available: true,
-    image: "/images/work/keychains/07.jpg",
-    price: 5.1,
-    price_unit: "each",
-    size: "4cm x 4cm",
-    buyable: true,
-    video: {
-      src: "/videos/VID_20261113_022800_555.mp4",
-      poster: "/videos/posters/VID_20261113_022800_555.jpg",
-    },
-    options: [{ id: "4x4", label: "4cm x 4cm", price: 5.1 }],
-  },
-  {
-    name: "Acrylic Keychains",
-    slug: "acrylic-keychains",
-    category: "acrylic-keychains",
-    description:
-      "Custom acrylic keychains, 5cm x 5cm, die-cut to any shape — characters, logos, names, and more. One price for all finishes.",
-    material: "acrylic",
-    cut_type: "die-cut",
-    min_qty: 1,
-    available: true,
-    image: "/images/work/keychains/04.jpg",
-    price: 4.2,
-    price_unit: "each",
-    size: "5cm x 5cm",
-    buyable: true,
-    options: [{ id: "5x5", label: "5cm x 5cm — all finishes", price: 4.2 }],
-  },
   {
     name: "Printable Vinyl",
     slug: "printable-vinyl",
@@ -229,5 +105,150 @@ export const products: ProductRow[] = [
         image: "/images/v2-confetti-holographic-lifestyle.jpg",
       },
     ],
+  },
+  {
+    name: "NFC Keychains",
+    slug: "nfc-keychains",
+    category: "keychains",
+    description:
+      "Acrylic NFC keychain, 4cm x 4cm. Tap any phone on the chip to open a social-media link — no app needed. Link setup is included — just supply the link you want the keychain to open. Printed in any shape with your design.",
+    material: "acrylic + NFC chip",
+    cut_type: "die-cut",
+    min_qty: 1,
+    available: true,
+    image: "/images/work/keychains/07.jpg",
+    price: 5.1,
+    price_unit: "each",
+    size: "4cm x 4cm",
+    buyable: true,
+    video: {
+      src: "/videos/VID_20261113_022800_555.mp4",
+      poster: "/videos/posters/VID_20261113_022800_555.jpg",
+    },
+    options: [{ id: "4x4", label: "4cm x 4cm", price: 5.1 }],
+  },
+  {
+    name: "Acrylic Keychains",
+    slug: "acrylic-keychains",
+    category: "keychains",
+    description:
+      "Custom acrylic keychains, 5cm x 5cm, die-cut to any shape — characters, logos, names, and more. One price for all finishes.",
+    material: "acrylic",
+    cut_type: "die-cut",
+    min_qty: 1,
+    available: true,
+    image: "/images/work/keychains/04.jpg",
+    price: 4.2,
+    price_unit: "each",
+    size: "5cm x 5cm",
+    buyable: true,
+    options: [{ id: "5x5", label: "5cm x 5cm — all finishes", price: 4.2 }],
+  },
+  {
+    name: "Coaster Pack",
+    slug: "coasters",
+    category: "laser",
+    description:
+      "Laser-engraved coasters made to order — birch ply, pine, or acrylic. Sold as a pack of 5 coasters with your design, name, or message.",
+    material: "birch ply / pine / acrylic",
+    cut_type: "laser engraved",
+    min_qty: 1,
+    min_note: "Sold as a pack of 5 — minimum order 5 pcs (1 pack).",
+    available: true,
+    image: "/images/work/coasters-pine/02.jpg",
+    price: 10.3,
+    price_unit: "per pack of 5",
+    size: "Pack of 5 coasters",
+    buyable: true,
+    options: [
+      { id: "birch-ply", label: "Birch ply", price: 10.3 },
+      { id: "pine", label: "Pine", price: 12.6 },
+      { id: "acrylic", label: "Acrylic", price: 14.0 },
+    ],
+  },
+  {
+    name: "Signs",
+    slug: "signs",
+    category: "signs",
+    description:
+      "Printed safety and compliance signs — hazard warnings, danger notices, caution signs, no-smoking, and equipment labels. A4 or A3, durable vinyl.",
+    material: "vinyl",
+    cut_type: "printed",
+    min_qty: 1,
+    available: true,
+    image: "/images/no-smoking-label.jpg",
+    price: 2.5,
+    price_unit: "per sign",
+    options: [
+      { id: "a4", label: "A4", price: 2.5 },
+      { id: "a3", label: "A3", price: 4.5 },
+    ],
+  },
+  {
+    name: "Vinyl Decals",
+    slug: "vinyl-decals",
+    category: "vinyl-decals",
+    description:
+      "Cut-only vinyl decals — flat-colour names, words, and shapes for bottles, vehicles, laptops, and walls. Any size, any shape, weatherproof. Not printed.",
+    material: "vinyl",
+    cut_type: "cut-only",
+    min_qty: 1,
+    available: true,
+    image: "/images/decal-lifestyle.jpg",
+    price: 0.5,
+    price_unit: "per 5cm x 5cm decal",
+    options: [{ id: "5x5", label: "5cm x 5cm", price: 0.5 }],
+  },
+  {
+    name: "Custom Stickers",
+    slug: "custom-stickers",
+    category: "printable-vinyl",
+    description:
+      "Custom die-cut stickers in any shape — characters, logos, names, events, gift packaging. Printed on matte, glossy, reflective, or holographic vinyl.",
+    material: "vinyl",
+    cut_type: "die-cut",
+    min_qty: 10,
+    min_note:
+      "Stickers are cut from a shared vinyl sheet — 10 keeps the run economical.",
+    available: true,
+    image: "/images/label-name-date-sheet.png",
+    price: 0.5,
+    price_unit: "per sticker",
+    options: [
+      { id: "matte", label: "Matte", price: 0.5 },
+      { id: "glossy", label: "Glossy", price: 0.8 },
+      { id: "reflective", label: "Reflective", price: 1.1 },
+      { id: "holographic", label: "Holographic", price: 1.5 },
+    ],
+  },
+  {
+    name: "HTV Print",
+    slug: "htv-print",
+    category: "vinyl-decals",
+    description:
+      "Heat transfer vinyl — cut and pressed onto shirts, jerseys, and tote bags. Names, numbers, and graphics, made to order. Not printed.",
+    material: "HTV",
+    cut_type: "heat transfer",
+    min_qty: 1,
+    available: true,
+    image: "/images/htv-listing.jpg",
+    price: 1.0,
+    price_unit: "per 5cm x 5cm print",
+    options: [{ id: "5x5", label: "5cm x 5cm", price: 1.0 }],
+  },
+  {
+    name: "Laser Engraving",
+    slug: "laser-engraving",
+    category: "laser-engraving",
+    description:
+      "Laser engraving on pine — tokens, blocks, and boards with your design or message.",
+    material: "pine",
+    cut_type: "laser",
+    min_qty: 1,
+    available: true,
+    image: "/images/name-laser-blocks.jpg",
+    price: 4.5,
+    price_unit: "per 5cm x 5cm piece",
+    options: [{ id: "5x5", label: "5cm x 5cm", price: 4.5 }],
   },
 ];

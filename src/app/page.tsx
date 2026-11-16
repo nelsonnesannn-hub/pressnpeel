@@ -46,44 +46,44 @@ function speedLinesURI(): string {
 
 const SECTIONS = [
   {
-    id: "signs",
-    title: "Signs",
+    id: "printable-vinyl",
+    title: "Printable Vinyl",
     subtitle:
-      "Printed safety and compliance signs — hazard, danger, caution, and no-smoking. A4 or A3 on durable vinyl.",
-    image: "/images/no-smoking-label.jpg",
-    href: "/custom?type=signs",
+      "All printed vinyls — stickers & labels in 7 finishes, sold as a pack of 20 A4 sheets.",
+    image: "/images/work/materials/03.jpg",
+    href: "/products/printable-vinyl",
   },
   {
-    id: "decals",
-    title: "Vinyl Decals",
+    id: "vinyl-decals",
+    title: "Vinyl Decals & HTV",
     subtitle:
-      "Flat-colour vinyl decals for bottles, vehicles, laptops, and walls — any size, weatherproof.",
-    image: "/images/name-bottle-decal.jpg",
-    href: "/custom?type=decals",
+      "Cut-only vinyl decals and heat transfer vinyl — not printed. Any size, any shape.",
+    image: "/images/decal-lifestyle.jpg",
+    href: "/products/vinyl-decals",
   },
   {
-    id: "stickers",
-    title: "Custom Stickers",
+    id: "keychains",
+    title: "Keychains",
     subtitle:
-      "Die-cut stickers in any shape — characters, logos, names, events. Matte, glossy, reflective, or holographic.",
-    image: "/images/label-name-date-sheet.png",
-    href: "/custom?type=stickers",
-  },
-  {
-    id: "htv",
-    title: "HTV Print",
-    subtitle:
-      "Heat transfer vinyl prints on shirts and jerseys — names, numbers, graphics, pressed on demand.",
-    image: "/images/jersey-name-11.jpg",
-    href: "/custom?type=htv",
+      "NFC keychains that tap to open a link, and acrylic keychains in any shape.",
+    image: "/images/work/keychains/07.jpg",
+    href: "/products/keychains",
   },
   {
     id: "laser",
-    title: "Laser Engraving",
+    title: "Laser — Coasters",
     subtitle:
-      "Laser engraving on pine — coasters, tokens, blocks, boards, and keychains with your design.",
-    image: "/images/name-laser-blocks.jpg",
-    href: "/custom?type=laser",
+      "Laser-engraved coasters in birch ply, pine, or acrylic. Sold as a pack of 5.",
+    image: "/images/work/coasters-pine/02.jpg",
+    href: "/products/laser",
+  },
+  {
+    id: "signs",
+    title: "Signs",
+    subtitle:
+      "Printed safety & compliance signs — A4 or A3 on durable vinyl.",
+    image: "/images/no-smoking-label.jpg",
+    href: "/products/signs",
   },
 ];
 
@@ -323,7 +323,7 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {PRODUCTS_SLICE.map((product) => (
               <article
                 key={product.slug}
@@ -620,7 +620,7 @@ export default function HomePage() {
 /*  Data helpers                                                      */
 /* ------------------------------------------------------------------ */
 
-const PRODUCTS_SLICE = products;
+const PRODUCTS_SLICE = products.filter((p) => p.buyable);
 
 const TRUST_ITEMS = [
   { label: "Glossy & Matte Vinyl" },

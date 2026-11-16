@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { categories } from "@/lib/categories";
 
 export const BRONZE = "#FFD60A";
 export const BRONZE_LIGHT = "#FACC15";
@@ -6,12 +7,18 @@ export const BRONZE_LIGHT = "#FACC15";
 export const WHATSAPP_URL = "https://wa.me/6587674511";
 export const EMAIL = "nelsonnesan.nn@gmail.com";
 
+// "Products" is a dropdown of the five shop categories, so it is rendered
+// separately from the plain links.
 export const NAV_LINKS = [
-  { href: "/products", label: "Products" },
   { href: "/custom", label: "Custom Upload" },
   { href: "/b2b", label: "Signs & Labels" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
+];
+
+const FOOTER_LINKS = [
+  { href: "/products", label: "Products" },
+  ...NAV_LINKS,
 ];
 
 function WhatsAppIcon({ className }: { className?: string }) {
@@ -41,6 +48,46 @@ export function Header() {
         </Link>
 
         <ul className="hidden items-center gap-6 text-sm font-medium text-slate-300 lg:flex">
+          {/* Products dropdown — the five shop categories */}
+          <li className="group relative">
+            <Link
+              href="/products"
+              className="flex items-center gap-1 transition-colors hover:text-[#FACC15]"
+              aria-haspopup="true"
+            >
+              Products
+              <svg
+                className="h-3 w-3 transition-transform group-hover:rotate-180"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </Link>
+            <div className="invisible absolute left-0 top-full z-50 w-72 pt-2 opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100">
+              <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 p-2 shadow-2xl">
+                {categories.map((category) => (
+                  <Link
+                    key={category.slug}
+                    href={`/products/${category.slug}`}
+                    className="block rounded-lg px-3 py-2.5 transition-colors hover:bg-slate-900"
+                  >
+                    <span className="block text-sm font-medium text-white">
+                      {category.name}
+                    </span>
+                    <span className="mt-0.5 block text-xs leading-relaxed text-slate-400">
+                      {category.tagline}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </li>
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
               <Link href={link.href} className="transition-colors hover:text-[#FACC15]">
@@ -81,8 +128,22 @@ export function Header() {
                 <path d="M4 7h16M4 12h16M4 17h16" />
               </svg>
             </summary>
-            <div className="absolute right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 shadow-2xl">
+            <div className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 shadow-2xl">
               <ul className="flex flex-col p-2 text-sm font-medium text-slate-300">
+                <li className="px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-widest text-slate-500">
+                  Products
+                </li>
+                {categories.map((category) => (
+                  <li key={category.slug}>
+                    <Link
+                      href={`/products/${category.slug}`}
+                      className="block rounded-lg px-3 py-2.5 transition-colors hover:bg-slate-900 hover:text-white"
+                    >
+                      {category.name}
+                    </Link>
+                  </li>
+                ))}
+                <li className="my-1 border-t border-slate-800" />
                 {NAV_LINKS.map((link) => (
                   <li key={link.href}>
                     <Link
@@ -130,7 +191,7 @@ export function Footer() {
           </div>
 
           <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-400" aria-label="Footer">
-            {NAV_LINKS.map((link) => (
+            {FOOTER_LINKS.map((link) => (
               <Link key={link.href} href={link.href} className="transition-colors hover:text-[#FACC15]">
                 {link.label}
               </Link>
