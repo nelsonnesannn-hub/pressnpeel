@@ -60,22 +60,16 @@ export default function CustomPage() {
 
       <div className="mt-12 rounded-2xl border border-[#FFD60A]/30 bg-[#FFD60A]/10 p-6">
         <div className="flex items-center gap-3">
-          <span className="text-lg font-bold text-[#FFD60A]">PayNow</span>
+          <span className="text-lg font-bold text-[#FFD60A]">Stripe</span>
           <span className="rounded-full bg-[#FFD60A] px-2 py-0.5 text-xs font-bold text-slate-950">
             Payment method
           </span>
         </div>
         <p className="mt-2 text-sm text-slate-300">
-          PayNow to <strong className="text-white">Press N Peel</strong>{" "}
-          (Singapore).
-        </p>
-        <p className="mt-1 text-sm text-slate-400">
-          PayNow number / QR:{" "}
-          <span className="text-slate-500">[to be confirmed]</span>
-        </p>
-        <p className="mt-3 text-xs text-slate-400">
-          We&apos;ll confirm your payment details on WhatsApp before production
-          begins.
+          Fixed-price products are checked out securely with{" "}
+          <strong className="text-white">Stripe</strong>. Made-to-order work is
+          quoted first — we&apos;ll confirm everything on WhatsApp before any
+          payment is taken.
         </p>
         <a
           href={WHATSAPP_URL}

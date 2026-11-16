@@ -11,8 +11,9 @@
 // Made-to-order lines (quoted individually — never shown with a price):
 //   signs, vinyl-decals, custom-stickers, htv-print, laser-engraving
 //
-// The shop is organised into five category pages (see ./categories):
-//   Printable Vinyl · Vinyl Decals & HTV · Keychains · Laser · Signs
+// The shop is organised into six category pages (see ./categories):
+//   Stickers and labels · Printable Vinyl Sheets · Vinyl Decals & HTV ·
+//   Keychains · Laser · Signs
 
 export type PriceOption = {
   id: string;
@@ -46,7 +47,7 @@ export type ProductRow = {
 
 export const products: ProductRow[] = [
   {
-    name: "Printable Vinyl",
+    name: "Printable Vinyl Sheets",
     slug: "printable-vinyl",
     category: "printable-vinyl",
     description:
@@ -56,7 +57,7 @@ export const products: ProductRow[] = [
     min_qty: 1,
     min_note: "Sold as a pack of 20 A4 sheets.",
     available: true,
-    image: "/images/work/materials/03.jpg",
+    image: "/images/vinyl-finishes-collage.jpg",
     price: 8.2,
     price_unit: "per pack of 20 A4 sheets",
     size: "A4 sheets — pack of 20",
@@ -211,7 +212,7 @@ export const products: ProductRow[] = [
     min_note:
       "Stickers are cut from a shared vinyl sheet — 10 keeps the run economical.",
     available: true,
-    image: "/images/label-name-date-sheet.png",
+    image: "/images/card-stickers.jpg",
     price: 0.5,
     price_unit: "per sticker",
     options: [

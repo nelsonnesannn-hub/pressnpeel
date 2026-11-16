@@ -7,7 +7,7 @@ export const BRONZE_LIGHT = "#FACC15";
 export const WHATSAPP_URL = "https://wa.me/6587674511";
 export const EMAIL = "nelsonnesan.nn@gmail.com";
 
-// "Products" is a dropdown of the five shop categories, so it is rendered
+// "Products" is a dropdown of the six shop categories, so it is rendered
 // separately from the plain links.
 export const NAV_LINKS = [
   { href: "/custom", label: "Custom Upload" },
@@ -48,7 +48,7 @@ export function Header() {
         </Link>
 
         <ul className="hidden items-center gap-6 text-sm font-medium text-slate-300 lg:flex">
-          {/* Products dropdown — the five shop categories */}
+          {/* Products dropdown — the six shop categories */}
           <li className="group relative">
             <Link
               href="/products"

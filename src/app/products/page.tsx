@@ -6,7 +6,7 @@ import { formatSGD } from "@/lib/pricing";
 export const metadata = {
   title: "Products | Press N Peel",
   description:
-    "Press N Peel product categories — printable vinyl, vinyl decals & HTV, keychains, laser-engraved coasters, and signs. Browse samples and order custom on each page.",
+    "Press N Peel product categories — stickers and labels, printable vinyl sheets, vinyl decals & HTV, keychains, laser-engraved coasters, and signs. Browse samples and order custom on each page.",
 };
 
 export default function ProductsPage() {
@@ -19,7 +19,7 @@ export default function ProductsPage() {
           Our Products
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-400">
-          Five product categories — browse the samples and order custom on each
+          Six product categories — browse the samples and order custom on each
           category page.
         </p>
       </div>

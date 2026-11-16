@@ -17,7 +17,7 @@ import { WHATSAPP_URL } from "@/components/nav";
 const BUYABLE_PRODUCTS = products.filter((p) => p.buyable);
 
 const TYPE_LABELS: Record<string, string> = {
-  "printable-vinyl": "Printable Vinyl",
+  "printable-vinyl": "Printable Vinyl Sheets",
   keychains: "Keychains",
   laser: "Laser",
 };

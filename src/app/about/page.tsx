@@ -20,7 +20,7 @@ const SERVICES = [
   {
     title: "Custom Stickers",
     body: "Die-cut stickers in any shape — characters, logos, names, events. Matte, glossy, reflective, or holographic.",
-    image: "/images/label-name-date-sheet.png",
+    image: "/images/card-stickers.jpg",
   },
   {
     title: "HTV Print",

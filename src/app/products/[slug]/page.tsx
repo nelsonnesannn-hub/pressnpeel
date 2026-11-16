@@ -44,7 +44,7 @@ export default async function ProductOrCategoryPage({
 }) {
   const { slug } = await params;
 
-  // The five shop categories own these URLs.
+  // The six shop categories own these URLs.
   const category = categoryBySlug(slug);
   if (category) return <CategoryPage category={category} />;
 

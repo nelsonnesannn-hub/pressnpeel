@@ -46,11 +46,19 @@ function speedLinesURI(): string {
 
 const SECTIONS = [
   {
-    id: "printable-vinyl",
-    title: "Printable Vinyl",
+    id: "stickers-and-labels",
+    title: "Stickers and labels",
     subtitle:
-      "All printed vinyls — stickers & labels in 7 finishes, sold as a pack of 20 A4 sheets.",
-    image: "/images/work/materials/03.jpg",
+      "Finished die-cut stickers and printed labels — quoted per job.",
+    image: "/images/card-stickers.jpg",
+    href: "/products/stickers-and-labels",
+  },
+  {
+    id: "printable-vinyl",
+    title: "Printable Vinyl Sheets",
+    subtitle:
+      "Printable vinyl sheets in 7 finishes — sold as a pack of 20 A4 sheets.",
+    image: "/images/vinyl-finishes-collage.jpg",
     href: "/products/printable-vinyl",
   },
   {
@@ -263,7 +271,7 @@ export default function HomePage() {
           <h2 className="mb-10 text-center text-2xl font-bold text-white sm:text-3xl">
             Everything We Print
           </h2>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {SECTIONS.map((s) => (
               <Link
                 key={s.id}

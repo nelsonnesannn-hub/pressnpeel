@@ -1,4 +1,4 @@
-// Product categories — the five shop categories, each with its own page.
+// Product categories — the six shop categories, each with its own page.
 // Every category page shows samples of what is available plus a custom order
 // form, so customers can see the range and order without a separate flow.
 import { products, type PriceOption } from "./catalog";
@@ -50,13 +50,53 @@ const buyHref = (slug: string, optionId?: string) =>
 
 export const categories: Category[] = [
   {
+    slug: "stickers-and-labels",
+    name: "Stickers and labels",
+    title: "Stickers and Labels",
+    tagline: "Finished stickers & labels — quoted per job",
+    description:
+      "Finished die-cut stickers and printed labels — motivational sticker ranges, brand and logo stickers, B2B equipment labels, namecards, and event stickers. Send us your design and we’ll quote it.",
+    cardImage: "/images/card-stickers.jpg",
+    samplesIntro:
+      "Samples of finished work — quoted per job, no published prices.",
+    samples: [
+      { src: "/images/work/motivational/01.jpg", caption: "Motivational die-cut assortment" },
+      { src: "/images/work/motivational/03.jpg", caption: "Keep Going sticker pile" },
+      { src: "/images/work/brand/01.jpg", caption: "Eaispire mascot assortment" },
+      { src: "/images/work/brand/09.jpg", caption: "Eaispire sticker pile" },
+      { src: "/images/work/b2b/01.jpg", caption: "JGR Fit For Use inspection labels" },
+      { src: "/images/work/b2b/03.jpg", caption: "GAMX equipment labels" },
+      { src: "/images/work/namecards/01.jpg", caption: "Keep Going sticker on black packet" },
+      { src: "/images/work/namecards/02.jpg", caption: "Eaispire logo sticker" },
+      {
+        src: "/images/work/childrens-day/01.jpg",
+        caption: "Coach Julia — Shine Brightly, Little Gymnast",
+      },
+      {
+        src: "/images/work/childrens-day/02.jpg",
+        caption: "Coach Rey / KGA — Happy Children's Day",
+      },
+    ],
+    orderTitle: "Request a Quote — Stickers & Labels",
+    orderSubtitle:
+      "Upload your artwork and tell us the size, finish, and quantity. We’ll reply on WhatsApp or email with a quote before any payment.",
+    orderItems: [
+      { id: "die-cut-stickers", label: "Custom die-cut stickers" },
+      { id: "logo-stickers", label: "Logo / brand stickers" },
+      { id: "labels", label: "Equipment / safety labels" },
+      { id: "namecards", label: "Namecards & packaging stickers" },
+      { id: "event", label: "Event & celebration stickers" },
+      { id: "other", label: "Other stickers & labels" },
+    ],
+  },
+  {
     slug: "printable-vinyl",
-    name: "Printable Vinyl",
-    title: "Printable Vinyl",
-    tagline: "Stickers & labels — all printed vinyls",
+    name: "Printable Vinyl Sheets",
+    title: "Printable Vinyl Sheets",
+    tagline: "Printable vinyl sheets in 7 finishes — sold by the pack",
     description:
       "Printable vinyl sold by the pack — 20 A4 sheets per pack, in seven finishes. Print your own stickers and labels, or send us your design and we’ll print and cut them for you.",
-    cardImage: "/images/work/materials/03.jpg",
+    cardImage: "/images/vinyl-finishes-collage.jpg",
     samplesIntro: "1 pack = 20 A4 sheets. Prices are per pack.",
     samples: [
       {
@@ -102,7 +142,7 @@ export const categories: Category[] = [
         orderHref: buyHref("printable-vinyl", "confetti-holographic"),
       },
     ],
-    orderTitle: "Order Printable Vinyl",
+    orderTitle: "Order Printable Vinyl Sheets",
     orderSubtitle:
       "Tell us the finish and quantity, or upload your design and we’ll print and cut it for you.",
     orderItems: [
