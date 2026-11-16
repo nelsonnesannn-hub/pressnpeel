@@ -9,13 +9,26 @@ export function generateStaticParams() {
 
 export default async function ProductDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { slug } = await params;
+  const sp = await searchParams;
   const product = products.find((p) => p.slug === slug);
   if (!product) notFound();
   const buyable = Boolean(product.buyable);
+
+  // Products whose options carry their own photo (printable vinyl finishes)
+  // get a per-finish image slot driven by ?option=<id>.
+  const hasFinishImages = product.options.some((o) => Boolean(o.image));
+  const rawOption = typeof sp.option === "string" ? sp.option : "";
+  const selectedOption =
+    product.options.find((o) => o.id === rawOption) ?? product.options[0];
+  const selectedPrice = selectedOption.price;
+  const finishHref = (id: string) =>
+    `/products/${product.slug}?option=${encodeURIComponent(id)}`;
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-16">
@@ -27,24 +40,42 @@ export default async function ProductDetailPage({
       </Link>
 
       <div className="grid gap-10 md:grid-cols-2">
-        <div className="overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900/40">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={product.image}
-            alt={product.name}
-            className="h-full w-full object-cover"
-          />
+        <div>
+          <div className="overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900/40">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={
+                hasFinishImages
+                  ? (selectedOption.image ?? product.image)
+                  : product.image
+              }
+              alt={
+                hasFinishImages
+                  ? `${product.name} — ${selectedOption.label}`
+                  : product.name
+              }
+              className="h-full w-full object-cover"
+            />
+          </div>
+          {hasFinishImages ? (
+            <p className="mt-3 text-center text-sm text-slate-400">
+              Showing:{" "}
+              <span className="font-medium text-white">
+                {selectedOption.label}
+              </span>
+            </p>
+          ) : null}
+          {product.video ? (
+            <video
+              src={product.video.src}
+              poster={product.video.poster}
+              controls
+              preload="none"
+              playsInline
+              className="mt-4 aspect-video w-full rounded-2xl border border-slate-800/70 bg-slate-950 object-cover"
+            />
+          ) : null}
         </div>
-        {product.video ? (
-          <video
-            src={product.video.src}
-            poster={product.video.poster}
-            controls
-            preload="none"
-            playsInline
-            className="mt-4 aspect-video w-full rounded-2xl border border-slate-800/70 bg-slate-950 object-cover"
-          />
-        ) : null}
 
         <div>
           <span className="mb-4 inline-block rounded-full border border-slate-700/60 bg-slate-800/60 px-3 py-1 text-xs font-medium uppercase tracking-wider text-slate-400">
@@ -65,7 +96,7 @@ export default async function ProductDetailPage({
                   className="text-3xl font-bold"
                   style={{ color: "#FFD60A" }}
                 >
-                  {formatSGD(product.price)}
+                  {formatSGD(selectedPrice)}
                 </span>
                 <span className="text-sm text-slate-400">
                   {product.price_unit}
@@ -74,6 +105,9 @@ export default async function ProductDetailPage({
               <p className="mt-1 text-sm text-slate-500">
                 Size: {product.size ?? "—"} · Minimum order: {product.min_qty}
                 {product.min_note ? ` — ${product.min_note}` : ""}
+                {hasFinishImages
+                  ? ` · Selected finish: ${selectedOption.label}`
+                  : ""}
               </p>
             </>
           ) : (
@@ -91,31 +125,60 @@ export default async function ProductDetailPage({
 
           {buyable ? (
             <div className="mt-6">
-              <p className="mb-2 text-sm font-medium text-slate-300">Options</p>
+              <p className="mb-2 text-sm font-medium text-slate-300">
+                {hasFinishImages ? "Finish" : "Options"}
+              </p>
               <ul className="space-y-1.5 text-sm">
-                {product.options.map((o) => (
-                  <li
-                    key={o.id}
-                    className="flex items-center justify-between gap-4 rounded-lg border border-slate-800 bg-slate-950/40 px-3 py-2"
-                  >
-                    <span className="text-slate-300">{o.label}</span>
-                    <span className="font-medium text-white">
-                      {formatSGD(o.price)} {product.price_unit}
-                    </span>
-                  </li>
-                ))}
+                {product.options.map((o) => {
+                  const active = o.id === selectedOption.id;
+                  const row = (
+                    <>
+                      <span className={active ? "text-white" : "text-slate-300"}>
+                        {o.label}
+                      </span>
+                      <span className="font-medium text-white">
+                        {formatSGD(o.price)} {product.price_unit}
+                      </span>
+                    </>
+                  );
+                  const cls = active
+                    ? "flex items-center justify-between gap-4 rounded-lg border border-[#FFD60A]/60 bg-[#FFD60A]/10 px-3 py-2"
+                    : "flex items-center justify-between gap-4 rounded-lg border border-slate-800 bg-slate-950/40 px-3 py-2";
+                  return (
+                    <li key={o.id}>
+                      {hasFinishImages ? (
+                        <Link
+                          href={finishHref(o.id)}
+                          scroll={false}
+                          aria-current={active ? "true" : undefined}
+                          className={`${cls} transition-colors hover:border-[#FFD60A]/40`}
+                        >
+                          {row}
+                        </Link>
+                      ) : (
+                        <div className={cls}>{row}</div>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ) : null}
 
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
-              href={`/order?product=${product.slug}`}
+              href={
+                hasFinishImages
+                  ? `/order?product=${product.slug}&option=${encodeURIComponent(
+                      selectedOption.id
+                    )}`
+                  : `/order?product=${product.slug}`
+              }
               className="inline-flex items-center gap-2 rounded-xl px-7 py-3.5 text-base font-semibold text-slate-950 shadow-lg transition-transform hover:scale-[1.03]"
               style={{ backgroundColor: "#FFD60A" }}
             >
               {buyable
-                ? `Buy Now — ${formatSGD(product.price)}`
+                ? `Buy Now — ${formatSGD(selectedPrice)}`
                 : "Request a Quote"}
             </Link>
             <Link

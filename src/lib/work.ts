@@ -144,14 +144,30 @@ export const workGroups: WorkGroup[] = [
     id: "materials",
     title: "Printable Vinyl Materials",
     blurb:
-      "Glossy white, matte white, gold, confetti, holographic, and reflective printable vinyl — printed and cut to order.",
+      "Matte white, glossy white, gold reflective, silver reflective, silver holographic, broken glass silver holographic, and confetti/dotted silver holographic printable vinyl — printed and cut to order.",
     items: [
-      { src: "/images/vinyl-glossy-white-listing.jpg", caption: "Glossy white vinyl" },
-      { src: "/images/vinyl-matte-white-listing.jpg", caption: "Matte white vinyl" },
-      { src: "/images/vinyl-gold-listing.jpg", caption: "Gold vinyl" },
-      { src: "/images/vinyl-confetti-listing.jpg", caption: "Confetti vinyl" },
-      { src: "/images/vinyl-holographic-listing.jpg", caption: "Holographic vinyl" },
-      { src: "/images/vinyl-reflective-listing.jpg", caption: "Reflective vinyl" },
+      { src: "/images/v2-matte-white-listing.jpg", caption: "Matte vinyl white" },
+      { src: "/images/v2-glossy-white-listing.jpg", caption: "Glossy vinyl white" },
+      {
+        src: "/images/v2-gold-reflective-listing.jpg",
+        caption: "Gold reflective vinyl",
+      },
+      {
+        src: "/images/v2-silver-reflective-listing.jpg",
+        caption: "Silver reflective vinyl",
+      },
+      {
+        src: "/images/v2-silver-holographic-listing.jpg",
+        caption: "Silver holographic vinyl",
+      },
+      {
+        src: "/images/v2-broken-glass-listing.jpg",
+        caption: "Broken glass silver holographic",
+      },
+      {
+        src: "/images/v2-confetti-holographic-listing.jpg",
+        caption: "Confetti/dotted silver holographic vinyl",
+      },
     ],
   },
 ];

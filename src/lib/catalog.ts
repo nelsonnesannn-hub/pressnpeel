@@ -19,6 +19,8 @@ export type PriceOption = {
   id: string;
   label: string;
   price: number; // SGD
+  /** Optional per-option photo (e.g. the printable-vinyl finish lifestyle shot). */
+  image?: string;
 };
 
 export type ProductRow = {
@@ -172,24 +174,60 @@ export const products: ProductRow[] = [
     slug: "printable-vinyl",
     category: "printable-vinyl",
     description:
-      "Printable vinyl sold by the pack — 20 A4 sheets per pack. Choose reflective, gold, confetti, glossy white, matte white, or holographic. Holographic is +$0.30 per pack.",
+      "Printable vinyl sold by the pack — 20 A4 sheets per pack, in seven finishes: matte white, glossy white, gold reflective, silver reflective, silver holographic, broken glass silver holographic, and confetti/dotted silver holographic.",
     material: "printable vinyl",
     cut_type: "printed sheets",
     min_qty: 1,
     min_note: "Sold as a pack of 20 A4 sheets.",
     available: true,
     image: "/images/work/materials/03.jpg",
-    price: 8.55,
+    price: 8.2,
     price_unit: "per pack of 20 A4 sheets",
     size: "A4 sheets — pack of 20",
     buyable: true,
     options: [
-      { id: "reflective", label: "Reflective", price: 8.55 },
-      { id: "gold", label: "Gold", price: 8.55 },
-      { id: "confetti", label: "Confetti", price: 8.55 },
-      { id: "glossy-white", label: "Glossy white", price: 8.55 },
-      { id: "matte-white", label: "Matte white", price: 8.55 },
-      { id: "holographic", label: "Holographic", price: 8.85 },
+      {
+        id: "matte-white",
+        label: "Matte vinyl white",
+        price: 8.2,
+        image: "/images/v2-matte-white-lifestyle.jpg",
+      },
+      {
+        id: "glossy-white",
+        label: "Glossy vinyl white",
+        price: 8.4,
+        image: "/images/v2-glossy-white-lifestyle.jpg",
+      },
+      {
+        id: "gold-reflective",
+        label: "Gold reflective vinyl",
+        price: 8.55,
+        image: "/images/v2-gold-reflective-lifestyle.jpg",
+      },
+      {
+        id: "silver-reflective",
+        label: "Silver reflective vinyl",
+        price: 8.55,
+        image: "/images/v2-silver-reflective-lifestyle.jpg",
+      },
+      {
+        id: "silver-holographic",
+        label: "Silver holographic vinyl",
+        price: 8.8,
+        image: "/images/v2-silver-holographic-lifestyle.jpg",
+      },
+      {
+        id: "broken-glass",
+        label: "Broken glass silver holographic",
+        price: 9.1,
+        image: "/images/v2-broken-glass-lifestyle.jpg",
+      },
+      {
+        id: "confetti-holographic",
+        label: "Confetti/dotted silver holographic vinyl",
+        price: 9.25,
+        image: "/images/v2-confetti-holographic-lifestyle.jpg",
+      },
     ],
   },
 ];

@@ -42,6 +42,7 @@ type Props = {
 function OrderForm({ stripeReady }: Props) {
   const params = useSearchParams();
   const preset = params.get("product") ?? "";
+  const presetOption = params.get("option") ?? "";
   const presetType = params.get("type") ?? "";
   const canceled = params.get("canceled") === "1";
 
@@ -101,6 +102,11 @@ function OrderForm({ stripeReady }: Props) {
     const p = params.get("product");
     if (p && products.some((x) => x.slug === p)) {
       selectProduct(p);
+      // A finish chosen on the product page carries through via ?option=.
+      const prod = products.find((x) => x.slug === p);
+      if (presetOption && prod && prod.options.some((x) => x.id === presetOption)) {
+        setOptionId(presetOption);
+      }
       return;
     }
     const t = params.get("type");
