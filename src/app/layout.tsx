@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description:
     "Premium custom die-cut stickers, vinyl decals, heat transfer vinyl, and B2B safety labels. Any shape, glossy or matte finish, printed to order. Start your order today.",
   icons: {
-    icon: "/images/press-n-peel-dog-logo.jpg",
+    icon: "/images/press-n-peel-logo-light.jpg",
   },
 };
 

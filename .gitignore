@@ -63,3 +63,9 @@ CLAUDE.md
 
 # build artifacts
 *.tsbuildinfo
+
+# local sqlite database (runtime)
+/pressnpeel.db
+
+# local site preview screenshot (never commit, never serve publicly)
+/public/website-screenshot.png

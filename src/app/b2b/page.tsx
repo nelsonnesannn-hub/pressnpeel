@@ -1,4 +1,6 @@
 import Link from "next/link";
+import WorkGallery from "@/components/work-gallery";
+import { workGroups } from "@/lib/work";
 
 export const metadata = {
   title: "Signs & Safety Labels | Press N Peel",
@@ -6,11 +8,13 @@ export const metadata = {
     "Printed safety and compliance signs — hazard, danger, caution, no-smoking, and equipment labels. A4 or A3 on durable vinyl.",
 };
 
+const clientWork = workGroups.filter((g) => g.id === "brand" || g.id === "b2b");
+
 export default function B2BPage() {
   return (
     <div className="mx-auto max-w-7xl px-6 py-16">
       <div className="mb-16 text-center">
-        <span className="mb-4 inline-block rounded-full border border-[#D4A017]/30 bg-[#D4A017]/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#D4A017]">
+        <span className="mb-4 inline-block rounded-full border border-[#FFD60A]/30 bg-[#FFD60A]/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#FFD60A]">
           For Businesses
         </span>
         <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
@@ -25,7 +29,7 @@ export default function B2BPage() {
           <Link
             href="/order?type=signs"
             className="rounded-xl px-7 py-3.5 text-base font-semibold text-slate-950 shadow-lg transition-transform hover:scale-[1.03]"
-            style={{ backgroundColor: "#D4A017" }}
+            style={{ backgroundColor: "#FFD60A" }}
           >
             Request a Quote
           </Link>
@@ -57,10 +61,28 @@ export default function B2BPage() {
           <div className="mt-4 flex flex-wrap gap-2 text-sm text-slate-500">
             <span className="rounded-full border border-slate-700 px-3 py-1">A4</span>
             <span className="rounded-full border border-slate-700 px-3 py-1">A3</span>
-            <span className="rounded-full border border-slate-700 px-3 py-1">Durable vinyl</span>
-            <span className="rounded-full border border-slate-700 px-3 py-1">Indoor &amp; outdoor</span>
+            <span className="rounded-full border border-slate-700 px-3 py-1">
+              Durable vinyl
+            </span>
+            <span className="rounded-full border border-slate-700 px-3 py-1">
+              Indoor &amp; outdoor
+            </span>
           </div>
         </div>
+      </div>
+
+      {/* Client work — real B2B jobs */}
+      <div className="mb-16">
+        <div className="mb-8 text-center">
+          <h2 className="text-2xl font-bold text-white sm:text-3xl">
+            Recent B2B &amp; Client Work
+          </h2>
+          <p className="mx-auto mt-2 max-w-2xl text-slate-400">
+            Die-cut brand stickers, robot mascots, equipment labels, and
+            workplace tags produced for repeat clients.
+          </p>
+        </div>
+        <WorkGallery groups={clientWork} />
       </div>
 
       <div className="rounded-2xl border border-slate-800/70 bg-slate-900/40 p-8 sm:p-10">

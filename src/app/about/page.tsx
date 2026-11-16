@@ -50,12 +50,12 @@ export default function AboutPage() {
       </div>
 
       <div className="mb-16 flex justify-center">
-        <span className="inline-flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border border-slate-700 shadow-2xl">
+        <span className="inline-flex w-72 items-center justify-center overflow-hidden rounded-3xl bg-white p-6 shadow-2xl">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/images/press-n-peel-dog-logo.jpg"
+            src="/images/press-n-peel-logo-light.jpg"
             alt="Press N Peel logo"
-            className="h-full w-full object-cover"
+            className="w-full object-contain"
           />
         </span>
       </div>
@@ -64,7 +64,7 @@ export default function AboutPage() {
         {SERVICES.map((s) => (
           <article
             key={s.title}
-            className="group overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900/40 transition-all hover:border-[#C5A059]/30 hover:shadow-lg"
+            className="group overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900/40 transition-all hover:border-[#FFD60A]/30 hover:shadow-lg"
           >
             <span className="block overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -93,7 +93,7 @@ export default function AboutPage() {
           <Link
             href="/custom"
             className="rounded-xl px-7 py-3.5 text-base font-semibold text-slate-950 shadow-lg transition-transform hover:scale-[1.03]"
-            style={{ backgroundColor: "#C5A059" }}
+            style={{ backgroundColor: "#FFD60A" }}
           >
             Upload Your Design
           </Link>

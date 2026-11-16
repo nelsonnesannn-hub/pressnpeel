@@ -1,13 +1,48 @@
 import Link from "next/link";
-import { products } from "@/lib/products";
+import { products } from "@/lib/catalog";
+import { formatSGD } from "@/lib/pricing";
+import { WHATSAPP_URL } from "@/components/nav";
+import WorkGallery from "@/components/work-gallery";
+import VideoGallery from "@/components/video-gallery";
+import NfcSection from "@/components/nfc-section";
+import { workGroups } from "@/lib/work";
+import { videoGroups } from "@/lib/videos";
 
 /* ------------------------------------------------------------------ */
 /*  Press N Peel — home page                                          */
-/*  Theme: deep-navy + bronze/gold accent (from logo), star pattern   */
+/*  Theme: deep-navy + yellow accent, comic halftone + speed lines     */
 /* ------------------------------------------------------------------ */
 
-const BRONZE = "#C5A059";
-const BRONZE_LIGHT = "#D4B87A";
+const BRONZE = "#FFD60A";
+const BRONZE_LIGHT = "#FACC15";
+
+/* Radiating comic action/speed lines, generated once as an SVG data URI.
+   The focal point sits behind the hero photo so the burst reads as
+   coming from the product shot. */
+function speedLinesURI(): string {
+  const W = 1200;
+  const H = 800;
+  const cx = 980;
+  const cy = 400;
+  const COUNT = 34;
+  const lines: string[] = [];
+  for (let i = 0; i < COUNT; i++) {
+    const angle = (i / COUNT) * Math.PI * 2 + ((i * 7) % 5) * 0.012;
+    const r1 = 95 + ((i * 41) % 70);
+    const r2 = 540 + ((i * 67) % 360);
+    const x1 = (cx + Math.cos(angle) * r1).toFixed(1);
+    const y1 = (cy + Math.sin(angle) * r1).toFixed(1);
+    const x2 = (cx + Math.cos(angle) * r2).toFixed(1);
+    const y2 = (cy + Math.sin(angle) * r2).toFixed(1);
+    const w = i % 5 === 0 ? 6 : i % 2 === 0 ? 3.5 : 2;
+    const color = i % 2 === 0 ? BRONZE : BRONZE_LIGHT;
+    lines.push(
+      `<line x1='${x1}' y1='${y1}' x2='${x2}' y2='${y2}' stroke='${color}' stroke-width='${w}' stroke-linecap='round'/>`
+    );
+  }
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${W} ${H}' width='${W}' height='${H}' preserveAspectRatio='none'>${lines.join("")}</svg>`;
+  return `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}")`;
+}
 
 const SECTIONS = [
   {
@@ -58,17 +93,45 @@ export default function HomePage() {
       {/* =============================================================
           HERO
           ============================================================= */}
-      <section className="relative overflow-hidden bg-slate-950 py-28 sm:py-36 lg:py-44">
-        {/* Background starfield */}
+      <section className="relative overflow-hidden bg-slate-950 py-14 sm:py-18 lg:py-20">
+        {/* Comic halftone dots — edge-weighted so the headline stays clear */}
         <div
-          className="pointer-events-none absolute inset-0 opacity-[0.06]"
+          className="pointer-events-none absolute inset-0 opacity-[0.14]"
           style={{
-            backgroundImage: `url("data:image/svg+xml;utf8,${encodeURIComponent(
-              `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'>
-                <polygon points='30,6 36,22 53,22 40,32 45,49 30,39 15,49 20,32 7,22 24,22' fill='BRONZE'/>
-              </svg>`
-            )}"`,
-            backgroundSize: "60px 60px",
+            backgroundImage:
+              "radial-gradient(circle, rgba(255,214,10,0.7) 1.4px, transparent 1.5px)",
+            backgroundSize: "20px 20px",
+            WebkitMaskImage:
+              "radial-gradient(ellipse 85% 75% at 50% 50%, transparent 30%, black 78%)",
+            maskImage:
+              "radial-gradient(ellipse 85% 75% at 50% 50%, transparent 30%, black 78%)",
+          }}
+          aria-hidden
+        />
+
+        {/* Larger halftone cluster, top-right corner */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.12]"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle, rgba(250,204,21,0.8) 2.2px, transparent 2.3px)",
+            backgroundSize: "30px 30px",
+            backgroundPosition: "6px 6px",
+            WebkitMaskImage:
+              "radial-gradient(circle 340px at 88% 6%, black 0%, transparent 72%)",
+            maskImage:
+              "radial-gradient(circle 340px at 88% 6%, black 0%, transparent 72%)",
+          }}
+          aria-hidden
+        />
+
+        {/* Radiating action/speed lines behind the hero photo */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.18]"
+          style={{
+            backgroundImage: speedLinesURI(),
+            backgroundSize: "100% 100%",
+            backgroundPosition: "center",
           }}
           aria-hidden
         />
@@ -85,85 +148,109 @@ export default function HomePage() {
           aria-hidden
         />
 
-        <div className="relative mx-auto max-w-7xl px-6 text-center sm:px-8 lg:px-12">
-          {/* eyebrow */}
-          <span
-            className="mb-4 inline-block rounded-full border border-opacity-30 bg-opacity-10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest"
-            style={{
-              borderColor: BRONZE,
-              backgroundColor: BRONZE,
-              color: BRONZE,
-            }}
-          >
-            Custom Die-Cut · Any Shape · Printed to Order
-          </span>
-
-          <h1 className="max-w-4xl text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
-            Your Design.{" "}
-            <span
-              className="bg-clip-text text-transparent"
-              style={{
-                backgroundImage:
-                  "linear-gradient(to right, #C5A059, #D4B87A, #A67C52)",
-              }}
-            >
-              Die-Cut Perfect.
-            </span>
-          </h1>
-
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-400 sm:text-xl">
-            Premium custom stickers, vinyl decals, heat transfer prints, and
-            B2B safety labels — manufactured to your exact shape, material, and
-            quantity. No templates, no limits.
-          </p>
-
-          {/* CTA row */}
-          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <Link
-              href="/order"
-              className="inline-flex items-center gap-2 rounded-xl bg-[BRONZE] px-8 py-3.5 text-base font-semibold text-slate-950 shadow-lg transition-transform hover:bg-[BRONZE_LIGHT] hover:scale-[1.03]"
-              style={{ backgroundColor: BRONZE }}
-            >
-              Start Your Order
-              <svg
-                className="h-4 w-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden
+        <div className="relative mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
+          <div className="grid items-center gap-10 lg:grid-cols-2">
+            <div className="text-center lg:text-left">
+              {/* eyebrow — yellow on dark, readable at phone size */}
+              <span
+                className="mb-4 inline-block rounded-full border border-[#FFD60A]/30 bg-[#FFD60A]/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#FFD60A]"
               >
-                <path d="M5 12h14M13 6l6 6-6 6" />
-              </svg>
-            </Link>
-            <Link
-              href="/products"
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-700 px-8 py-3.5 text-base font-medium text-slate-300 transition-colors hover:bg-slate-900/60 hover:text-white"
-            >
-              View All Products
-            </Link>
-          </div>
-
-          {/* Trust line */}
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-sm text-slate-500">
-            {TRUST_ITEMS.map((item) => (
-              <span key={item.label} className="flex items-center gap-1.5">
-                <svg
-                  className="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  style={{ color: BRONZE }}
-                  aria-hidden
-                >
-                  <path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7Z" />
-                </svg>
-                {item.label}
+                Custom Die-Cut · Any Shape · Printed to Order
               </span>
-            ))}
+
+              <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
+                Your Design.{" "}
+                <span
+                  className="bg-clip-text text-transparent"
+                  style={{
+                    backgroundImage:
+                      "linear-gradient(to right, #FFD60A, #FACC15)",
+                  }}
+                >
+                  Die-Cut Perfect.
+                </span>
+              </h1>
+
+              <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-slate-400 sm:text-xl lg:mx-0">
+                Premium custom stickers, vinyl decals, heat transfer prints, and
+                safety signs — manufactured to your exact shape, material, and
+                quantity. No templates, no limits.
+              </p>
+
+              {/* CTA row */}
+              <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
+                <Link
+                  href="/order"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl px-7 py-3.5 text-base font-semibold text-slate-950 shadow-lg transition-transform hover:scale-[1.03] sm:w-auto"
+                  style={{ backgroundColor: BRONZE }}
+                >
+                  Start Your Order
+                  <svg
+                    className="h-4 w-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden
+                  >
+                    <path d="M5 12h14M13 6l6 6-6 6" />
+                  </svg>
+                </Link>
+                <a
+                  href={WHATSAPP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-7 py-3.5 text-base font-semibold text-emerald-300 transition-colors hover:bg-emerald-500/20 sm:w-auto"
+                >
+                  Chat on WhatsApp
+                </a>
+                <Link
+                  href="/products"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-700 px-7 py-3.5 text-base font-medium text-slate-300 transition-colors hover:bg-slate-900/60 hover:text-white sm:w-auto"
+                >
+                  View All Products
+                </Link>
+              </div>
+
+              {/* Trust line */}
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-slate-500 lg:justify-start">
+                {TRUST_ITEMS.map((item) => (
+                  <span key={item.label} className="flex items-center gap-1.5">
+                    <svg
+                      className="h-4 w-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      style={{ color: BRONZE }}
+                      aria-hidden
+                    >
+                      <path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7Z" />
+                    </svg>
+                    {item.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Hero product visual */}
+            <div className="relative">
+              <div
+                className="pointer-events-none absolute -inset-6 rounded-[2rem] opacity-20 blur-2xl"
+                style={{ backgroundColor: BRONZE }}
+                aria-hidden
+              />
+              <div className="relative overflow-hidden rounded-3xl border-[3px] border-[#FFD60A] shadow-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/hero-stickers.jpg"
+                  alt="Custom die-cut stickers and vinyl decals by Press N Peel"
+                  className="h-auto w-full object-cover"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -181,21 +268,21 @@ export default function HomePage() {
               <Link
                 key={s.id}
                 href={s.href}
-                className="group relative rounded-2xl border border-slate-800/70 bg-slate-900/40 p-6 transition-all hover:border-[#C5A059]/40 hover:bg-slate-900/70 hover:shadow-lg"
+                className="group relative rounded-2xl border border-slate-800/70 bg-slate-900/40 p-5 transition-all hover:border-[#FFD60A]/40 hover:bg-slate-900/70 hover:shadow-lg"
               >
-                {/* image thumbnail */}
-                <span className="block overflow-hidden rounded-xl">
+                {/* square thumb — no cropping */}
+                <span className="block overflow-hidden rounded-xl ring-1 ring-slate-800">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={s.image}
                     alt={s.title}
-                    className="h-40 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     loading="lazy"
                   />
                 </span>
 
                 <h3
-                  className="mt-4 text-lg font-semibold text-white transition-colors"
+                  className="mt-4 text-lg font-semibold transition-colors"
                   style={{ color: BRONZE_LIGHT }}
                 >
                   {s.title}
@@ -216,23 +303,15 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-12 flex items-end justify-between">
             <div>
-              <span
-                className="mb-2 inline-block rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest"
-                style={{
-                  borderColor: BRONZE,
-                  backgroundColor: BRONZE,
-                  color: "#fff",
-                  opacity: 0.15,
-                }}
-              >
+              <span className="mb-2 inline-block rounded-full border border-[#FFD60A]/40 bg-[#FFD60A]/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-[#FACC15]">
                 Catalog
               </span>
               <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
                 Featured Products
               </h2>
               <p className="mt-2 max-w-2xl text-slate-400">
-                Die-cut, kiss-cut, and laser options in glossy vinyl, matte
-                vinyl, HTV, and pine. All printed to order.
+                Every line is printed and cut to order. Send your design or ask
+                for a quote.
               </p>
             </div>
 
@@ -248,44 +327,69 @@ export default function HomePage() {
             {PRODUCTS_SLICE.map((product) => (
               <article
                 key={product.slug}
-                className="group rounded-2xl border border-slate-800/70 bg-slate-900/40 p-6 transition-all hover:border-[BRONZE]/30 hover:bg-slate-900/70 hover:shadow-lg"
+                className="group flex flex-col overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900/40 transition-all hover:border-[#FFD60A]/30 hover:bg-slate-900/70 hover:shadow-lg"
               >
-                {/* material chip */}
-                <span className="mb-4 inline-block rounded-full border border-slate-700/60 bg-slate-800/60 px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-wider text-slate-400">
-                  {product.material}
+                <span className="block overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                  />
                 </span>
 
-                <h3
-                  className="text-lg font-semibold leading-snug text-white transition-colors"
-                  style={{ color: BRONZE_LIGHT }}
-                >
-                  {product.name}
-                </h3>
-
-                <p className="mt-2 text-sm leading-relaxed text-slate-400">
-                  {product.description}
-                </p>
-
-                <div className="mt-4 flex items-baseline gap-3">
-                  <span className="text-sm font-medium text-slate-400">
-                    Min. order: {product.min_qty}
+                <div className="flex flex-1 flex-col p-6">
+                  <span className="mb-3 inline-block w-fit rounded-full border border-slate-700/60 bg-slate-800/60 px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-wider text-slate-400">
+                    {product.material}
                   </span>
-                </div>
 
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Link
-                    href={`/order?product=${product.slug}`}
-                    className="inline-flex items-center gap-1 rounded-lg bg-[BRONZE] px-4 py-2 text-sm font-semibold text-slate-950 transition-transform hover:bg-[BRONZE_LIGHT] hover:scale-[1.02]"
-                    style={{ backgroundColor: BRONZE }}
+                  <h3
+                    className="text-lg font-semibold leading-snug transition-colors"
+                    style={{ color: BRONZE_LIGHT }}
                   >
-                    Order
-                  </Link>
-                  <Link
-                    href={`/products/${product.slug}`}
-                    className="inline-flex items-center gap-1 rounded-lg border border-slate-700 px-4 py-2 text-sm font-medium text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
-                  >
-                    Details
-                  </Link>
+                    {product.name}
+                  </h3>
+
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
+                    {product.description}
+                  </p>
+
+                  <div className="mt-4 flex items-baseline gap-3">
+                    {product.buyable ? (
+                      <span
+                        className="text-xl font-bold"
+                        style={{ color: BRONZE }}
+                      >
+                        {formatSGD(product.price)}
+                      </span>
+                    ) : null}
+                    <span className="text-sm font-medium text-slate-400">
+                      Min. order: {product.min_qty}
+                    </span>
+                  </div>
+                  {product.buyable ? (
+                    <p className="mt-1 text-xs text-slate-500">
+                      {product.price_unit}
+                      {product.size ? ` · ${product.size}` : ""}
+                    </p>
+                  ) : null}
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Link
+                      href={`/order?product=${product.slug}`}
+                      className="inline-flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold text-slate-950 transition-transform hover:scale-[1.02]"
+                      style={{ backgroundColor: BRONZE }}
+                    >
+                      {product.buyable ? "Buy Now" : "Enquire"}
+                    </Link>
+                    <Link
+                      href={`/products/${product.slug}`}
+                      className="inline-flex items-center gap-1 rounded-lg border border-slate-700 px-4 py-2 text-sm font-medium text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
+                    >
+                      Details
+                    </Link>
+                  </div>
                 </div>
               </article>
             ))}
@@ -311,9 +415,8 @@ export default function HomePage() {
             <span
               className="mb-3 inline-block rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest"
               style={{
-                color: BRONZE_LIGHT,
+                color: "#0f172a",
                 backgroundColor: BRONZE,
-                opacity: 0.9,
               }}
             >
               Process
@@ -326,7 +429,6 @@ export default function HomePage() {
           <div className="grid gap-10 md:grid-cols-3">
             {STEPS.map((step, i) => (
               <div key={step.title} className="flex gap-4">
-                {/* number badge */}
                 <span
                   className="pointer-events-none flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-slate-900 text-sm font-bold ring-1 ring-slate-700"
                   style={{
@@ -357,7 +459,6 @@ export default function HomePage() {
         id="b2b"
         className="relative overflow-hidden bg-gradient-to-b from-slate-900 to-slate-950 py-20 sm:py-24"
       >
-        {/* decorative */}
         <div
           className="pointer-events-none absolute -right-20 top-0 h-72 w-72 rounded-full blur-3xl"
           style={{ backgroundColor: BRONZE, opacity: 0.08 }}
@@ -369,54 +470,108 @@ export default function HomePage() {
           <div className="mb-8 flex justify-center gap-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/images/no-smoking-label.jpg"
-              alt="No Smoking safety label"
+              src="/images/work/b2b/01.jpg"
+              alt="Scaffold and safety tags"
               className="h-24 w-24 rounded-2xl border border-slate-700 object-cover shadow-lg"
               loading="lazy"
             />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/images/label-grid-sheet.jpg"
-              alt="Label and date sticker sheet"
+              src="/images/work/b2b/02.jpg"
+              alt="GAMX equipment labels"
               className="h-24 w-24 rounded-2xl border border-slate-700 object-cover shadow-lg"
               loading="lazy"
             />
           </div>
 
           <span
-            className="mb-4 inline-block rounded-full border border-opacity-30 bg-opacity-10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest"
+            className="mb-4 inline-block rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest"
             style={{
-              borderColor: "#D4A017",
-              backgroundColor: "#D4A017",
-              color: "#fff",
+              backgroundColor: "#FFD60A",
+              color: "#0f172a",
             }}
           >
             For Businesses
           </span>
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            B2B Safety Labels & Compliance Signs
+            Workplace Safety Signs &amp; Labels
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-slate-400">
-            OSHA-aligned hazard labels, equipment decals, compliance signs, and
-            sticker sheets — die-cut or kiss-cut on durable glossy vinyl, in
+            Printed hazard, danger, and caution signs plus equipment labels and
+            sticker sheets — made to Singapore workplace safety requirements, in
             quantities that fit your operation.
           </p>
 
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <Link
               href="/b2b"
-              className="inline-flex items-center gap-2 rounded-xl bg-[#D4A017] px-7 py-3 text-sm font-semibold text-slate-950 shadow transition-transform hover:bg-[#E0B020] hover:scale-[1.03]"
-              style={{ backgroundColor: "#D4A017" }}
+              className="inline-flex items-center gap-2 rounded-xl px-7 py-3 text-sm font-semibold text-slate-950 shadow transition-transform hover:scale-[1.03]"
+              style={{ backgroundColor: "#FFD60A" }}
             >
-              View B2B Catalog
+              View Signs &amp; Labels
             </Link>
-            <Link
-              href="/order?type=b2b"
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-700 px-7 py-3 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-900/60 hover:text-white"
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-7 py-3 text-sm font-semibold text-emerald-300 transition-colors hover:bg-emerald-500/20"
             >
-              Request a Quote
-            </Link>
+              Chat on WhatsApp
+            </a>
           </div>
+        </div>
+      </section>
+
+      {/* =============================================================
+          OUR WORK
+          ============================================================= */}
+      <section
+        id="work"
+        className="border-t border-slate-800/60 bg-slate-950 py-20 sm:py-24"
+      >
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-12 text-center">
+            <span className="mb-3 inline-block rounded-full border border-[#FFD60A]/40 bg-[#FFD60A]/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#FACC15]">
+              Our Work
+            </span>
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Real Jobs, Fresh Off the Press
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-slate-400">
+              A selection of recent stickers, labels, coasters, keychains, and
+              materials — all printed and cut to order.
+            </p>
+          </div>
+          <WorkGallery groups={workGroups} />
+        </div>
+      </section>
+
+      {/* =============================================================
+          NFC KEYCHAINS
+          ============================================================= */}
+      <NfcSection />
+
+      {/* =============================================================
+          VIDEOS
+          ============================================================= */}
+      <section
+        id="videos"
+        className="border-t border-slate-800/60 bg-slate-950 py-20 sm:py-24"
+      >
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-12 text-center">
+            <span className="mb-3 inline-block rounded-full border border-[#FFD60A]/40 bg-[#FFD60A]/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#FACC15]">
+              Videos
+            </span>
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Print &amp; Cut in Action
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-slate-400">
+              Short clips from the shop — printing, cutting, materials, and NFC
+              keychains.
+            </p>
+          </div>
+          <VideoGallery groups={videoGroups} />
         </div>
       </section>
 
@@ -430,21 +585,29 @@ export default function HomePage() {
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-slate-400">
             Tell us what you need — shape, material, quantity, and your design.
-            We'll turn it around.
+            We&apos;ll turn it around.
           </p>
           <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Link
               href="/custom"
-              className="inline-flex items-center gap-2 rounded-xl px-8 py-3.5 text-base font-semibold text-slate-950 shadow-lg transition-transform hover:scale-[1.03]"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl px-8 py-3.5 text-base font-semibold text-slate-950 shadow-lg transition-transform hover:scale-[1.03] sm:w-auto"
               style={{ backgroundColor: BRONZE }}
             >
               Upload Your Design
             </Link>
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-8 py-3.5 text-base font-semibold text-emerald-300 transition-colors hover:bg-emerald-500/20 sm:w-auto"
+            >
+              Chat on WhatsApp
+            </a>
             <Link
               href="/products"
-              className="rounded-xl border border-slate-700 px-8 py-3.5 text-base font-medium text-slate-300 transition-colors hover:bg-slate-900/60 hover:text-white"
+              className="inline-flex w-full items-center justify-center rounded-xl border border-slate-700 px-8 py-3.5 text-base font-medium text-slate-300 transition-colors hover:bg-slate-900/60 hover:text-white sm:w-auto"
             >
-              Browse Standard Products
+              Browse Products
             </Link>
           </div>
         </div>
@@ -457,7 +620,7 @@ export default function HomePage() {
 /*  Data helpers                                                      */
 /* ------------------------------------------------------------------ */
 
-const PRODUCTS_SLICE = products.slice(0, 6);
+const PRODUCTS_SLICE = products;
 
 const TRUST_ITEMS = [
   { label: "Glossy & Matte Vinyl" },

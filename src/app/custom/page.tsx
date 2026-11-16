@@ -39,6 +39,7 @@ const TYPES = [
 
 const MATERIALS = ["Glossy vinyl", "Matte vinyl", "Holographic", "HTV", "Pine wood"];
 const CUT_TYPES = ["Die-cut", "Kiss-cut", "Laser"];
+const WHATSAPP_URL = "https://wa.me/6587674511";
 
 function CustomForm() {
   const params = useSearchParams();
@@ -49,8 +50,11 @@ function CustomForm() {
   const [cutType, setCutType] = useState(CUT_TYPES[0]);
   const [quantity, setQuantity] = useState("10");
   const [notes, setNotes] = useState("");
-  const [fileName, setFileName] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [orderRef, setOrderRef] = useState("");
 
   // Sync type when the query param changes (e.g. clicking a category card)
   useEffect(() => {
@@ -60,9 +64,39 @@ function CustomForm() {
 
   const selected = TYPES.find((t) => t.id === type) ?? TYPES[0];
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
+    setSubmitError(null);
+
+    const ref = "PNP-" + Date.now().toString(36).toUpperCase().slice(-6);
+
+    const fd = new FormData();
+    fd.append("source", "Upload Your Design");
+    fd.append("ref", ref);
+    fd.append("type", selected.label);
+    fd.append("material", material);
+    fd.append("cutType", cutType);
+    fd.append("quantity", quantity);
+    fd.append("notes", notes);
+    fd.append("fileName", file?.name ?? "");
+    if (file) fd.append("file", file);
+
+    try {
+      const res = await fetch("/api/order", { method: "POST", body: fd });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.ok !== true) {
+        throw new Error(
+          data?.telegram?.error || data?.error || "Could not send your design right now."
+        );
+      }
+      setOrderRef(ref);
+      setSubmitted(true);
+    } catch (error) {
+      setSubmitError(String(error));
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (submitted) {
@@ -73,30 +107,64 @@ function CustomForm() {
             ✓
           </div>
           <h1 className="text-3xl font-bold text-white">Design received</h1>
+          {orderRef ? (
+            <p className="mt-2 text-sm font-semibold text-[#FFD60A]">
+              Reference: {orderRef}
+            </p>
+          ) : null}
           <p className="mt-3 text-slate-400">
-            Thanks — we&apos;ve logged your <strong className="text-white">{selected.label}</strong> request
-            {fileName ? (
+            Thanks — we&apos;ve logged your <strong className="text-white">{selected.label}</strong>{" "}
+            request
+            {file ? (
               <>
-                {" "}with <strong className="text-white">{fileName}</strong>
+                {" "}with <strong className="text-white">{file.name}</strong>
               </>
             ) : null}
             . We&apos;ll reply on WhatsApp/email with a quote and proof before printing.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link
-              href="/products"
-              className="rounded-xl px-6 py-3 text-sm font-semibold text-slate-950"
-              style={{ backgroundColor: "#C5A059" }}
-            >
-              Browse Standard Products
-            </Link>
-            <Link
-              href="/"
-              className="rounded-xl border border-slate-700 px-6 py-3 text-sm font-medium text-slate-300 hover:bg-slate-900/60"
-            >
-              Back to Home
-            </Link>
+        </div>
+
+        <div className="mt-6 rounded-2xl border border-[#FFD60A]/30 bg-[#FFD60A]/10 p-6 text-left">
+          <div className="flex items-center gap-3">
+            <span className="text-lg font-bold text-[#FFD60A]">PayNow</span>
+            <span className="rounded-full bg-[#FFD60A] px-2 py-0.5 text-xs font-bold text-slate-950">
+              Payment method
+            </span>
           </div>
+          <p className="mt-2 text-sm text-slate-300">
+            PayNow to <strong className="text-white">Press N Peel</strong> (Singapore).
+          </p>
+          <p className="mt-1 text-sm text-slate-400">
+            PayNow number / QR: <span className="text-slate-500">[to be confirmed]</span>
+          </p>
+          <p className="mt-3 text-xs text-slate-400">
+            We&apos;ll confirm your payment details on WhatsApp before production begins.
+          </p>
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-slate-950"
+            style={{ backgroundColor: "#FFD60A" }}
+          >
+            Chat on WhatsApp
+          </a>
+        </div>
+
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <Link
+            href="/products"
+            className="rounded-xl px-6 py-3 text-sm font-semibold text-slate-950"
+            style={{ backgroundColor: "#FFD60A" }}
+          >
+            Browse Standard Products
+          </Link>
+          <Link
+            href="/"
+            className="rounded-xl border border-slate-700 px-6 py-3 text-sm font-medium text-slate-300 hover:bg-slate-900/60"
+          >
+            Back to Home
+          </Link>
         </div>
       </div>
     );
@@ -128,7 +196,7 @@ function CustomForm() {
                 onClick={() => setType(t.id)}
                 className={`flex w-full items-center gap-4 rounded-2xl border p-4 text-left transition-all ${
                   type === t.id
-                    ? "border-[#C5A059]/60 bg-slate-900/80 shadow-lg"
+                    ? "border-[#FFD60A]/60 bg-slate-900/80 shadow-lg"
                     : "border-slate-800/70 bg-slate-900/30 hover:border-slate-700"
                 }`}
               >
@@ -143,7 +211,7 @@ function CustomForm() {
                   </span>
                 </span>
                 {type === t.id && (
-                  <span className="ml-auto text-[#C5A059]">●</span>
+                  <span className="ml-auto text-[#FFD60A]">●</span>
                 )}
               </button>
             ))}
@@ -164,7 +232,7 @@ function CustomForm() {
             <span className="mb-2 block text-sm font-medium text-slate-300">
               Design file <span className="text-slate-500">(PNG, JPG, SVG, PDF, AI)</span>
             </span>
-            <span className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-700 bg-slate-950/50 px-6 py-10 text-center transition-colors hover:border-[#C5A059]/50">
+            <span className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-700 bg-slate-950/50 px-6 py-10 text-center transition-colors hover:border-[#FFD60A]/50">
               <svg
                 className="mb-3 h-8 w-8 text-slate-500"
                 viewBox="0 0 24 24"
@@ -178,8 +246,8 @@ function CustomForm() {
                 <path d="M17 8l-5-5-5 5" />
                 <path d="M12 3v12" />
               </svg>
-              {fileName ? (
-                <span className="text-sm font-medium text-emerald-400">{fileName}</span>
+              {file ? (
+                <span className="text-sm font-medium text-emerald-400">{file.name}</span>
               ) : (
                 <span className="text-sm text-slate-400">
                   Click to upload or drag &amp; drop
@@ -193,7 +261,7 @@ function CustomForm() {
               type="file"
               accept="image/*,.pdf,.svg"
               className="sr-only"
-              onChange={(e) => setFileName(e.target.files?.[0]?.name ?? null)}
+              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             />
           </label>
 
@@ -203,7 +271,7 @@ function CustomForm() {
               <select
                 value={material}
                 onChange={(e) => setMaterial(e.target.value)}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white focus:border-[#C5A059] focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white focus:border-[#FFD60A] focus:outline-none"
               >
                 {MATERIALS.map((m) => (
                   <option key={m} value={m}>
@@ -218,7 +286,7 @@ function CustomForm() {
               <select
                 value={cutType}
                 onChange={(e) => setCutType(e.target.value)}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white focus:border-[#C5A059] focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white focus:border-[#FFD60A] focus:outline-none"
               >
                 {CUT_TYPES.map((c) => (
                   <option key={c} value={c}>
@@ -236,7 +304,7 @@ function CustomForm() {
               min={1}
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white focus:border-[#C5A059] focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white focus:border-[#FFD60A] focus:outline-none"
             />
           </label>
 
@@ -249,16 +317,23 @@ function CustomForm() {
               onChange={(e) => setNotes(e.target.value)}
               rows={4}
               placeholder="e.g. 5cm round stickers, 2 colours, need by Friday"
-              className="w-full resize-none rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-[#C5A059] focus:outline-none"
+              className="w-full resize-none rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-[#FFD60A] focus:outline-none"
             />
           </label>
 
+          {submitError ? (
+            <p className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+              {submitError} Please try again.
+            </p>
+          ) : null}
+
           <button
             type="submit"
-            className="w-full rounded-xl py-3.5 text-base font-semibold text-slate-950 shadow-lg transition-transform hover:scale-[1.01]"
-            style={{ backgroundColor: "#C5A059" }}
+            disabled={submitting}
+            className="w-full rounded-xl py-3.5 text-base font-semibold text-slate-950 shadow-lg transition-transform hover:scale-[1.01] disabled:opacity-60"
+            style={{ backgroundColor: "#FFD60A" }}
           >
-            Submit Design Request
+            {submitting ? "Sending…" : "Submit Design Request"}
           </button>
           <p className="mt-3 text-center text-xs text-slate-500">
             We&apos;ll confirm your quote before any payment is taken.
