@@ -118,7 +118,7 @@ export async function POST(req: NextRequest) {
   // A DB failure must never block the order — Nelson is still pinged below.
   let orderId: number | null = null;
   try {
-    orderId = createOrder({
+    orderId = await createOrder({
       customerName: name,
       customerEmail: email,
       customerPhone: phone,
@@ -154,7 +154,7 @@ export async function POST(req: NextRequest) {
       : "Stripe not configured — WhatsApp",
   });
   const sent = await sendTelegramMessage(notification);
-  if (sent.ok && orderId) setNotified(orderId, "submitted");
+  if (sent.ok && orderId) await setNotified(orderId, "submitted");
 
   if (!stripeEnabled()) {
     return NextResponse.json({
@@ -218,7 +218,7 @@ export async function POST(req: NextRequest) {
       cancel_url: `${origin}/order?canceled=1`,
     });
 
-    if (orderId) setStripeSession(orderId, session.id);
+    if (orderId) await setStripeSession(orderId, session.id);
 
     return NextResponse.json({
       stripeReady: true,
