@@ -58,21 +58,33 @@ function timestamp(): string {
   return new Date().toISOString();
 }
 
+function kvCredentials(): { url: string; token: string } | null {
+  // Vercel KV injects KV_REST_API_URL / KV_REST_API_TOKEN. A Redis store
+  // provisioned through the Vercel Marketplace (Upstash for Redis, the KV
+  // successor) injects the UPSTASH_* equivalents, which talk the same REST
+  // protocol, so accept those too.
+  const url =
+    process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || "";
+  const token =
+    process.env.KV_REST_API_TOKEN ||
+    process.env.UPSTASH_REDIS_REST_TOKEN ||
+    process.env.UPSTASH_REST_TOKEN ||
+    "";
+  if (!url || !token) return null;
+  return { url, token };
+}
+
 function kvConfigured(): boolean {
-  return Boolean(
-    process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN
-  );
+  return kvCredentials() !== null;
 }
 
 let _client: VercelKV | null = null;
 
 function client(): VercelKV | null {
-  if (!kvConfigured()) return null;
+  const creds = kvCredentials();
+  if (!creds) return null;
   if (!_client) {
-    _client = createClient({
-      url: process.env.KV_REST_API_URL as string,
-      token: process.env.KV_REST_API_TOKEN as string,
-    });
+    _client = createClient({ url: creds.url, token: creds.token });
   }
   return _client;
 }
