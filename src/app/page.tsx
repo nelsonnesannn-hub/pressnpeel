@@ -52,7 +52,7 @@ const SECTIONS = [
     title: "Stickers and labels",
     subtitle:
       "Finished die-cut stickers and printed labels — quoted per job.",
-    image: "/images/work/motivational/08.jpg",
+    image: "/images/stickers-labels-lifestyle.jpg",
     href: "/products/stickers-and-labels",
   },
   {
@@ -60,7 +60,7 @@ const SECTIONS = [
     title: "Printable Vinyl Sheets",
     subtitle:
       "Printable vinyl sheets in 7 finishes — sold as a pack of 20 A4 sheets.",
-    image: "/images/vinyl-finishes-collage.jpg",
+    image: "/images/vinyl-sheets-lifestyle.jpg",
     href: "/products/printable-vinyl",
   },
   {
@@ -76,7 +76,7 @@ const SECTIONS = [
     title: "Keychains",
     subtitle:
       "NFC keychains that tap to open a link, and acrylic keychains in any shape.",
-    image: "/images/work/keychains/08.jpg",
+    image: "/images/keychains-lifestyle.jpg",
     href: "/products/keychains",
   },
   {
@@ -84,7 +84,7 @@ const SECTIONS = [
     title: "Laser — Coasters",
     subtitle:
       "Laser-engraved coasters in birch ply, pine, or acrylic. Sold as a pack of 5.",
-    image: "/images/work/coasters-birch/01.jpg",
+    image: "/images/laser-lifestyle.jpg",
     href: "/products/laser",
   },
   {
@@ -92,7 +92,7 @@ const SECTIONS = [
     title: "Signs",
     subtitle:
       "Printed safety & compliance signs — A4 or A3 on durable vinyl.",
-    image: "/images/work/signs/01.jpg",
+    image: "/images/signs-lifestyle.jpg",
     href: "/products/signs",
   },
 ];
@@ -261,12 +261,21 @@ export default function HomePage() {
       {/* =============================================================
           CATEGORY STRIP
           ============================================================= */}
-      <section className="border-y border-slate-800/60 bg-slate-900/50 py-14">
+      <section className="border-y border-slate-800/60 bg-slate-900/50 py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-6">
-          <h2 className="mb-10 text-center text-2xl font-bold text-white sm:text-3xl">
-            Everything We Print
-          </h2>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          <div className="mb-12 text-center">
+            <span className="mb-3 inline-block rounded-full border border-[#FFD60A]/40 bg-[#FFD60A]/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#FACC15]">
+              Categories
+            </span>
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Everything We Print
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-slate-400">
+              Six product lines, printed and cut to order — choose a category to
+              see samples and start an order.
+            </p>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {SECTIONS.map((s) => (
               <Link
                 key={s.id}
@@ -307,7 +316,7 @@ export default function HomePage() {
       {/* =============================================================
           FEATURED PRODUCTS
           ============================================================= */}
-      <section id="products" className="border-t border-slate-800/60 bg-slate-950 py-20 sm:py-24">
+      <section id="products" className="border-t border-slate-800/60 bg-slate-950 py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-12 flex items-end justify-between">
             <div>
@@ -417,7 +426,7 @@ export default function HomePage() {
       {/* =============================================================
           HOW IT WORKS
           ============================================================= */}
-      <section id="how" className="border-t border-slate-800/60 bg-slate-900/40 py-20 sm:py-24">
+      <section id="how" className="border-t border-slate-800/60 bg-slate-900/40 py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-14 text-center">
             <span
@@ -465,7 +474,7 @@ export default function HomePage() {
           ============================================================= */}
       <section
         id="b2b"
-        className="relative overflow-hidden bg-gradient-to-b from-slate-900 to-slate-950 py-20 sm:py-24"
+        className="relative overflow-hidden bg-gradient-to-b from-slate-900 to-slate-950 py-16 sm:py-20"
       >
         <div
           className="pointer-events-none absolute -right-20 top-0 h-72 w-72 rounded-full blur-3xl"
@@ -535,7 +544,7 @@ export default function HomePage() {
           ============================================================= */}
       <section
         id="work"
-        className="border-t border-slate-800/60 bg-slate-950 py-20 sm:py-24"
+        className="border-t border-slate-800/60 bg-slate-950 py-16 sm:py-20"
       >
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-12 text-center">
@@ -564,7 +573,7 @@ export default function HomePage() {
           ============================================================= */}
       <section
         id="videos"
-        className="border-t border-slate-800/60 bg-slate-950 py-20 sm:py-24"
+        className="border-t border-slate-800/60 bg-slate-950 py-16 sm:py-20"
       >
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-12 text-center">

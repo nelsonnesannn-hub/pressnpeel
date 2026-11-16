@@ -56,7 +56,7 @@ export const categories: Category[] = [
     tagline: "Finished stickers & labels — quoted per job",
     description:
       "Finished die-cut stickers and printed labels — motivational sticker ranges, brand and logo stickers, B2B equipment labels, namecards, and event stickers. Send us your design and we’ll quote it.",
-    cardImage: "/images/work/eaispire/01.jpg",
+    cardImage: "/images/stickers-labels-lifestyle.jpg",
     samplesIntro:
       "Samples of finished work — quoted per job, no published prices.",
     samples: [
@@ -106,7 +106,7 @@ export const categories: Category[] = [
     tagline: "Printable vinyl sheets in 7 finishes — sold by the pack",
     description:
       "Printable vinyl sold by the pack — 20 A4 sheets per pack, in seven finishes. Print your own stickers and labels, or send us your design and we’ll print and cut them for you.",
-    cardImage: "/images/vinyl-finishes-collage.jpg",
+    cardImage: "/images/vinyl-sheets-lifestyle.jpg",
     samplesIntro: "1 pack = 20 A4 sheets. Prices are per pack.",
     samples: [
       {
@@ -213,7 +213,7 @@ export const categories: Category[] = [
     tagline: "NFC & acrylic keychains",
     description:
       "Custom keychains made to order in any shape. NFC keychains tap to open a link — no app needed; acrylic keychains are printed in full colour. Tell us your design and we’ll handle the rest.",
-    cardImage: "/images/work/keychains/08.jpg",
+    cardImage: "/images/keychains-lifestyle.jpg",
     samplesIntro:
       "NFC keychains $5.10 each (4cm x 4cm, min 1) · Acrylic keychains $4.20 each (5cm x 5cm, min 1).",
     samples: [
@@ -277,7 +277,7 @@ export const categories: Category[] = [
     tagline: "Laser-engraved coasters",
     description:
       "Laser-engraved coasters made to order — birch ply, pine, or acrylic. Sold as a pack of 5 coasters, minimum order 5 pcs, with your design, name, or message.",
-    cardImage: "/images/work/coasters-birch/01.jpg",
+    cardImage: "/images/laser-lifestyle.jpg",
     samplesIntro: "Sold as a pack of 5 — minimum order 5 pcs (1 pack).",
     samples: [
       {
@@ -346,7 +346,7 @@ export const categories: Category[] = [
     tagline: "Printed signs & labels",
     description:
       "Printed signs and labels for workplaces, events, and spaces — safety signs, hazard warnings, no-smoking, and custom text. Send us your artwork or text and we’ll typeset it.",
-    cardImage: "/images/work/signs/01.jpg",
+    cardImage: "/images/signs-lifestyle.jpg",
     samplesIntro: "Printed to order — quoted per job.",
     samples: [
       {
