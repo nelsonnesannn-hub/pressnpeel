@@ -78,7 +78,7 @@ export default function B2BPage() {
             Recent B2B &amp; Client Work
           </h2>
           <p className="mx-auto mt-2 max-w-2xl text-slate-400">
-            Die-cut brand stickers, robot mascots, equipment labels, and
+            Die-cut brand stickers, Eaispire mascots, equipment labels, and
             workplace tags produced for repeat clients.
           </p>
         </div>

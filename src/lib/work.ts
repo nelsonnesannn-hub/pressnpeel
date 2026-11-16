@@ -40,7 +40,7 @@ export const workGroups: WorkGroup[] = [
       { src: w("motivational", 6), caption: "Press N Peel namecard with QR code" },
       {
         src: w("motivational", 7),
-        caption: "Press N Peel namecards with gold coin logo",
+        caption: "Press N Peel namecards with dog logo",
       },
       { src: w("namecards", 4), caption: "Birthday sticker for party packaging" },
     ],

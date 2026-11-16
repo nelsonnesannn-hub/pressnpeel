@@ -38,8 +38,8 @@ export const videoGroups: VideoGroup[] = [
       ),
       v(
         "20260926_185524",
-        "Robot mascot print run",
-        "Eaispire robot stickers coming off the printer."
+        "Eaispire mascot print run",
+        "Eaispire mascot stickers coming off the printer.",
       ),
       v(
         "VID-20261011-WA0004",

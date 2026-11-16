@@ -471,14 +471,14 @@ export default function HomePage() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/work/b2b/01.jpg"
-              alt="Scaffold and safety tags"
+              alt="JGR Fit For Use inspection labels"
               className="h-24 w-24 rounded-2xl border border-slate-700 object-cover shadow-lg"
               loading="lazy"
             />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/work/b2b/02.jpg"
-              alt="GAMX equipment labels"
+              alt="Scaffold and safety tags"
               className="h-24 w-24 rounded-2xl border border-slate-700 object-cover shadow-lg"
               loading="lazy"
             />
