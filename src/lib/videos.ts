@@ -127,6 +127,42 @@ export const videoGroups: VideoGroup[] = [
         "NFC keychain unboxing",
         "Tap an NFC keychain to open a social link."
       ),
+      v(
+        "VID_20261108_200823_176",
+        "NFC keychain tap demo",
+        "Tap a phone on the keychain to open a link."
+      ),
+    ],
+  },
+  {
+    id: "pnp",
+    title: "Press N Peel — Shop Clips",
+    items: [
+      v(
+        "20261115_200611",
+        "Press N Peel logo sheets on the press",
+        "Wordmark sheets rolling through the press."
+      ),
+      v(
+        "20261115_203358",
+        "Logo sticker sheet",
+        "A full sheet of Press N Peel logo stickers."
+      ),
+      v(
+        "20261115_214537",
+        "Press N Peel logo grid",
+        "Close-up of the printed wordmark grid."
+      ),
+      v(
+        "20261115_200636",
+        "Sticker sheet close-up",
+        "Finished logo stickers on the sheet."
+      ),
+      v(
+        "20261115_211905",
+        "Press control panel",
+        "Setting up the next print run."
+      ),
     ],
   },
 ];

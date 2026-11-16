@@ -1,5 +1,6 @@
 // "Our Work" gallery data — real client and product photos.
-// Images live in /images/work/<group>/<n>.jpg (cleaned, white background).
+// Images live in /images/work/<group>/<n>.jpg (Nelson's own photos,
+// resized + gamma lift only).
 
 export type WorkItem = {
   src: string;
@@ -28,6 +29,16 @@ export const workGroups: WorkGroup[] = [
       { src: w("motivational", 3), caption: "Keep Going sticker pile" },
       { src: w("motivational", 4), caption: "Sea-creature and quote mix" },
       { src: w("motivational", 5), caption: "Die-cut assortment on white" },
+      { src: w("motivational", 8), caption: "Keep Going — octopus and quote stickers" },
+      { src: w("motivational", 9), caption: "Keep Going / Keep It Up sticker range" },
+      { src: w("motivational", 10), caption: "Motivational die-cut assortment" },
+      { src: w("motivational", 12), caption: "Motivational sticker pile" },
+      { src: w("motivational", 13), caption: "Quote and sea-creature stickers" },
+      { src: w("motivational", 16), caption: "It's a new day — rainbow quote sticker" },
+      { src: w("motivational", 17), caption: "There is time — sea turtle sticker" },
+      { src: w("motivational", 18), caption: "Shine — starfish sticker" },
+      { src: w("motivational", 19), caption: "Turn your pain into purpose — quote sticker" },
+      { src: w("motivational", 20), caption: "Motivational die-cut sticker" },
     ],
   },
   {
@@ -43,6 +54,20 @@ export const workGroups: WorkGroup[] = [
         caption: "Press N Peel namecards with dog logo",
       },
       { src: w("namecards", 4), caption: "Birthday sticker for party packaging" },
+    ],
+  },
+  {
+    id: "pnp-cards",
+    title: "Press N Peel Branded Cards",
+    blurb:
+      "Press N Peel wordmark cards and logo sheets — the brand we print for ourselves and our clients.",
+    items: [
+      { src: w("pnp-cards", 1), caption: "Press N Peel branded cards" },
+      { src: w("pnp-cards", 2), caption: "Press N Peel wordmark cards" },
+      { src: w("pnp-cards", 3), caption: "Press N Peel logo cards" },
+      { src: w("pnp-cards", 4), caption: "Press N Peel card pile" },
+      { src: w("pnp-cards", 5), caption: "Press N Peel branded card stack" },
+      { src: w("pnp-cards", 6), caption: "Press N Peel logo card display" },
     ],
   },
   {
@@ -63,6 +88,41 @@ export const workGroups: WorkGroup[] = [
       { src: w("brand", 10), caption: "Logo die-cut set" },
       { src: w("brand", 11), caption: "Oldmolly brand logo stickers" },
       { src: w("namecards", 2), caption: "Eaispire logo sticker" },
+      { src: w("eaispire", 1), caption: "Eaispire mascot sticker assortment" },
+      { src: w("eaispire", 2), caption: "Eaispire mascot sticker row" },
+      { src: w("eaispire", 3), caption: "Eaispire sticker scatter" },
+      { src: w("eaispire", 4), caption: "Eaispire mascot and logo stickers" },
+      { src: w("eaispire", 5), caption: "Eaispire robot mascot stickers" },
+      { src: w("eaispire", 6), caption: "Eaispire mascot die-cut set" },
+      { src: w("eaispire", 7), caption: "Eaispire mascot sticker stack" },
+      { src: w("eaispire", 8), caption: "Eaispire mascot sticker display" },
+    ],
+  },
+  {
+    id: "events",
+    title: "Event & Celebration Stickers",
+    blurb:
+      "Birthday, thank-you, and school event stickers — die-cut to any shape with the child's name and artwork.",
+    items: [
+      {
+        src: w("events", 1),
+        caption: "Shine Brightly, Little Gymnast — Children's Day",
+      },
+      { src: w("events", 2), caption: "Sarah unicorn birthday stickers" },
+      { src: w("events", 3), caption: "Sarah thank-you unicorn sticker" },
+      { src: w("events", 4), caption: "Event sticker labels" },
+    ],
+  },
+  {
+    id: "small-business",
+    title: "Small-Business Brand Stickers",
+    blurb:
+      "Logo and brand stickers for small businesses — food, retail, and personal brands.",
+    items: [
+      { src: w("small-business", 1), caption: "Small-business brand sticker stack" },
+      { src: w("small-business", 2), caption: "The Shazana Sharak brand stickers" },
+      { src: w("small-business", 3), caption: "Oldmolly logo stickers" },
+      { src: w("small-business", 4), caption: "Brand sticker sheet" },
     ],
   },
   {
@@ -97,6 +157,24 @@ export const workGroups: WorkGroup[] = [
     ],
   },
   {
+    id: "safety-labels",
+    title: "Safety & Equipment Labels",
+    blurb:
+      "Fit-for-use tags, SWL weight signs, and equipment labels printed on durable vinyl.",
+    items: [
+      { src: w("safety-labels", 1), caption: "GAMX equipment labels" },
+      { src: w("safety-labels", 2), caption: "KCM equipment labels" },
+      { src: w("safety-labels", 3), caption: "Fit For Use inspection tag" },
+      { src: w("safety-labels", 4), caption: "Fit For Use tag — alt" },
+      { src: w("safety-labels", 5), caption: "Safety Inducted tags" },
+      { src: w("safety-labels", 6), caption: "SWL weight sign" },
+      { src: w("safety-labels", 7), caption: "Do Not Use / scaffold tags" },
+      { src: w("safety-labels", 8), caption: "Safety label sheet" },
+      { src: w("safety-labels", 9), caption: "Cutting equipment label" },
+      { src: w("safety-labels", 10), caption: "Hyp equipment label" },
+    ],
+  },
+  {
     id: "coasters-pine",
     title: "Laser-Engraved Pine Coasters",
     blurb:
@@ -106,6 +184,23 @@ export const workGroups: WorkGroup[] = [
       { src: w("coasters-pine", 2), caption: "Engraved pine coaster set" },
       { src: w("coasters-pine", 3), caption: "Engraved coasters in a row" },
       { src: w("coasters-pine", 4), caption: "Pine coaster designs" },
+      { src: w("coasters-pine", 5), caption: "Pine — engraved coasters" },
+      { src: w("coasters-pine", 6), caption: "Pine coaster set" },
+      { src: w("coasters-pine", 7), caption: "Engraved coasters in a row" },
+      { src: w("coasters-pine", 8), caption: "Pine coaster designs" },
+    ],
+  },
+  {
+    id: "coasters-birch",
+    title: "Laser-Engraved Birch Ply Coasters",
+    blurb:
+      "Laser engraving on birch ply — quote coasters with crisp, high-contrast lines.",
+    items: [
+      { src: w("coasters-birch", 1), caption: "Birch ply — engraved coasters" },
+      { src: w("coasters-birch", 2), caption: "Keep going, you're closer than you think" },
+      { src: w("coasters-birch", 3), caption: "Birch ply coaster set" },
+      { src: w("coasters-birch", 4), caption: "Engraved birch coasters" },
+      { src: w("coasters-birch", 5), caption: "Birch ply coaster designs" },
     ],
   },
   {
@@ -123,6 +218,12 @@ export const workGroups: WorkGroup[] = [
         src: w("coasters-holo", 6),
         caption: "Turn your pain into purpose",
       },
+      { src: w("coasters-holo", 7), caption: "Starfish holographic coaster" },
+      { src: w("coasters-holo", 8), caption: "Never give up — coaster pile" },
+      { src: w("coasters-holo", 9), caption: "Keep Going — holographic coaster" },
+      { src: w("coasters-holo", 10), caption: "Holographic coaster design" },
+      { src: w("coasters-holo", 11), caption: "Holographic coaster" },
+      { src: w("coasters-holo", 12), caption: "Holographic quote coaster" },
     ],
   },
   {
@@ -138,6 +239,33 @@ export const workGroups: WorkGroup[] = [
       { src: w("keychains", 5), caption: "Silver jellyfish keychain" },
       { src: w("keychains", 6), caption: "Keychain collection" },
       { src: w("keychains", 7), caption: "NFC keychains — tap to open" },
+      { src: w("keychains", 8), caption: "Silver jellyfish keychain" },
+      { src: w("keychains", 9), caption: "Blue jellyfish keychain" },
+      { src: w("keychains", 10), caption: "Sea-creature keychain collection" },
+      { src: w("keychains", 11), caption: "Keychain assortment" },
+      { src: w("keychains", 12), caption: "Jellyfish keychain set" },
+      { src: w("keychains", 13), caption: "Keychain row" },
+      { src: w("keychains", 14), caption: "Keychain pile" },
+      { src: w("keychains", 15), caption: "Acrylic keychain" },
+      { src: w("keychains", 16), caption: "Keychain collection" },
+      { src: w("keychains", 17), caption: "Acrylic keychain display" },
+      { src: w("keychains", 18), caption: "NFC keychains" },
+      { src: w("keychains", 19), caption: "NFC keychain" },
+      { src: w("keychains", 20), caption: "NFC keychain — tap to open" },
+      { src: w("keychains", 21), caption: "NFC keychain with dog sticker" },
+    ],
+  },
+  {
+    id: "signs",
+    title: "Printed Signs",
+    blurb:
+      "Printed safety and compliance signs — hydrojetting, caution, no-smoking, and PPE notices.",
+    items: [
+      { src: w("signs", 1), caption: "Hydrojetting in progress safety sign" },
+      { src: w("signs", 2), caption: "Caution sign" },
+      { src: w("signs", 3), caption: "No-smoking sign" },
+      { src: w("signs", 4), caption: "Hearing protection must be worn sign" },
+      { src: w("signs", 5), caption: "Scaffold and do-not-use tags" },
     ],
   },
   {

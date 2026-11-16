@@ -56,7 +56,7 @@ export const categories: Category[] = [
     tagline: "Finished stickers & labels — quoted per job",
     description:
       "Finished die-cut stickers and printed labels — motivational sticker ranges, brand and logo stickers, B2B equipment labels, namecards, and event stickers. Send us your design and we’ll quote it.",
-    cardImage: "/images/card-stickers.jpg",
+    cardImage: "/images/work/eaispire/01.jpg",
     samplesIntro:
       "Samples of finished work — quoted per job, no published prices.",
     samples: [
@@ -76,6 +76,16 @@ export const categories: Category[] = [
         src: "/images/work/childrens-day/02.jpg",
         caption: "Coach Rey / KGA — Happy Children's Day",
       },
+      { src: "/images/work/eaispire/01.jpg", caption: "Eaispire mascot sticker assortment" },
+      { src: "/images/work/eaispire/04.jpg", caption: "Eaispire mascot and logo stickers" },
+      { src: "/images/work/motivational/08.jpg", caption: "Keep Going — sea-creature sticker range" },
+      { src: "/images/work/motivational/16.jpg", caption: "It's a new day — motivational sticker" },
+      { src: "/images/work/events/01.jpg", caption: "Children's Day gymnastics stickers" },
+      { src: "/images/work/events/02.jpg", caption: "Sarah unicorn birthday stickers" },
+      { src: "/images/work/small-business/01.jpg", caption: "Small-business brand stickers" },
+      { src: "/images/work/safety-labels/01.jpg", caption: "GAMX equipment labels" },
+      { src: "/images/work/safety-labels/05.jpg", caption: "Safety Inducted tags" },
+      { src: "/images/work/pnp-cards/01.jpg", caption: "Press N Peel branded cards" },
     ],
     orderTitle: "Request a Quote — Stickers & Labels",
     orderSubtitle:
@@ -203,7 +213,7 @@ export const categories: Category[] = [
     tagline: "NFC & acrylic keychains",
     description:
       "Custom keychains made to order in any shape. NFC keychains tap to open a link — no app needed; acrylic keychains are printed in full colour. Tell us your design and we’ll handle the rest.",
-    cardImage: "/images/work/keychains/07.jpg",
+    cardImage: "/images/work/keychains/08.jpg",
     samplesIntro:
       "NFC keychains $5.10 each (4cm x 4cm, min 1) · Acrylic keychains $4.20 each (5cm x 5cm, min 1).",
     samples: [
@@ -235,6 +245,21 @@ export const categories: Category[] = [
         src: "/images/work/keychains/06.jpg",
         caption: "Keychain collection",
       },
+      { src: "/images/work/keychains/08.jpg", caption: "Silver jellyfish keychain" },
+      { src: "/images/work/keychains/09.jpg", caption: "Blue jellyfish keychain" },
+      {
+        src: "/images/work/keychains/10.jpg",
+        caption: "Sea-creature keychain collection",
+      },
+      { src: "/images/work/keychains/13.jpg", caption: "Keychain row" },
+      {
+        src: "/images/work/keychains/18.jpg",
+        caption: "NFC keychains — tap to open a link",
+      },
+      {
+        src: "/images/work/keychains/21.jpg",
+        caption: "NFC keychain with dog sticker",
+      },
     ],
     orderTitle: "Order Custom Keychains",
     orderSubtitle:
@@ -252,7 +277,7 @@ export const categories: Category[] = [
     tagline: "Laser-engraved coasters",
     description:
       "Laser-engraved coasters made to order — birch ply, pine, or acrylic. Sold as a pack of 5 coasters, minimum order 5 pcs, with your design, name, or message.",
-    cardImage: "/images/work/coasters-pine/02.jpg",
+    cardImage: "/images/work/coasters-birch/01.jpg",
     samplesIntro: "Sold as a pack of 5 — minimum order 5 pcs (1 pack).",
     samples: [
       {
@@ -285,6 +310,24 @@ export const categories: Category[] = [
         src: "/images/work/coasters-holo/05.jpg",
         caption: "Starfish coaster",
       },
+      {
+        src: "/images/work/coasters-birch/01.jpg",
+        caption: "Birch ply — engraved coasters",
+      },
+      {
+        src: "/images/work/coasters-birch/02.jpg",
+        caption: "Keep going, you're closer than you think",
+      },
+      { src: "/images/work/coasters-pine/05.jpg", caption: "Pine — engraved coasters" },
+      {
+        src: "/images/work/coasters-holo/07.jpg",
+        caption: "Starfish holographic coaster",
+      },
+      {
+        src: "/images/work/coasters-holo/09.jpg",
+        caption: "Keep Going — holographic coaster",
+      },
+      { src: "/images/work/coasters-pine/07.jpg", caption: "Engraved coasters in a row" },
     ],
     orderTitle: "Order Custom Coasters",
     orderSubtitle:
@@ -303,9 +346,20 @@ export const categories: Category[] = [
     tagline: "Printed signs & labels",
     description:
       "Printed signs and labels for workplaces, events, and spaces — safety signs, hazard warnings, no-smoking, and custom text. Send us your artwork or text and we’ll typeset it.",
-    cardImage: "/images/no-smoking-label.jpg",
+    cardImage: "/images/work/signs/01.jpg",
     samplesIntro: "Printed to order — quoted per job.",
     samples: [
+      {
+        src: "/images/work/signs/01.jpg",
+        caption: "Hydrojetting in progress safety sign",
+      },
+      { src: "/images/work/signs/02.jpg", caption: "Caution sign" },
+      { src: "/images/work/signs/03.jpg", caption: "No-smoking sign" },
+      {
+        src: "/images/work/signs/04.jpg",
+        caption: "Hearing protection must be worn sign",
+      },
+      { src: "/images/work/signs/05.jpg", caption: "Scaffold and do-not-use tags" },
       {
         src: "/images/work/b2b/04.jpg",
         caption: "Printed SWL weight sign",
@@ -315,7 +369,6 @@ export const categories: Category[] = [
         caption: "No-smoking sign",
       },
     ],
-    samplesNote: "More sign samples coming soon.",
     orderTitle: "Request a Quote — Signs",
     orderSubtitle:
       "Tell us the sign text, size (A4 / A3), and quantity. We’ll reply on WhatsApp or email with a quote before any payment.",

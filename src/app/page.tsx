@@ -5,6 +5,8 @@ import { WHATSAPP_URL } from "@/components/nav";
 import WorkGallery from "@/components/work-gallery";
 import VideoGallery from "@/components/video-gallery";
 import NfcSection from "@/components/nfc-section";
+import HeroCarousel from "@/components/hero-carousel";
+import CategoryShowcase from "@/components/category-showcase";
 import { workGroups } from "@/lib/work";
 import { videoGroups } from "@/lib/videos";
 
@@ -50,7 +52,7 @@ const SECTIONS = [
     title: "Stickers and labels",
     subtitle:
       "Finished die-cut stickers and printed labels — quoted per job.",
-    image: "/images/card-stickers.jpg",
+    image: "/images/work/motivational/08.jpg",
     href: "/products/stickers-and-labels",
   },
   {
@@ -74,7 +76,7 @@ const SECTIONS = [
     title: "Keychains",
     subtitle:
       "NFC keychains that tap to open a link, and acrylic keychains in any shape.",
-    image: "/images/work/keychains/07.jpg",
+    image: "/images/work/keychains/08.jpg",
     href: "/products/keychains",
   },
   {
@@ -82,7 +84,7 @@ const SECTIONS = [
     title: "Laser — Coasters",
     subtitle:
       "Laser-engraved coasters in birch ply, pine, or acrylic. Sold as a pack of 5.",
-    image: "/images/work/coasters-pine/02.jpg",
+    image: "/images/work/coasters-birch/01.jpg",
     href: "/products/laser",
   },
   {
@@ -90,7 +92,7 @@ const SECTIONS = [
     title: "Signs",
     subtitle:
       "Printed safety & compliance signs — A4 or A3 on durable vinyl.",
-    image: "/images/no-smoking-label.jpg",
+    image: "/images/work/signs/01.jpg",
     href: "/products/signs",
   },
 ];
@@ -250,14 +252,7 @@ export default function HomePage() {
                 style={{ backgroundColor: BRONZE }}
                 aria-hidden
               />
-              <div className="relative overflow-hidden rounded-3xl border-[3px] border-[#FFD60A] shadow-2xl">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/images/hero-stickers.jpg"
-                  alt="Custom die-cut stickers and vinyl decals by Press N Peel"
-                  className="h-auto w-full object-cover"
-                />
-              </div>
+              <HeroCarousel />
             </div>
           </div>
         </div>
@@ -303,6 +298,11 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* =============================================================
+          SHOP BY CATEGORY — new photos, labelled, click to order
+          ============================================================= */}
+      <CategoryShowcase />
 
       {/* =============================================================
           FEATURED PRODUCTS
