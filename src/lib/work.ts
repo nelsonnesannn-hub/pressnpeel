@@ -70,7 +70,6 @@ export const workGroups: WorkGroup[] = [
       { src: w("brand", 8), caption: "Eaispire and Press N Peel logos" },
       { src: w("brand", 9), caption: "Eaispire sticker pile" },
       { src: w("brand", 10), caption: "Logo die-cut set" },
-      { src: w("brand", 11), caption: "Oldmolly brand logo stickers" },
       { src: w("eaispire", 1), caption: "Eaispire mascot sticker assortment" },
       { src: w("eaispire", 2), caption: "Eaispire mascot sticker row" },
       { src: w("eaispire", 3), caption: "Eaispire sticker scatter" },
