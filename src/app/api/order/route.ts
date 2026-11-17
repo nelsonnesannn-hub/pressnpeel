@@ -12,6 +12,7 @@ function escapeHtml(value: string): string {
 }
 
 type UploadedFile = {
+  id: string;
   label: string;
   data: ArrayBuffer;
   filename: string;
@@ -49,6 +50,7 @@ export async function POST(req: NextRequest) {
         const uploaded = value as File;
         const id = key.startsWith("file:") ? key.slice(5) : key;
         rawFiles.push({
+          id,
           label: labels[id] ?? (key === "file" ? "file" : id),
           data: await uploaded.arrayBuffer(),
           filename: uploaded.name,
@@ -67,6 +69,37 @@ export async function POST(req: NextRequest) {
 
   const source = fields.source || "Website enquiry";
   const ignored = new Set(["source", "paymentMethod"]);
+
+  // Required design images. Custom order/quote forms flag `requireDesign`, and
+  // the sticker-pack section additionally lists each upload field it needs.
+  // An empty upload must never reach Nelson's Telegram.
+  const requireDesign = fields.requireDesign === "1";
+  const requiredUploadIds = (fields.requiredUploads ?? "")
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+  const filesById: Record<string, number> = {};
+  for (const file of rawFiles) {
+    filesById[file.id] = (filesById[file.id] ?? 0) + 1;
+  }
+  const DESIGN_REQUIRED_MESSAGE =
+    "A design image is required — orders without an accurate design image will be cancelled.";
+  if (requireDesign && rawFiles.length === 0) {
+    return NextResponse.json(
+      { ok: false, error: DESIGN_REQUIRED_MESSAGE },
+      { status: 400 }
+    );
+  }
+  const missingUploadId = requiredUploadIds.find((id) => !filesById[id]);
+  if (missingUploadId) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: `Please attach ${labels[missingUploadId] ?? missingUploadId} — ${DESIGN_REQUIRED_MESSAGE}`,
+      },
+      { status: 400 }
+    );
+  }
 
   const lines = Object.entries(fields)
     .filter(([key, value]) => !ignored.has(key) && value !== "")

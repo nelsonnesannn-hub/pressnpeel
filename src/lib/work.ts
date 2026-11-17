@@ -71,7 +71,6 @@ export const workGroups: WorkGroup[] = [
       { src: w("brand", 9), caption: "Eaispire sticker pile" },
       { src: w("brand", 10), caption: "Logo die-cut set" },
       { src: w("brand", 11), caption: "Oldmolly brand logo stickers" },
-      { src: w("namecards", 2), caption: "Eaispire logo sticker" },
       { src: w("eaispire", 1), caption: "Eaispire mascot sticker assortment" },
       { src: w("eaispire", 2), caption: "Eaispire mascot sticker row" },
       { src: w("eaispire", 3), caption: "Eaispire sticker scatter" },
@@ -137,7 +136,6 @@ export const workGroups: WorkGroup[] = [
       { src: w("b2b", 4), caption: "Printed weight sign" },
       { src: w("b2b", 5), caption: "ROS Fit For Use labels" },
       { src: w("b2b", 6), caption: "Pfizer sticker" },
-      { src: w("namecards", 3), caption: "CLC CL-COOL safety label stack" },
     ],
   },
   {

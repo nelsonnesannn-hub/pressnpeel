@@ -52,6 +52,8 @@ export type QuoteUploadField = {
   hint?: string;
   /** Allow more than one file (sticker images). */
   multiple?: boolean;
+  /** Require at least one file in this field before the form can submit. */
+  required?: boolean;
 };
 
 /** Optional extra fields rendered by the category order form. */
@@ -64,6 +66,8 @@ export type OrderFormConfig = {
   sizeShapeItems?: string[];
   /** "White offset" choice. */
   whiteOffset?: boolean;
+  /** Require at least one design image before the form can submit. */
+  requireDesign?: boolean;
   /** Extra upload fields carried through to the enquiry. */
   uploads?: QuoteUploadField[];
 };
@@ -142,8 +146,6 @@ const stickerSamples: CategorySample[] = [
   { src: "/images/work/brand/01.jpg", caption: "Eaispire mascot assortment" },
   { src: "/images/work/brand/09.jpg", caption: "Eaispire sticker pile" },
   { src: "/images/work/b2b/01.jpg", caption: "JGR Fit For Use inspection labels" },
-  { src: "/images/work/namecards/01.jpg", caption: "Keep Going sticker on black packet" },
-  { src: "/images/work/namecards/02.jpg", caption: "Eaispire logo sticker" },
   {
     src: "/images/work/childrens-day/01.jpg",
     caption: "Coach Julia — Shine Brightly, Little Gymnast",
@@ -171,7 +173,7 @@ export const categories: Category[] = [
     title: "Stickers and Labels",
     tagline: "Finished stickers & labels — quoted per job",
     description:
-      "Finished die-cut stickers and printed labels — motivational sticker ranges, brand and logo stickers, B2B equipment labels, namecards, and event stickers. Send us your design and we’ll quote it.",
+      "Finished die-cut stickers and printed labels — motivational sticker ranges, brand and logo stickers, B2B equipment labels, and event stickers. Send us your design and we’ll quote it.",
     cardImage: "/images/stickers-labels-lifestyle.jpg",
     samplesIntro:
       "Samples of finished work — quoted per job, no published prices.",
@@ -202,7 +204,7 @@ export const categories: Category[] = [
             caption: "HYP — kiss-cut label sheet",
           },
         ],
-        form: { vinylSelector: true, sizeShape: true },
+        form: { vinylSelector: true, sizeShape: true, requireDesign: true },
       },
       {
         id: "die-cut",
@@ -222,7 +224,12 @@ export const categories: Category[] = [
             caption: "Eaispire robot mascot die-cut stickers",
           },
         ],
-        form: { vinylSelector: true, sizeShape: true, whiteOffset: true },
+        form: {
+          vinylSelector: true,
+          sizeShape: true,
+          whiteOffset: true,
+          requireDesign: true,
+        },
       },
       {
         id: "sticker-packs",
@@ -246,22 +253,26 @@ export const categories: Category[] = [
         form: {
           vinylSelector: true,
           sizeShape: true,
+          requireDesign: true,
           uploads: [
             {
               id: "sticker_images",
               label: "Sticker images",
               hint: "Upload one or more sticker designs",
               multiple: true,
+              required: true,
             },
             {
               id: "backing_front",
               label: "Backing — front image",
               hint: "One image for the front of the backing card",
+              required: true,
             },
             {
               id: "backing_back",
               label: "Backing — back image",
               hint: "One image for the back of the backing card",
+              required: true,
             },
           ],
         },
@@ -274,7 +285,6 @@ export const categories: Category[] = [
       { id: "die-cut-stickers", label: "Custom die-cut stickers" },
       { id: "logo-stickers", label: "Logo / brand stickers" },
       { id: "labels", label: "Equipment / safety labels" },
-      { id: "namecards", label: "Namecards & packaging stickers" },
       { id: "event", label: "Event & celebration stickers" },
       { id: "other", label: "Other stickers & labels" },
     ],
@@ -451,7 +461,7 @@ export const categories: Category[] = [
       { id: "nfc", label: "NFC keychain (4cm x 4cm)" },
       { id: "other", label: "Other custom keychain" },
     ],
-    form: { sizeShape: true, sizeShapeItems: ["nfc"] },
+    form: { sizeShape: true, sizeShapeItems: ["nfc"], requireDesign: true },
   },
   {
     slug: "laser",
@@ -563,6 +573,7 @@ export const categories: Category[] = [
       { id: "custom", label: "Custom text sign" },
       { id: "other", label: "Other sign" },
     ],
+    form: { requireDesign: true },
   },
 ];
 

@@ -15,12 +15,14 @@ function UploadField({
   label,
   hint,
   multiple,
+  required,
   files,
   onChange,
 }: {
   label: React.ReactNode;
   hint?: string;
   multiple?: boolean;
+  required?: boolean;
   files: File[];
   onChange: (files: File[]) => void;
 }) {
@@ -28,6 +30,11 @@ function UploadField({
     <label className="mb-6 block">
       <span className="mb-2 block text-sm font-medium text-slate-300">
         {label}
+        {required ? (
+          <span className="ml-1 text-[#FFD60A]" title="Required">
+            *
+          </span>
+        ) : null}
       </span>
       <span className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-700 bg-slate-950/50 px-6 py-8 text-center transition-colors hover:border-[#FFD60A]/50">
         <svg
@@ -61,6 +68,8 @@ function UploadField({
         type="file"
         accept="image/*,.pdf,.svg"
         multiple={multiple}
+        required={required}
+        aria-required={required || undefined}
         className="sr-only"
         onChange={(e) =>
           onChange(
@@ -113,10 +122,40 @@ export default function CategoryOrderForm({
     ...(config.uploads ?? []).flatMap((u) => uploads[u.id] ?? []),
   ];
 
+  const designRequired = Boolean(config.requireDesign);
+  const requiredUploads = (config.uploads ?? []).filter((u) => u.required);
+
+  /** Labels of every required image field that is still empty. */
+  function missingDesignImages(): string[] {
+    const missing: string[] = [];
+    if (designRequired && allFiles.length === 0) missing.push("a design image");
+    for (const u of requiredUploads) {
+      if ((uploads[u.id] ?? []).length === 0) missing.push(u.label);
+    }
+    return missing;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitting(true);
     setError(null);
+
+    if (!name.trim()) {
+      setError("Please enter your name.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    const missing = missingDesignImages();
+    if (missing.length > 0) {
+      setError(
+        `Please attach ${missing.join(", ")} — a design image is required. Orders without an accurate design image will be cancelled.`
+      );
+      return;
+    }
+
+    setSubmitting(true);
 
     const ref = "PNP-" + Date.now().toString(36).toUpperCase().slice(-6);
     const fd = new FormData();
@@ -143,6 +182,10 @@ export default function CategoryOrderForm({
     fd.append("fileName", file?.name ?? "");
     fd.append("upload_label:design", "Design file");
     if (file) fd.append("file:design", file);
+    if (designRequired) fd.append("requireDesign", "1");
+    if (requiredUploads.length > 0) {
+      fd.append("requiredUploads", requiredUploads.map((u) => u.id).join(","));
+    }
     for (const u of config.uploads ?? []) {
       fd.append(`upload_label:${u.id}`, u.label);
       for (const f of uploads[u.id] ?? []) fd.append(`file:${u.id}`, f);
@@ -218,6 +261,7 @@ export default function CategoryOrderForm({
   return (
     <form
       onSubmit={handleSubmit}
+      noValidate
       className="mx-auto max-w-3xl rounded-2xl border border-slate-800/70 bg-slate-900/40 p-8"
     >
       <div className="mb-6 grid gap-4 sm:grid-cols-2">
@@ -336,7 +380,14 @@ export default function CategoryOrderForm({
         hint="Transparent PNG works best for die-cut"
         files={file ? [file] : []}
         onChange={(fs) => setFile(fs[0] ?? null)}
+        required={designRequired}
       />
+      {designRequired ? (
+        <p className="mb-6 rounded-lg border border-[#FFD60A]/30 bg-[#FFD60A]/10 px-4 py-2.5 text-xs font-medium text-[#FFD60A]">
+          A design image is required — orders without an accurate design image
+          will be cancelled.
+        </p>
+      ) : null}
 
       {(config.uploads ?? []).map((u: QuoteUploadField) => (
         <UploadField
@@ -344,6 +395,7 @@ export default function CategoryOrderForm({
           label={u.label}
           hint={u.hint}
           multiple={u.multiple}
+          required={u.required}
           files={uploads[u.id] ?? []}
           onChange={(fs) =>
             setUploads((prev) => ({ ...prev, [u.id]: fs }))
