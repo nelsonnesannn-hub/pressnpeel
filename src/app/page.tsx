@@ -453,8 +453,9 @@ export default function HomePage() {
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {COASTER_PACKS.map((pack) => (
-              <article
+              <Link
                 key={pack.id}
+                href="/products/laser"
                 className="group flex flex-col overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900/40 transition-all hover:border-[#FFD60A]/30 hover:bg-slate-900/70"
               >
                 <span className="block overflow-hidden">
@@ -486,7 +487,7 @@ export default function HomePage() {
                     </span>
                   </p>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
         </div>

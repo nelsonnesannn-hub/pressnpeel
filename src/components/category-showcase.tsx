@@ -10,6 +10,7 @@ const ITEMS = [
     slug: "stickers-and-labels",
     caption: "Eaispire mascot stickers",
     purpose: "Brand & mascot die-cut stickers",
+    href: "/products/stickers-and-labels#order-die-cut",
   },
   {
     src: "/images/work/motivational/08.jpg",
@@ -17,6 +18,7 @@ const ITEMS = [
     slug: "stickers-and-labels",
     caption: "Keep Going sea-creature stickers",
     purpose: "Motivational sticker ranges",
+    href: "/products/stickers-and-labels#order-die-cut",
   },
   {
     src: "/images/work/events/01.jpg",
@@ -24,6 +26,7 @@ const ITEMS = [
     slug: "stickers-and-labels",
     caption: "Children's Day gymnastics stickers",
     purpose: "Event & celebration stickers",
+    href: "/products/stickers-and-labels#order-die-cut",
   },
   {
     src: "/images/work/safety-labels/01.jpg",
@@ -31,6 +34,7 @@ const ITEMS = [
     slug: "stickers-and-labels",
     caption: "GAMX equipment labels",
     purpose: "B2B safety & equipment labels",
+    href: "/products/stickers-and-labels#order-kiss-cut",
   },
   {
     src: "/images/work/keychains/08.jpg",
@@ -38,6 +42,7 @@ const ITEMS = [
     slug: "keychains",
     caption: "Silver jellyfish keychain",
     purpose: "Acrylic keychains — any shape",
+    href: "/products/keychains#order",
   },
   {
     src: "/images/work/keychains/18.jpg",
@@ -45,6 +50,7 @@ const ITEMS = [
     slug: "keychains",
     caption: "NFC keychains",
     purpose: "Tap to open a link — no app needed",
+    href: "/products/keychains#order",
   },
   {
     src: "/images/work/coasters-birch/01.jpg",
@@ -52,6 +58,7 @@ const ITEMS = [
     slug: "laser",
     caption: "Birch ply engraved coasters",
     purpose: "Laser-engraved coasters",
+    href: "/products/laser",
   },
   {
     src: "/images/work/coasters-holo/07.jpg",
@@ -59,6 +66,7 @@ const ITEMS = [
     slug: "laser",
     caption: "Starfish holographic coaster",
     purpose: "Acrylic & holographic coasters",
+    href: "/products/laser",
   },
   {
     src: "/images/work/signs/01.jpg",
@@ -66,6 +74,7 @@ const ITEMS = [
     slug: "signs",
     caption: "Hydrojetting safety sign",
     purpose: "Printed safety signs",
+    href: "/products/signs",
   },
   {
     src: "/images/work/signs/03.jpg",
@@ -73,6 +82,7 @@ const ITEMS = [
     slug: "signs",
     caption: "No-smoking sign",
     purpose: "Printed signs & labels",
+    href: "/products/signs",
   },
 ];
 
@@ -106,7 +116,7 @@ export default function CategoryShowcase() {
           {ITEMS.map((item) => (
             <Link
               key={item.src}
-              href={`/products/${item.slug}#order`}
+              href={item.href}
               className="group w-64 flex-shrink-0 snap-start overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900/40 transition-all hover:border-[#FFD60A]/40 hover:bg-slate-900/70 hover:shadow-lg"
             >
               <span className="block overflow-hidden bg-white">

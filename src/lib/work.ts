@@ -5,12 +5,16 @@
 export type WorkItem = {
   src: string;
   caption: string;
+  /** Optional per-card link override (defaults to the group's href). */
+  href?: string;
 };
 
 export type WorkGroup = {
   id: string;
   title: string;
   blurb: string;
+  /** Where cards in this group link (order section anchor or teaser page). */
+  href: string;
   items: WorkItem[];
 };
 
@@ -20,6 +24,7 @@ const w = (group: string, n: number) =>
 export const workGroups: WorkGroup[] = [
   {
     id: "motivational",
+    href: "/products/stickers-and-labels#order-die-cut",
     title: "Motivational Stickers",
     blurb:
       "Die-cut motivational sticker ranges — sea creatures, animals, and keep-going quotes, cut to any shape.",
@@ -42,6 +47,7 @@ export const workGroups: WorkGroup[] = [
   },
   {
     id: "pnp-cards",
+    href: "/products/stickers-and-labels#order-die-cut",
     title: "Press N Peel Branded Cards",
     blurb:
       "Press N Peel wordmark cards and logo sheets — the brand we print for ourselves and our clients.",
@@ -56,6 +62,7 @@ export const workGroups: WorkGroup[] = [
   },
   {
     id: "brand",
+    href: "/products/stickers-and-labels#order-die-cut",
     title: "Brand & Eaispire Stickers",
     blurb:
       "Eaispire mascot die-cut stickers and logo stickers for a repeat B2B client.",
@@ -82,6 +89,7 @@ export const workGroups: WorkGroup[] = [
   },
   {
     id: "events",
+    href: "/products/stickers-and-labels#order-die-cut",
     title: "Event & Celebration Stickers",
     blurb:
       "Birthday, thank-you, and school event stickers — die-cut to any shape with the child's name and artwork.",
@@ -97,6 +105,7 @@ export const workGroups: WorkGroup[] = [
   },
   {
     id: "small-business",
+    href: "/products/stickers-and-labels#order-die-cut",
     title: "Small-Business Brand Stickers",
     blurb:
       "Logo and brand stickers for small businesses — food, retail, and personal brands.",
@@ -109,6 +118,7 @@ export const workGroups: WorkGroup[] = [
   },
   {
     id: "childrens-day",
+    href: "/products/stickers-and-labels#order-die-cut",
     title: "Children's Day",
     blurb:
       "Two separate Children's Day orders — kept separate, as printed for each coach.",
@@ -125,6 +135,7 @@ export const workGroups: WorkGroup[] = [
   },
   {
     id: "b2b",
+    href: "/products/stickers-and-labels#order-kiss-cut",
     title: "B2B & Company Labels",
     blurb:
       "Equipment labels, scaffold tags, and safety signage for Singapore workplaces.",
@@ -132,13 +143,14 @@ export const workGroups: WorkGroup[] = [
       { src: w("b2b", 1), caption: "JGR Fit For Use inspection labels" },
       { src: w("b2b", 2), caption: "Scaffold and safety tags" },
       { src: w("b2b", 3), caption: "GAMX equipment labels" },
-      { src: w("b2b", 4), caption: "Printed weight sign" },
+      { src: w("b2b", 4), caption: "Printed weight sign", href: "/products/signs" },
       { src: w("b2b", 5), caption: "ROS Fit For Use labels" },
       { src: w("b2b", 6), caption: "Pfizer sticker" },
     ],
   },
   {
     id: "safety-labels",
+    href: "/products/stickers-and-labels#order-kiss-cut",
     title: "Safety & Equipment Labels",
     blurb:
       "Fit-for-use tags, SWL weight signs, and equipment labels printed on durable vinyl.",
@@ -148,7 +160,7 @@ export const workGroups: WorkGroup[] = [
       { src: w("safety-labels", 3), caption: "Fit For Use inspection tag" },
       { src: w("safety-labels", 4), caption: "Fit For Use tag — alt" },
       { src: w("safety-labels", 5), caption: "Safety Inducted tags" },
-      { src: w("safety-labels", 6), caption: "SWL weight sign" },
+      { src: w("safety-labels", 6), caption: "SWL weight sign", href: "/products/signs" },
       { src: w("safety-labels", 7), caption: "Do Not Use / scaffold tags" },
       { src: w("safety-labels", 8), caption: "Safety label sheet" },
       { src: w("safety-labels", 9), caption: "Cutting equipment label" },
@@ -157,6 +169,7 @@ export const workGroups: WorkGroup[] = [
   },
   {
     id: "coasters-pine",
+    href: "/products/laser",
     title: "Laser-Engraved Pine Coasters",
     blurb:
       "Laser engraving on pine — motivational coasters with names, quotes, and emblems.",
@@ -173,6 +186,7 @@ export const workGroups: WorkGroup[] = [
   },
   {
     id: "coasters-birch",
+    href: "/products/laser",
     title: "Laser-Engraved Birch Ply Coasters",
     blurb:
       "Laser engraving on birch ply — quote coasters with crisp, high-contrast lines.",
@@ -186,6 +200,7 @@ export const workGroups: WorkGroup[] = [
   },
   {
     id: "coasters-holo",
+    href: "/products/laser",
     title: "Holographic Coasters",
     blurb:
       "Holographic and iridescent coasters — jellyfish, starfish, and quote designs.",
@@ -209,6 +224,7 @@ export const workGroups: WorkGroup[] = [
   },
   {
     id: "keychains",
+    href: "/products/keychains#order",
     title: "Acrylic & NFC Keychains",
     blurb:
       "Acrylic keychains in any shape — including NFC keychains that tap to open a link.",
@@ -238,6 +254,7 @@ export const workGroups: WorkGroup[] = [
   },
   {
     id: "signs",
+    href: "/products/signs",
     title: "Printed Signs",
     blurb:
       "Printed safety and compliance signs — hydrojetting, caution, no-smoking, and PPE notices.",
@@ -251,6 +268,7 @@ export const workGroups: WorkGroup[] = [
   },
   {
     id: "materials",
+    href: "/products/printable-vinyl#order",
     title: "Printable Vinyl Materials",
     blurb:
       "Matte white, glossy white, gold reflective, silver reflective, silver holographic, broken glass silver holographic, and confetti/dotted silver holographic printable vinyl — printed and cut to order.",

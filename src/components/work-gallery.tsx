@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { WorkGroup } from "@/lib/work";
 
 export default function WorkGallery({ groups }: { groups: WorkGroup[] }) {
@@ -66,18 +67,24 @@ export default function WorkGallery({ groups }: { groups: WorkGroup[] }) {
                   key={item.src}
                   className="group overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900/40 transition-all hover:border-[#FFD60A]/40 hover:shadow-lg"
                 >
-                  <span className="block overflow-hidden bg-white">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={item.src}
-                      alt={item.caption}
-                      className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                  </span>
-                  <figcaption className="px-3 py-2.5 text-xs leading-snug text-slate-400">
-                    {item.caption}
-                  </figcaption>
+                  <Link
+                    href={item.href ?? g.href}
+                    className="block"
+                    aria-label={`${item.caption} — view ordering options`}
+                  >
+                    <span className="block overflow-hidden bg-white">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={item.src}
+                        alt={item.caption}
+                        className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                    </span>
+                    <figcaption className="px-3 py-2.5 text-xs leading-snug text-slate-400">
+                      {item.caption}
+                    </figcaption>
+                  </Link>
                 </figure>
               ))}
             </div>
