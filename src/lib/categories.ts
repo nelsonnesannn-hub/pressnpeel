@@ -70,6 +70,12 @@ export type OrderFormConfig = {
   whiteOffset?: boolean;
   /** Require at least one design image before the form can submit. */
   requireDesign?: boolean;
+  /**
+   * Kiss-cut sheet pricing: replace the item selector with an A4/A3 sheet-size
+   * choice, make Quantity the number of sheets, and show the live per-sheet
+   * price + order total (server recomputes the same price on submit).
+   */
+  sheetPricing?: boolean;
   /** Extra upload fields carried through to the enquiry. */
   uploads?: QuoteUploadField[];
 };
@@ -208,7 +214,12 @@ export const categories: Category[] = [
             caption: "HYP — kiss-cut label sheet",
           },
         ],
-        form: { vinylSelector: true, sizeShape: true, requireDesign: true },
+        form: {
+          vinylSelector: true,
+          sizeShape: true,
+          requireDesign: true,
+          sheetPricing: true,
+        },
       },
       {
         id: "die-cut",

@@ -1,5 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendTelegramMessage, sendTelegramDocument } from "@/lib/telegram";
+import { createEnquiry } from "@/lib/orders";
+import {
+  formatSGD,
+  kissCutSheetCents,
+  kissCutSizeCm,
+  kissCutStickersPerSheet,
+  kissCutTotalCents,
+} from "@/lib/pricing";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -70,6 +78,61 @@ export async function POST(req: NextRequest) {
   const source = fields.source || "Website enquiry";
   const ignored = new Set(["source", "paymentMethod"]);
 
+  // Kiss-cut sheet pricing. The browser sends its own computed price, but the
+  // server is the source of truth: recompute the per-sheet price and total from
+  // the posted sheet size / size / finish / sheet count, store that enquiry, and
+  // put the server's numbers in Nelson's notification.
+  const sheetSize = fields.sheetSize ?? "";
+  let kissCut: {
+    stickersPerSheet: number;
+    sizeCm: number;
+    finish: string;
+    sheets: number;
+    perSheetCents: number;
+    totalCents: number;
+  } | null = null;
+  if (sheetSize) {
+    const stickersPerSheet = kissCutStickersPerSheet(sheetSize);
+    const sizeCm = kissCutSizeCm(fields.size ?? "");
+    const finish = fields.finish || fields.vinyl || "";
+    const sheets = Math.max(
+      1,
+      Math.floor(Number(fields.sheets ?? fields.quantity ?? 1)) || 1
+    );
+    const perSheetCents =
+      stickersPerSheet == null
+        ? null
+        : kissCutSheetCents(finish, sizeCm, stickersPerSheet);
+    if (perSheetCents != null && stickersPerSheet != null) {
+      kissCut = {
+        stickersPerSheet,
+        sizeCm,
+        finish,
+        sheets,
+        perSheetCents,
+        totalCents: kissCutTotalCents(perSheetCents, sheets),
+      };
+    }
+  }
+
+  if (kissCut) {
+    try {
+      await createEnquiry({
+        source,
+        fields,
+        sheetSize,
+        stickersPerSheet: kissCut.stickersPerSheet,
+        sizeCm: kissCut.sizeCm,
+        finish: kissCut.finish,
+        sheets: kissCut.sheets,
+        pricePerSheet: kissCut.perSheetCents / 100,
+        priceTotal: kissCut.totalCents / 100,
+      });
+    } catch (err) {
+      console.error("Could not store quote enquiry:", err);
+    }
+  }
+
   // Required design images. Custom order/quote forms flag `requireDesign`, and
   // the sticker-pack section additionally lists each upload field it needs.
   // An empty upload must never reach Nelson's Telegram.
@@ -101,9 +164,22 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Client-computed prices are never trusted — they are dropped here and
+  // replaced by the server's recomputed values below.
+  const clientOnly = new Set(["pricePerSheet", "priceTotal"]);
   const lines = Object.entries(fields)
-    .filter(([key, value]) => !ignored.has(key) && value !== "")
+    .filter(
+      ([key, value]) =>
+        !ignored.has(key) && !clientOnly.has(key) && value !== ""
+    )
     .map(([key, value]) => `<b>${escapeHtml(key)}</b>: ${escapeHtml(String(value))}`);
+
+  if (kissCut) {
+    lines.push(
+      `<b>Price per sheet</b>: ${formatSGD(kissCut.perSheetCents / 100)} (${kissCut.stickersPerSheet} stickers + 20c border die cut)`,
+      `<b>Order total</b>: ${formatSGD(kissCut.totalCents / 100)} (${kissCut.sheets} sheet${kissCut.sheets === 1 ? "" : "s"}) — server computed`
+    );
+  }
 
   for (const file of rawFiles) {
     lines.push(`<b>${escapeHtml(file.label)}</b>: ${escapeHtml(file.filename)}`);

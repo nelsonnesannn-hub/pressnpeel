@@ -168,6 +168,56 @@ export async function createOrder(input: NewOrder): Promise<number> {
   return record.id;
 }
 
+// ---- quote enquiries (kiss-cut sheet pricing) ---------------------------
+// The kiss-cut form posts its own computed price, but the server recomputes it
+// and stores the enquiry so the record carries the authoritative numbers.
+
+export type QuoteEnquiry = {
+  id: number;
+  source: string;
+  fields: Record<string, string>;
+  sheetSize: string | null;
+  stickersPerSheet: number | null;
+  sizeCm: number | null;
+  finish: string | null;
+  sheets: number | null;
+  pricePerSheet: number | null;
+  priceTotal: number | null;
+  created_at: string;
+};
+
+const ENQUIRY_PREFIX = "pnp:enquiry:";
+const ENQUIRY_SEQ_KEY = `${ENQUIRY_PREFIX}seq`;
+
+const memoryEnquiries = new Map<number, QuoteEnquiry>();
+const memoryEnquiryNextId = { value: 1 };
+
+export async function createEnquiry(
+  input: Omit<QuoteEnquiry, "id" | "created_at">
+): Promise<number> {
+  const record: QuoteEnquiry = {
+    ...input,
+    id: 0,
+    created_at: timestamp(),
+  };
+
+  const c = client();
+  if (c) {
+    try {
+      const id = await c.incr(ENQUIRY_SEQ_KEY);
+      record.id = id;
+      await c.set(`${ENQUIRY_PREFIX}id:${id}`, record);
+      return id;
+    } catch (err) {
+      console.error("KV enquiry write failed, falling back to memory:", err);
+    }
+  }
+
+  record.id = memoryEnquiryNextId.value++;
+  memoryEnquiries.set(record.id, record);
+  return record.id;
+}
+
 export async function getOrderById(id: number): Promise<OrderRecord | null> {
   const c = client();
   if (c) {
