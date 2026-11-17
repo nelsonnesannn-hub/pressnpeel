@@ -168,7 +168,7 @@ export async function createOrder(input: NewOrder): Promise<number> {
   return record.id;
 }
 
-// ---- quote enquiries (kiss-cut sheet pricing) ---------------------------
+// ---- quote enquiries (kiss-cut sticker pricing) --------------------------
 // The kiss-cut form posts its own computed price, but the server recomputes it
 // and stores the enquiry so the record carries the authoritative numbers.
 
@@ -176,13 +176,11 @@ export type QuoteEnquiry = {
   id: number;
   source: string;
   fields: Record<string, string>;
-  sheetSize: string | null;
-  stickersPerSheet: number | null;
   sizeCm: number | null;
   finish: string | null;
-  sheets: number | null;
-  pricePerSheet: number | null;
-  priceTotal: number | null;
+  stickerCount: number | null;
+  perStickerCents: number | null;
+  totalCents: number | null;
   created_at: string;
 };
 

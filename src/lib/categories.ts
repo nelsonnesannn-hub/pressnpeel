@@ -71,11 +71,12 @@ export type OrderFormConfig = {
   /** Require at least one design image before the form can submit. */
   requireDesign?: boolean;
   /**
-   * Kiss-cut sheet pricing: replace the item selector with an A4/A3 sheet-size
-   * choice, make Quantity the number of sheets, and show the live per-sheet
-   * price + order total (server recomputes the same price on submit).
+   * Kiss-cut sticker pricing: quantity is the total number of stickers, and
+   * the form shows the live per-sticker price + order total (per-sticker x
+   * count + $3 flat sheet fee). The server recomputes the same price on
+   * submit. Die cut and Sticker packs must never set this.
    */
-  sheetPricing?: boolean;
+  kissCutPricing?: boolean;
   /** Extra upload fields carried through to the enquiry. */
   uploads?: QuoteUploadField[];
 };
@@ -218,7 +219,7 @@ export const categories: Category[] = [
           vinylSelector: true,
           sizeShape: true,
           requireDesign: true,
-          sheetPricing: true,
+          kissCutPricing: true,
         },
       },
       {

@@ -24,22 +24,13 @@ export function formatSGD(amount: number): string {
   return `$${amount.toFixed(2)}`;
 }
 
-// ---- Kiss-cut sticker sheet pricing -------------------------------------
-// Kiss-cut stickers are ordered BY SHEET. At 5x5cm with a 3mm gap between
-// stickers one row of the sheet is left free, so the counts are fixed:
-//   A4 = 3 across x 4 down = 12 stickers per sheet
-//   A3 = 5 across x 6 down = 30 stickers per sheet
-// Sheet price = 20c border die cut + (stickers per sheet x per-sticker price).
+// ---- Kiss-cut sticker pricing -------------------------------------------
+// Kiss-cut stickers are ordered BY STICKER, not by sheet:
+//   order total = per-sticker price x total number of stickers
+//                 + a flat $3.00 per order for the sheets.
 // Per-sticker price = finish base at 5cm + 5c per cm over 5cm (5cm is the
 // floor — smaller sizes still pay the base). Half-cent unit prices round on
 // the line total to the nearest whole cent (Stripe takes whole cents only).
-
-export const KISS_CUT_SHEET_SIZES = [
-  { id: "A4", label: "A4", stickersPerSheet: 12 },
-  { id: "A3", label: "A3", stickersPerSheet: 30 },
-] as const;
-
-export type KissCutSheetSize = (typeof KISS_CUT_SHEET_SIZES)[number];
 
 /** Finish base price per sticker at 5cm, in cents. */
 export const KISS_CUT_FINISH_BASE_CENTS: Record<string, number> = {
@@ -52,15 +43,9 @@ export const KISS_CUT_FINISH_BASE_CENTS: Record<string, number> = {
   "Confetti/dotted silver holographic vinyl": 135,
 };
 
-const KISS_CUT_BORDER_CENTS = 20;
+const KISS_CUT_ORDER_FEE_CENTS = 300;
 const KISS_CUT_BASE_SIZE_CM = 5;
 const KISS_CUT_RATE_PER_CM_CENTS = 5;
-
-/** Fixed sticker count for a sheet size, or null for an unknown size. */
-export function kissCutStickersPerSheet(sheetSizeId: string): number | null {
-  const found = KISS_CUT_SHEET_SIZES.find((s) => s.id === sheetSizeId);
-  return found ? found.stickersPerSheet : null;
-}
 
 /** Parse a size string ("5", "5.5") into cm; falls back to the 5cm floor. */
 export function kissCutSizeCm(size: string): number {
@@ -83,20 +68,28 @@ export function kissCutStickerCents(
 }
 
 /**
- * Per-sheet price in whole cents: 20c border die cut + stickers per sheet at
- * the per-sticker price, rounded to the nearest cent. Null without a finish.
+ * Order total in whole cents: (per-sticker price x sticker count, rounded to
+ * the nearest whole cent) + the flat $3.00 sheet fee. Null without a valid
+ * finish or sticker count.
  */
-export function kissCutSheetCents(
+export function kissCutTotalCents(
   finish: string,
   sizeCm: number,
-  stickersPerSheet: number
+  stickerCount: number
 ): number | null {
   const perSticker = kissCutStickerCents(finish, sizeCm);
   if (perSticker === null) return null;
-  return Math.round(KISS_CUT_BORDER_CENTS + stickersPerSheet * perSticker);
+  const count = Math.floor(Number(stickerCount));
+  if (!Number.isFinite(count) || count < 1) return null;
+  return Math.round(count * perSticker) + KISS_CUT_ORDER_FEE_CENTS;
 }
 
-/** Order line total in whole cents (per-sheet price x number of sheets). */
-export function kissCutTotalCents(sheetCents: number, sheets: number): number {
-  return Math.round(sheetCents * sheets);
+/**
+ * Per-sticker price for display: $0.70, or $0.725 when the unit price is a
+ * half cent. The line total is what rounds, not the unit price.
+ */
+export function formatKissCutUnit(cents: number): string {
+  return cents % 1 === 0
+    ? formatSGD(cents / 100)
+    : `$${(cents / 100).toFixed(3)}`;
 }

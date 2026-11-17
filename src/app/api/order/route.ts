@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { sendTelegramMessage, sendTelegramDocument } from "@/lib/telegram";
 import { createEnquiry } from "@/lib/orders";
 import {
+  formatKissCutUnit,
   formatSGD,
-  kissCutSheetCents,
   kissCutSizeCm,
-  kissCutStickersPerSheet,
+  kissCutStickerCents,
   kissCutTotalCents,
 } from "@/lib/pricing";
 
@@ -78,40 +78,28 @@ export async function POST(req: NextRequest) {
   const source = fields.source || "Website enquiry";
   const ignored = new Set(["source", "paymentMethod"]);
 
-  // Kiss-cut sheet pricing. The browser sends its own computed price, but the
-  // server is the source of truth: recompute the per-sheet price and total from
-  // the posted sheet size / size / finish / sheet count, store that enquiry, and
-  // put the server's numbers in Nelson's notification.
-  const sheetSize = fields.sheetSize ?? "";
+  // Kiss-cut sticker pricing. The browser sends its own computed price, but
+  // the server is the source of truth: recompute the per-sticker price and
+  // total from the posted finish / size / sticker count, store that enquiry,
+  // and put the server's numbers in Nelson's notification.
   let kissCut: {
-    stickersPerSheet: number;
     sizeCm: number;
     finish: string;
-    sheets: number;
-    perSheetCents: number;
+    stickerCount: number;
+    perStickerCents: number;
     totalCents: number;
   } | null = null;
-  if (sheetSize) {
-    const stickersPerSheet = kissCutStickersPerSheet(sheetSize);
+  if (fields.kissCut === "1") {
     const sizeCm = kissCutSizeCm(fields.size ?? "");
     const finish = fields.finish || fields.vinyl || "";
-    const sheets = Math.max(
+    const stickerCount = Math.max(
       1,
-      Math.floor(Number(fields.sheets ?? fields.quantity ?? 1)) || 1
+      Math.floor(Number(fields.stickerCount ?? fields.quantity ?? 1)) || 1
     );
-    const perSheetCents =
-      stickersPerSheet == null
-        ? null
-        : kissCutSheetCents(finish, sizeCm, stickersPerSheet);
-    if (perSheetCents != null && stickersPerSheet != null) {
-      kissCut = {
-        stickersPerSheet,
-        sizeCm,
-        finish,
-        sheets,
-        perSheetCents,
-        totalCents: kissCutTotalCents(perSheetCents, sheets),
-      };
+    const perStickerCents = kissCutStickerCents(finish, sizeCm);
+    const totalCents = kissCutTotalCents(finish, sizeCm, stickerCount);
+    if (perStickerCents != null && totalCents != null) {
+      kissCut = { sizeCm, finish, stickerCount, perStickerCents, totalCents };
     }
   }
 
@@ -120,13 +108,11 @@ export async function POST(req: NextRequest) {
       await createEnquiry({
         source,
         fields,
-        sheetSize,
-        stickersPerSheet: kissCut.stickersPerSheet,
         sizeCm: kissCut.sizeCm,
         finish: kissCut.finish,
-        sheets: kissCut.sheets,
-        pricePerSheet: kissCut.perSheetCents / 100,
-        priceTotal: kissCut.totalCents / 100,
+        stickerCount: kissCut.stickerCount,
+        perStickerCents: kissCut.perStickerCents,
+        totalCents: kissCut.totalCents,
       });
     } catch (err) {
       console.error("Could not store quote enquiry:", err);
@@ -166,7 +152,7 @@ export async function POST(req: NextRequest) {
 
   // Client-computed prices are never trusted — they are dropped here and
   // replaced by the server's recomputed values below.
-  const clientOnly = new Set(["pricePerSheet", "priceTotal"]);
+  const clientOnly = new Set(["pricePerSticker", "priceTotal"]);
   const lines = Object.entries(fields)
     .filter(
       ([key, value]) =>
@@ -176,8 +162,8 @@ export async function POST(req: NextRequest) {
 
   if (kissCut) {
     lines.push(
-      `<b>Price per sheet</b>: ${formatSGD(kissCut.perSheetCents / 100)} (${kissCut.stickersPerSheet} stickers + 20c border die cut)`,
-      `<b>Order total</b>: ${formatSGD(kissCut.totalCents / 100)} (${kissCut.sheets} sheet${kissCut.sheets === 1 ? "" : "s"}) — server computed`
+      `<b>Price per sticker</b>: ${formatKissCutUnit(kissCut.perStickerCents)} (${kissCut.sizeCm}cm ${kissCut.finish})`,
+      `<b>Order total</b>: ${formatSGD(kissCut.totalCents / 100)} (${kissCut.stickerCount} sticker${kissCut.stickerCount === 1 ? "" : "s"} + $3.00 sheet fee) — server computed`
     );
   }
 

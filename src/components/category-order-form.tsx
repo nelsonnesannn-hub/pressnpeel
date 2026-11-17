@@ -5,10 +5,10 @@ import { useState } from "react";
 import type { Category, OrderFormConfig, QuoteUploadField } from "@/lib/categories";
 import { VINYL_FINISHES } from "@/lib/categories";
 import {
-  KISS_CUT_SHEET_SIZES,
+  formatKissCutUnit,
   formatSGD,
-  kissCutSheetCents,
   kissCutSizeCm,
+  kissCutStickerCents,
   kissCutTotalCents,
 } from "@/lib/pricing";
 import { WHATSAPP_URL } from "./nav";
@@ -113,9 +113,6 @@ export default function CategoryOrderForm({
   const [vinyl, setVinyl] = useState("");
   const [size, setSize] = useState("4");
   const [shape, setShape] = useState("");
-  const [sheetSize, setSheetSize] = useState<string>(
-    KISS_CUT_SHEET_SIZES[0].id
-  );
   const [whiteOffset, setWhiteOffset] = useState(false);
   const [uploads, setUploads] = useState<Record<string, File[]>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -127,24 +124,23 @@ export default function CategoryOrderForm({
     Boolean(config.sizeShape) &&
     (!config.sizeShapeItems || config.sizeShapeItems.includes(item));
 
-  // Kiss-cut is ordered by the sheet: A4 = 12 stickers, A3 = 30 stickers.
-  const sheetPricing = Boolean(config.sheetPricing);
-  const sheetSizeOption =
-    KISS_CUT_SHEET_SIZES.find((s) => s.id === sheetSize) ??
-    KISS_CUT_SHEET_SIZES[0];
+  // Kiss-cut is ordered by the sticker: per-sticker price x sticker count +
+  // a flat $3 sheet fee per order.
+  const kissCut = Boolean(config.kissCutPricing);
   const sizeCm = kissCutSizeCm(size);
-  const sheetCount = Math.max(1, Math.floor(Number(quantity)) || 1);
-  const sheetCents = sheetPricing
-    ? kissCutSheetCents(vinyl, sizeCm, sheetSizeOption.stickersPerSheet)
+  const stickerCount = Math.max(1, Math.floor(Number(quantity)) || 1);
+  const perStickerCents = kissCut
+    ? kissCutStickerCents(vinyl, sizeCm)
     : null;
   const totalCents =
-    sheetCents == null ? null : kissCutTotalCents(sheetCents, sheetCount);
+    perStickerCents == null
+      ? null
+      : kissCutTotalCents(vinyl, sizeCm, stickerCount);
 
-  const itemLabel = sheetPricing
-    ? `Kiss-cut sticker sheet — ${sheetSizeOption.id}`
-    : category.orderItems.find((i) => i.id === item)?.label ??
-      category.orderItems[0]?.label ??
-      "";
+  const itemLabel =
+    category.orderItems.find((i) => i.id === item)?.label ??
+    category.orderItems[0]?.label ??
+    "";
 
   const allFiles = [
     ...(file ? [file] : []),
@@ -176,6 +172,10 @@ export default function CategoryOrderForm({
       setError("Please enter a valid email address.");
       return;
     }
+    if (kissCut && !vinyl) {
+      setError("Please select a vinyl finish.");
+      return;
+    }
     const missing = missingDesignImages();
     if (missing.length > 0) {
       setError(
@@ -199,18 +199,17 @@ export default function CategoryOrderForm({
     fd.append("item", itemLabel);
     fd.append("quantity", quantity);
     if (config.vinylSelector) {
-      fd.append(sheetPricing ? "finish" : "vinyl", vinyl);
+      fd.append(kissCut ? "finish" : "vinyl", vinyl);
     }
     if (showSizeShape) {
       fd.append("size", size);
       fd.append("shape", shape);
     }
-    if (sheetPricing) {
-      fd.append("sheetSize", sheetSizeOption.id);
-      fd.append("stickersPerSheet", String(sheetSizeOption.stickersPerSheet));
-      fd.append("sheets", String(sheetCount));
-      if (sheetCents != null && totalCents != null) {
-        fd.append("pricePerSheet", formatSGD(sheetCents / 100));
+    if (kissCut) {
+      fd.append("kissCut", "1");
+      fd.append("stickerCount", String(stickerCount));
+      if (perStickerCents != null && totalCents != null) {
+        fd.append("pricePerSticker", formatKissCutUnit(perStickerCents));
         fd.append("priceTotal", formatSGD(totalCents / 100));
       }
     }
@@ -305,44 +304,25 @@ export default function CategoryOrderForm({
       className="mx-auto max-w-3xl rounded-2xl border border-slate-800/70 bg-slate-900/40 p-8"
     >
       <div className="mb-6 grid gap-4 sm:grid-cols-2">
-        {sheetPricing ? (
-          <label className="block">
-            <span className="mb-2 block text-sm font-medium text-slate-300">
-              Sheet size
-            </span>
-            <select
-              value={sheetSize}
-              onChange={(e) => setSheetSize(e.target.value)}
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white focus:border-[#FFD60A] focus:outline-none"
-            >
-              {KISS_CUT_SHEET_SIZES.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.label} — {s.stickersPerSheet} stickers
-                </option>
-              ))}
-            </select>
-          </label>
-        ) : (
-          <label className="block">
-            <span className="mb-2 block text-sm font-medium text-slate-300">
-              What are you ordering?
-            </span>
-            <select
-              value={item}
-              onChange={(e) => setItem(e.target.value)}
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white focus:border-[#FFD60A] focus:outline-none"
-            >
-              {category.orderItems.map((i) => (
-                <option key={i.id} value={i.id}>
-                  {i.label}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
         <label className="block">
           <span className="mb-2 block text-sm font-medium text-slate-300">
-            {sheetPricing ? "Number of sheets" : "Quantity"}
+            What are you ordering?
+          </span>
+          <select
+            value={item}
+            onChange={(e) => setItem(e.target.value)}
+            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white focus:border-[#FFD60A] focus:outline-none"
+          >
+            {category.orderItems.map((i) => (
+              <option key={i.id} value={i.id}>
+                {i.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="block">
+          <span className="mb-2 block text-sm font-medium text-slate-300">
+            {kissCut ? "Number of stickers" : "Quantity"}
           </span>
           <input
             type="number"
@@ -413,32 +393,34 @@ export default function CategoryOrderForm({
         </label>
       ) : null}
 
-      {sheetPricing ? (
+      {kissCut ? (
         <div className="mb-6 rounded-xl border border-[#FFD60A]/30 bg-[#FFD60A]/10 p-5">
-          {sheetCents == null || totalCents == null ? (
+          {perStickerCents == null || totalCents == null ? (
             <p className="text-sm text-slate-300">
-              Select a finish to see your per-sheet price.
+              Select a finish to see your per-sticker price.
             </p>
           ) : (
             <>
               <p className="text-sm text-slate-300">
-                {sheetSizeOption.label} sheet ·{" "}
-                {sheetSizeOption.stickersPerSheet} stickers · {size}cm ·{" "}
-                {vinyl}
+                {stickerCount} sticker{stickerCount === 1 ? "" : "s"} ·{" "}
+                {size}cm · {vinyl}
               </p>
               <div className="mt-3 flex flex-wrap items-end justify-between gap-2">
                 <p className="text-sm text-slate-400">
                   <span className="text-lg font-semibold text-white">
-                    {formatSGD(sheetCents / 100)}
+                    {formatKissCutUnit(perStickerCents)}
                   </span>{" "}
-                  per sheet
+                  per sticker
                 </p>
                 <p className="text-sm text-slate-400">
-                  {sheetCount} sheet{sheetCount === 1 ? "" : "s"}
+                  {stickerCount} sticker{stickerCount === 1 ? "" : "s"}
                 </p>
               </div>
               <p className="mt-2 text-2xl font-bold text-[#FFD60A]">
                 Total {formatSGD(totalCents / 100)}
+              </p>
+              <p className="mt-1 text-xs text-slate-500">
+                Includes the $3.00 flat sheet fee per order.
               </p>
             </>
           )}
