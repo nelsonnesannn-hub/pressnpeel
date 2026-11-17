@@ -14,19 +14,24 @@ export const EMAIL = "nelsonnesan.nn@gmail.com";
 // so a link taken out of the top bar can be kept in the footer by listing it
 // in FOOTER_ONLY_LINKS.
 //
-// A link may only be dropped from the top nav once it is still reachable from
-// the Products dropdown. "Signs & Labels" (/b2b) and "Custom Upload" (/custom)
-// are NOT category pages, so the dropdown does not carry them — they stay.
+// "Signs & Labels" (/b2b) and "Custom Upload" (/custom) were removed from the
+// top nav and the mobile menu (owner decision, Nov 2026): the upload option is
+// already in every product page's order form, and Signs & Labels sits under
+// Products. They stay in FOOTER_ONLY_LINKS so the pages remain reachable.
 export const NAV_LINKS = [
-  { href: "/custom", label: "Custom Upload" },
-  { href: "/b2b", label: "Signs & Labels" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
+];
+
+const FOOTER_ONLY_LINKS = [
+  { href: "/custom", label: "Custom Upload" },
+  { href: "/b2b", label: "Signs & Labels" },
 ];
 
 const FOOTER_LINKS = [
   { href: "/products", label: "Products" },
   ...NAV_LINKS,
+  ...FOOTER_ONLY_LINKS,
 ];
 
 // The Products dropdown lists orderable categories only — teaser categories
