@@ -104,6 +104,8 @@ export type Category = {
   orderItems: CategoryOrderItem[];
   /** Teaser only — no order form and kept out of the Products dropdown. */
   comingSoon?: boolean;
+  /** Custom heading for the coming-soon teaser block. */
+  comingSoonTitle?: string;
   /** Hide the order form entirely (coming-soon note instead). */
   orderable?: boolean;
   /** Colour options shown on the page (Vinyl Decals & HTV). */
@@ -571,9 +573,9 @@ export const categories: Category[] = [
         caption: "No-smoking sign",
       },
     ],
-    orderTitle: "Request a Quote — Signs",
+    orderTitle: "Signs — Coming Soon",
     orderSubtitle:
-      "Tell us the sign text, size (A4 / A3), and quantity. We’ll reply on WhatsApp or email with a quote before any payment.",
+      "Printed signs are not orderable yet. See the samples and message us on WhatsApp to be notified.",
     orderItems: [
       { id: "safety", label: "Safety / compliance sign" },
       { id: "no-smoking", label: "No-smoking sign" },
@@ -581,6 +583,11 @@ export const categories: Category[] = [
       { id: "other", label: "Other sign" },
     ],
     form: { requireDesign: true },
+    // Teaser only — samples stay visible, no quote form, hidden from the
+    // Products dropdown. Flip these two flags off to re-enable ordering.
+    comingSoon: true,
+    orderable: false,
+    comingSoonTitle: "Printed signs are coming soon.",
   },
 ];
 

@@ -96,6 +96,7 @@ const SECTIONS = [
       "Printed safety & compliance signs — A4 or A3 on durable vinyl.",
     image: "/images/signs-lifestyle.jpg",
     href: "/products/signs",
+    badge: "Coming soon",
   },
 ];
 

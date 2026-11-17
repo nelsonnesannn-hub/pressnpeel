@@ -177,9 +177,10 @@ export default function CategoryPage({ category }: { category: Category }) {
         {comingSoon ? (
           <div className="mx-auto max-w-2xl rounded-2xl border border-[#FFD60A]/30 bg-[#FFD60A]/10 p-10 text-center">
             <h3 className="text-2xl font-bold text-white">
-              {category.comingSoon
-                ? "Vinyl decals & HTV are coming soon."
-                : "Coaster packs are coming soon."}
+              {category.comingSoonTitle ??
+                (category.comingSoon
+                  ? "Vinyl decals & HTV are coming soon."
+                  : "Coaster packs are coming soon.")}
             </h3>
             <p className="mt-3 text-slate-300">
               {category.orderSubtitle}

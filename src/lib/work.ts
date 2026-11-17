@@ -118,7 +118,7 @@ export const workGroups: WorkGroup[] = [
         caption: "Coach Julia — Shine Brightly, Little Gymnast",
       },
       {
-        src: w("childrens-day", 2),
+        src: "/images/die-cut-sample-coach-rey.jpg",
         caption: "Coach Rey / KGA — Happy Children's Day",
       },
     ],
