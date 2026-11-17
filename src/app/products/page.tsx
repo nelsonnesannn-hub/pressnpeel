@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { products } from "@/lib/catalog";
-import { categories } from "@/lib/categories";
+import { categories, categoryBadge } from "@/lib/categories";
 import { formatSGD } from "@/lib/pricing";
 
 export const metadata = {
@@ -50,12 +50,18 @@ export default function ProductsPage() {
               <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
                 {category.tagline}
               </p>
-              <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-slate-200">
-                View category
-                <span className="transition-transform group-hover:translate-x-0.5">
-                  →
+              {categoryBadge(category) ? (
+                <span className="mt-4 inline-flex w-fit rounded-full border border-[#FFD60A]/40 bg-[#FFD60A]/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-[#FFD60A]">
+                  {categoryBadge(category)}
                 </span>
-              </span>
+              ) : (
+                <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-slate-200">
+                  View category
+                  <span className="transition-transform group-hover:translate-x-0.5">
+                    →
+                  </span>
+                </span>
+              )}
             </div>
           </Link>
         ))}

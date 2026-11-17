@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { products } from "@/lib/catalog";
+import { products, COASTER_PACKS } from "@/lib/catalog";
 import { formatSGD } from "@/lib/pricing";
 import { WHATSAPP_URL } from "@/components/nav";
 import WorkGallery from "@/components/work-gallery";
@@ -70,6 +70,7 @@ const SECTIONS = [
       "Cut-only vinyl decals and heat transfer vinyl — not printed. Any size, any shape.",
     image: "/images/decal-lifestyle.jpg",
     href: "/products/vinyl-decals",
+    badge: "Coming soon",
   },
   {
     id: "keychains",
@@ -86,6 +87,7 @@ const SECTIONS = [
       "Laser-engraved coasters in birch ply, pine, or acrylic. Sold as a pack of 5.",
     image: "/images/laser-lifestyle.jpg",
     href: "/products/laser",
+    badge: "Coming soon",
   },
   {
     id: "signs",
@@ -302,6 +304,11 @@ export default function HomePage() {
                 <p className="mt-1.5 text-sm leading-relaxed text-slate-400">
                   {s.subtitle}
                 </p>
+                {s.badge ? (
+                  <span className="mt-3 inline-flex rounded-full border border-[#FFD60A]/40 bg-[#FFD60A]/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-[#FFD60A]">
+                    {s.badge}
+                  </span>
+                ) : null}
               </Link>
             ))}
           </div>
@@ -419,6 +426,67 @@ export default function HomePage() {
             >
               See all products →
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* =============================================================
+          COMING SOON — COASTER PACKS
+          ============================================================= */}
+      <section className="border-t border-slate-800/60 bg-slate-900/40 py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-12 text-center">
+            <span
+              className="mb-3 inline-block rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-slate-950"
+              style={{ backgroundColor: BRONZE }}
+            >
+              Coming soon
+            </span>
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Coaster Packs
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-slate-400">
+              Packs of 5 — random motivational quotes, no custom designs.
+            </p>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {COASTER_PACKS.map((pack) => (
+              <article
+                key={pack.id}
+                className="group flex flex-col overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900/40 transition-all hover:border-[#FFD60A]/30 hover:bg-slate-900/70"
+              >
+                <span className="block overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={pack.image}
+                    alt={pack.label}
+                    className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                </span>
+                <div className="flex flex-1 flex-col p-6">
+                  <span className="mb-3 inline-block w-fit rounded-full border border-[#FFD60A]/40 bg-[#FFD60A]/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-[#FFD60A]">
+                    Coming soon
+                  </span>
+                  <h3 className="text-lg font-semibold text-white">
+                    {pack.label} coasters
+                  </h3>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
+                    {pack.blurb}
+                  </p>
+                  <p
+                    className="mt-4 text-xl font-bold"
+                    style={{ color: BRONZE }}
+                  >
+                    {formatSGD(pack.price)}{" "}
+                    <span className="text-sm font-medium text-slate-400">
+                      per pack of 5
+                    </span>
+                  </p>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>

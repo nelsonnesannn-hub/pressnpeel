@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Category, CategorySample } from "@/lib/categories";
 import CategoryOrderForm from "./category-order-form";
+import { WHATSAPP_URL } from "./nav";
 
 function SampleGrid({ samples }: { samples: CategorySample[] }) {
   return (
@@ -23,6 +24,11 @@ function SampleGrid({ samples }: { samples: CategorySample[] }) {
             <p className="flex-1 text-sm font-medium leading-relaxed text-slate-200">
               {sample.caption}
             </p>
+            {sample.badge ? (
+              <span className="mt-3 inline-flex w-fit rounded-full border border-[#FFD60A]/40 bg-[#FFD60A]/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-[#FFD60A]">
+                {sample.badge}
+              </span>
+            ) : null}
             {sample.priceLabel ? (
               <p
                 className="mt-3 text-lg font-bold"
@@ -48,6 +54,8 @@ function SampleGrid({ samples }: { samples: CategorySample[] }) {
 }
 
 export default function CategoryPage({ category }: { category: Category }) {
+  const comingSoon = category.orderable === false;
+
   return (
     <div className="mx-auto max-w-7xl px-6 py-16">
       {/* Header */}
@@ -122,11 +130,41 @@ export default function CategoryPage({ category }: { category: Category }) {
         ) : null}
       </section>
 
+      {/* Colour options (Vinyl Decals & HTV) */}
+      {category.colours && category.colours.length > 0 ? (
+        <section className="mb-16">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="mb-3 inline-block rounded-full border border-[#FFD60A]/40 bg-[#FFD60A]/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#FACC15]">
+              Colours
+            </span>
+            <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+              Colour Options
+            </h2>
+            <p className="mt-3 text-slate-400">
+              Available for both vinyl decals and HTV.
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              {category.colours.map((colour) => (
+                <span
+                  key={colour}
+                  className="rounded-full border border-slate-700 bg-slate-900 px-5 py-2.5 text-sm font-medium text-slate-200"
+                >
+                  {colour}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       {/* Custom order form */}
       <section id="order" className="scroll-mt-24">
         <div className="mb-10 text-center">
-          <span className="mb-3 inline-block rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-slate-950" style={{ backgroundColor: "#FFD60A" }}>
-            Custom Order
+          <span
+            className="mb-3 inline-block rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-slate-950"
+            style={{ backgroundColor: "#FFD60A" }}
+          >
+            {comingSoon ? "Coming Soon" : "Custom Order"}
           </span>
           <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
             {category.orderTitle}
@@ -136,7 +174,27 @@ export default function CategoryPage({ category }: { category: Category }) {
           </p>
         </div>
 
-        {category.quoteSections ? (
+        {comingSoon ? (
+          <div className="mx-auto max-w-2xl rounded-2xl border border-[#FFD60A]/30 bg-[#FFD60A]/10 p-10 text-center">
+            <h3 className="text-2xl font-bold text-white">
+              {category.comingSoon
+                ? "Vinyl decals & HTV are coming soon."
+                : "Coaster packs are coming soon."}
+            </h3>
+            <p className="mt-3 text-slate-300">
+              {category.orderSubtitle}
+            </p>
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-slate-950"
+              style={{ backgroundColor: "#FFD60A" }}
+            >
+              Chat on WhatsApp
+            </a>
+          </div>
+        ) : category.quoteSections ? (
           category.quoteSections.map((section) => (
             <div key={section.id} className="mb-14 last:mb-0">
               <div className="mb-6 text-center">
@@ -155,11 +213,12 @@ export default function CategoryPage({ category }: { category: Category }) {
               <CategoryOrderForm
                 category={category}
                 sectionTitle={section.title}
+                form={section.form}
               />
             </div>
           ))
         ) : (
-          <CategoryOrderForm category={category} />
+          <CategoryOrderForm category={category} form={category.form} />
         )}
       </section>
     </div>

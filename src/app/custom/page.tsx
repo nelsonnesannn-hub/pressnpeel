@@ -9,6 +9,8 @@ export const metadata = {
 };
 
 export default function CustomPage() {
+  const orderableCategories = categories.filter((c) => !c.comingSoon);
+
   return (
     <div className="mx-auto max-w-6xl px-6 py-16">
       <div className="mb-12 text-center">
@@ -22,7 +24,7 @@ export default function CustomPage() {
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {categories.map((category) => (
+        {orderableCategories.map((category) => (
           <Link
             key={category.slug}
             href={`/products/${category.slug}`}

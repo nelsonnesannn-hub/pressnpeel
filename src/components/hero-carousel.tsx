@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 const SLIDES = [
-  { src: "/images/work/pnp-cards/01.jpg", alt: "Press N Peel branded cards" },
+  { src: "/images/work/pnp-cards/01.jpg", alt: "Press N Peel logo vinyl stickers" },
   { src: "/images/work/pnp-cards/02.jpg", alt: "Press N Peel wordmark cards" },
   { src: "/images/work/pnp-cards/03.jpg", alt: "Press N Peel logo cards" },
   { src: "/images/work/pnp-cards/04.jpg", alt: "Press N Peel card pile" },

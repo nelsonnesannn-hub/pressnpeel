@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Place Your Order | Press N Peel",
   description:
-    "Order printable vinyl, NFC and acrylic keychains, and laser-engraved coasters online. Pay securely with Stripe or order via WhatsApp.",
+    "Order printable vinyl, NFC and acrylic keychains online. Pay securely with Stripe or order via WhatsApp.",
 };
 
 export default function OrderPage() {

@@ -11,6 +11,8 @@ export type CategorySample = {
   priceLabel?: string;
   /** Link to the existing Stripe order flow for this sample. */
   orderHref?: string;
+  /** Small pill shown on the card (e.g. "Coming soon"). */
+  badge?: string;
 };
 
 export type CategoryOrderItem = { id: string; label: string };
@@ -21,11 +23,58 @@ export type SampleGroup = {
   samples: CategorySample[];
 };
 
+/** The 7 printable-vinyl finishes — names only, never prices. */
+export const VINYL_FINISHES = [
+  "Matte vinyl white",
+  "Glossy vinyl white",
+  "Gold reflective vinyl",
+  "Silver reflective vinyl",
+  "Silver holographic vinyl",
+  "Broken glass silver holographic",
+  "Confetti/dotted silver holographic vinyl",
+];
+
+/** Vinyl Decals & HTV colour options. */
+export const DECAL_COLOURS = [
+  "Black",
+  "White",
+  "Blue",
+  "Green",
+  "Red",
+  "Gold",
+  "Silver Holographic",
+];
+
+export type QuoteUploadField = {
+  /** Form field id, also used as the enquiry label. */
+  id: string;
+  label: string;
+  hint?: string;
+  /** Allow more than one file (sticker images). */
+  multiple?: boolean;
+};
+
+/** Optional extra fields rendered by the category order form. */
+export type OrderFormConfig = {
+  /** "Vinyl printed on" selector with the 7 finishes. */
+  vinylSelector?: boolean;
+  /** Size + shape fields. */
+  sizeShape?: boolean;
+  /** Only show size/shape when the selected item id is in this list. */
+  sizeShapeItems?: string[];
+  /** "White offset" choice. */
+  whiteOffset?: boolean;
+  /** Extra upload fields carried through to the enquiry. */
+  uploads?: QuoteUploadField[];
+};
+
 export type QuoteSection = {
   id: string;
   title: string;
   blurb?: string;
   samples: CategorySample[];
+  /** Per-section form extras. */
+  form?: OrderFormConfig;
 };
 
 export type Category = {
@@ -47,6 +96,14 @@ export type Category = {
   orderTitle: string;
   orderSubtitle: string;
   orderItems: CategoryOrderItem[];
+  /** Teaser only — no order form and kept out of the Products dropdown. */
+  comingSoon?: boolean;
+  /** Hide the order form entirely (coming-soon note instead). */
+  orderable?: boolean;
+  /** Colour options shown on the page (Vinyl Decals & HTV). */
+  colours?: string[];
+  /** Form extras for the single-form layout (when quoteSections is absent). */
+  form?: OrderFormConfig;
 };
 
 const product = (slug: string) => {
@@ -64,6 +121,13 @@ const buyHref = (slug: string, optionId?: string) =>
   optionId
     ? `/order?product=${slug}&option=${encodeURIComponent(optionId)}`
     : `/order?product=${slug}`;
+
+/** Badge shown on category cards (home + /products index). */
+export function categoryBadge(category: Category): string | undefined {
+  if (category.comingSoon) return "Coming soon";
+  if (category.orderable === false) return "Coming soon";
+  return undefined;
+}
 
 // Stickers & labels samples — kept as a named list so the category page can
 // group the two label-sheet shots under their own heading without duplicating
@@ -90,14 +154,14 @@ const stickerSamples: CategorySample[] = [
   },
   { src: "/images/work/eaispire/01.jpg", caption: "Eaispire mascot sticker assortment" },
   { src: "/images/work/eaispire/04.jpg", caption: "Eaispire mascot and logo stickers" },
-  { src: "/images/work/motivational/08.jpg", caption: "Keep Going — sea-creature sticker range" },
+  { src: "/images/work/motivational/08.jpg", caption: "Motivational stickers" },
   { src: "/images/work/motivational/16.jpg", caption: "It's a new day — motivational sticker" },
   { src: "/images/work/events/01.jpg", caption: "Children's Day gymnastics stickers" },
   { src: "/images/work/events/02.jpg", caption: "Sarah unicorn birthday stickers" },
   { src: "/images/work/small-business/01.jpg", caption: "Small-business brand stickers" },
   { src: "/images/work/safety-labels/01.jpg", caption: "GAMX equipment labels" },
   { src: "/images/work/safety-labels/05.jpg", caption: "Safety Inducted tags" },
-  { src: "/images/work/pnp-cards/01.jpg", caption: "Press N Peel branded cards" },
+  { src: "/images/work/pnp-cards/01.jpg", caption: "Press N Peel logo vinyl stickers" },
 ];
 
 export const categories: Category[] = [
@@ -138,31 +202,69 @@ export const categories: Category[] = [
             caption: "HYP — kiss-cut label sheet",
           },
         ],
+        form: { vinylSelector: true, sizeShape: true },
       },
       {
         id: "die-cut",
         title: "Die cut",
         blurb: "Die-cut stickers cut to the exact shape of your design.",
         samples: [
-          { src: "/images/work/motivational/03.jpg", caption: "Keep Going sticker pile" },
           {
-            src: "/images/work/motivational/08.jpg",
-            caption: "Keep Going — sea-creature sticker range",
+            src: "/images/die-cut-sample-pressnpeel-holographic.jpg",
+            caption: "Press N Peel logo vinyl stickers",
           },
           {
-            src: "/images/work/motivational/16.jpg",
-            caption: "It's a new day — motivational sticker",
-          },
-          { src: "/images/work/brand/01.jpg", caption: "Eaispire mascot assortment" },
-          {
-            src: "/images/work/eaispire/04.jpg",
-            caption: "Eaispire mascot and logo stickers",
+            src: "/images/die-cut-sample-coach-rey.jpg",
+            caption: "Coach Rey Children's Day die-cut stickers",
           },
           {
-            src: "/images/work/events/02.jpg",
-            caption: "Sarah unicorn birthday stickers",
+            src: "/images/die-cut-sample-eaispire-robot.jpg",
+            caption: "Eaispire robot mascot die-cut stickers",
           },
         ],
+        form: { vinylSelector: true, sizeShape: true, whiteOffset: true },
+      },
+      {
+        id: "sticker-packs",
+        title: "Sticker packs",
+        blurb:
+          "Die-cut stickers packed with printed backings — for gifts and events.",
+        samples: [
+          {
+            src: "/images/sticker-pack-sample-eaispire-back.jpg",
+            caption: "Eaispire Meetup #01 pack — back (Learn it. Build it. Make it. + QR)",
+          },
+          {
+            src: "/images/sticker-pack-sample-eaispire-front.jpg",
+            caption: "Eaispire Meetup #01 pack — front with sticker fan",
+          },
+          {
+            src: "/images/sticker-pack-sample-eaispire-row.jpg",
+            caption: "Eaispire Meetup #01 sticker packs — row of 4",
+          },
+        ],
+        form: {
+          vinylSelector: true,
+          sizeShape: true,
+          uploads: [
+            {
+              id: "sticker_images",
+              label: "Sticker images",
+              hint: "Upload one or more sticker designs",
+              multiple: true,
+            },
+            {
+              id: "backing_front",
+              label: "Backing — front image",
+              hint: "One image for the front of the backing card",
+            },
+            {
+              id: "backing_back",
+              label: "Backing — back image",
+              hint: "One image for the back of the backing card",
+            },
+          ],
+        },
       },
     ],
     orderTitle: "Request a Quote — Stickers & Labels",
@@ -275,14 +377,17 @@ export const categories: Category[] = [
         caption: "HTV pressed onto a folded tee",
       },
     ],
-    orderTitle: "Request a Quote — Decals & HTV",
+    orderTitle: "Vinyl Decals & HTV — Coming Soon",
     orderSubtitle:
-      "Upload your artwork and tell us the size and quantity. We’ll reply on WhatsApp or email with a quote before any payment.",
+      "Vinyl decals and HTV are not orderable yet. See the samples and colour options, and message us on WhatsApp to be notified.",
     orderItems: [
       { id: "decal", label: "Vinyl decal" },
       { id: "htv", label: "HTV / heat transfer vinyl" },
       { id: "other", label: "Other cut-only vinyl" },
     ],
+    colours: DECAL_COLOURS,
+    comingSoon: true,
+    orderable: false,
   },
   {
     slug: "keychains",
@@ -344,37 +449,38 @@ export const categories: Category[] = [
       "Upload your artwork and tell us the quantity. NFC link setup is included — just supply the link.",
     orderItems: [
       { id: "nfc", label: "NFC keychain (4cm x 4cm)" },
-      { id: "acrylic", label: "Acrylic keychain (5cm x 5cm)" },
       { id: "other", label: "Other custom keychain" },
     ],
+    form: { sizeShape: true, sizeShapeItems: ["nfc"] },
   },
   {
     slug: "laser",
     name: "Laser",
     title: "Laser — Coasters",
-    tagline: "Laser-engraved coasters",
+    tagline: "Laser-engraved coaster packs — coming soon",
     description:
-      "Laser-engraved coasters made to order — birch ply, pine, or acrylic. Sold as a pack of 5 coasters, minimum order 5 pcs, with your design, name, or message.",
+      "Laser-engraved coaster packs made to order — birch ply, pine, or acrylic. Sold as a pack of 5 with random motivational quotes; no custom designs.",
     cardImage: "/images/laser-lifestyle.jpg",
-    samplesIntro: "Sold as a pack of 5 — minimum order 5 pcs (1 pack).",
+    samplesIntro:
+      "Packs of 5 · random motivational quotes · no custom designs.",
     samples: [
       {
         src: "/images/work/coasters-pine/02.jpg",
         caption: "Birch ply — engraved coasters",
         priceLabel: `${formatSGD(option("coasters", "birch-ply").price)} per pack of 5`,
-        orderHref: buyHref("coasters", "birch-ply"),
+        badge: "Coming soon",
       },
       {
         src: "/images/work/coasters-pine/01.jpg",
         caption: "Pine — engraved coasters",
         priceLabel: `${formatSGD(option("coasters", "pine").price)} per pack of 5`,
-        orderHref: buyHref("coasters", "pine"),
+        badge: "Coming soon",
       },
       {
         src: "/images/work/coasters-holo/04.jpg",
         caption: "Acrylic — engraved coasters",
         priceLabel: `${formatSGD(option("coasters", "acrylic").price)} per pack of 5`,
-        orderHref: buyHref("coasters", "acrylic"),
+        badge: "Coming soon",
       },
       {
         src: "/images/work/coasters-pine/03.jpg",
@@ -407,15 +513,16 @@ export const categories: Category[] = [
       },
       { src: "/images/work/coasters-pine/07.jpg", caption: "Engraved coasters in a row" },
     ],
-    orderTitle: "Order Custom Coasters",
+    orderTitle: "Coaster Packs — Coming Soon",
     orderSubtitle:
-      "Upload your design or message and tell us the material and quantity. We’ll confirm the proof before engraving.",
+      "Coaster packs are packs of 5 with random motivational quotes — no custom designs. Ordering opens shortly.",
     orderItems: [
       { id: "birch-ply", label: "Birch ply coasters" },
       { id: "pine", label: "Pine coasters" },
       { id: "acrylic", label: "Acrylic coasters" },
       { id: "other", label: "Other laser-engraved item" },
     ],
+    orderable: false,
   },
   {
     slug: "signs",

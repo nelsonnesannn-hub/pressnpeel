@@ -24,7 +24,6 @@ export const workGroups: WorkGroup[] = [
     blurb:
       "Die-cut motivational sticker ranges — sea creatures, animals, and keep-going quotes, cut to any shape.",
     items: [
-      { src: w("motivational", 1), caption: "Motivational die-cut assortment" },
       { src: w("motivational", 2), caption: "Keep Going collection" },
       { src: w("motivational", 3), caption: "Keep Going sticker pile" },
       { src: w("motivational", 4), caption: "Sea-creature and quote mix" },
@@ -42,27 +41,12 @@ export const workGroups: WorkGroup[] = [
     ],
   },
   {
-    id: "namecards",
-    title: "Namecards & Packaging",
-    blurb:
-      "Press N Peel namecards, business cards, and branded black packet packaging shots.",
-    items: [
-      { src: w("namecards", 1), caption: "Keep Going sticker on black packet" },
-      { src: w("motivational", 6), caption: "Press N Peel namecard with QR code" },
-      {
-        src: w("motivational", 7),
-        caption: "Press N Peel namecards with dog logo",
-      },
-      { src: w("namecards", 4), caption: "Birthday sticker for party packaging" },
-    ],
-  },
-  {
     id: "pnp-cards",
     title: "Press N Peel Branded Cards",
     blurb:
       "Press N Peel wordmark cards and logo sheets — the brand we print for ourselves and our clients.",
     items: [
-      { src: w("pnp-cards", 1), caption: "Press N Peel branded cards" },
+      { src: w("pnp-cards", 1), caption: "Press N Peel logo vinyl stickers" },
       { src: w("pnp-cards", 2), caption: "Press N Peel wordmark cards" },
       { src: w("pnp-cards", 3), caption: "Press N Peel logo cards" },
       { src: w("pnp-cards", 4), caption: "Press N Peel card pile" },

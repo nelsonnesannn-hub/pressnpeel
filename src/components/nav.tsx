@@ -21,6 +21,10 @@ const FOOTER_LINKS = [
   ...NAV_LINKS,
 ];
 
+// The Products dropdown lists orderable categories only — teaser categories
+// (e.g. Vinyl Decals, coming soon) are left out.
+const NAV_CATEGORIES = categories.filter((c) => !c.comingSoon);
+
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -71,7 +75,7 @@ export function Header() {
             </Link>
             <div className="invisible absolute left-0 top-full z-50 w-72 pt-2 opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100">
               <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 p-2 shadow-2xl">
-                {categories.map((category) => (
+                {NAV_CATEGORIES.map((category) => (
                   <Link
                     key={category.slug}
                     href={`/products/${category.slug}`}
@@ -133,7 +137,7 @@ export function Header() {
                 <li className="px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-widest text-slate-500">
                   Products
                 </li>
-                {categories.map((category) => (
+                {NAV_CATEGORIES.map((category) => (
                   <li key={category.slug}>
                     <Link
                       href={`/products/${category.slug}`}

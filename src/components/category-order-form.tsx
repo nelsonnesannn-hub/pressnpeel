@@ -2,16 +2,86 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import type { Category } from "@/lib/categories";
+import type { Category, OrderFormConfig, QuoteUploadField } from "@/lib/categories";
+import { VINYL_FINISHES } from "@/lib/categories";
 import { WHATSAPP_URL } from "./nav";
+
+// 4cm in 0.5cm steps up to 10cm.
+const SIZE_OPTIONS = Array.from({ length: 13 }, (_, i) =>
+  (4 + i * 0.5).toFixed(1).replace(/\.0$/, "")
+);
+
+function UploadField({
+  label,
+  hint,
+  multiple,
+  files,
+  onChange,
+}: {
+  label: React.ReactNode;
+  hint?: string;
+  multiple?: boolean;
+  files: File[];
+  onChange: (files: File[]) => void;
+}) {
+  return (
+    <label className="mb-6 block">
+      <span className="mb-2 block text-sm font-medium text-slate-300">
+        {label}
+      </span>
+      <span className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-700 bg-slate-950/50 px-6 py-8 text-center transition-colors hover:border-[#FFD60A]/50">
+        <svg
+          className="mb-3 h-8 w-8 text-slate-500"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <path d="M17 8l-5-5-5 5" />
+          <path d="M12 3v12" />
+        </svg>
+        {files.length > 0 ? (
+          <span className="text-sm font-medium text-emerald-400">
+            {files.map((f) => f.name).join(", ")}
+          </span>
+        ) : (
+          <span className="text-sm text-slate-400">
+            Click to upload or drag &amp; drop
+          </span>
+        )}
+        {hint ? (
+          <span className="mt-1 text-xs text-slate-600">{hint}</span>
+        ) : null}
+      </span>
+      <input
+        type="file"
+        accept="image/*,.pdf,.svg"
+        multiple={multiple}
+        className="sr-only"
+        onChange={(e) =>
+          onChange(
+            e.target.files ? Array.from(e.target.files).slice(0, multiple ? 12 : 1) : []
+          )
+        }
+      />
+    </label>
+  );
+}
 
 export default function CategoryOrderForm({
   category,
   sectionTitle,
+  form,
 }: {
   category: Category;
   sectionTitle?: string;
+  form?: OrderFormConfig;
 }) {
+  const config = form ?? {};
   const [item, setItem] = useState(category.orderItems[0]?.id ?? "");
   const [quantity, setQuantity] = useState("1");
   const [notes, setNotes] = useState("");
@@ -19,6 +89,11 @@ export default function CategoryOrderForm({
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [vinyl, setVinyl] = useState("");
+  const [size, setSize] = useState("4");
+  const [shape, setShape] = useState("");
+  const [whiteOffset, setWhiteOffset] = useState(false);
+  const [uploads, setUploads] = useState<Record<string, File[]>>({});
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
@@ -28,6 +103,15 @@ export default function CategoryOrderForm({
     category.orderItems.find((i) => i.id === item)?.label ??
     category.orderItems[0]?.label ??
     "";
+
+  const showSizeShape =
+    Boolean(config.sizeShape) &&
+    (!config.sizeShapeItems || config.sizeShapeItems.includes(item));
+
+  const allFiles = [
+    ...(file ? [file] : []),
+    ...(config.uploads ?? []).flatMap((u) => uploads[u.id] ?? []),
+  ];
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -46,12 +130,23 @@ export default function CategoryOrderForm({
     fd.append("type", category.title);
     fd.append("item", itemLabel);
     fd.append("quantity", quantity);
+    if (config.vinylSelector) fd.append("vinyl", vinyl);
+    if (showSizeShape) {
+      fd.append("size", size);
+      fd.append("shape", shape);
+    }
+    if (config.whiteOffset) fd.append("whiteOffset", whiteOffset ? "Yes" : "No");
     fd.append("notes", notes);
     fd.append("name", name);
     fd.append("email", email);
     fd.append("phone", phone);
     fd.append("fileName", file?.name ?? "");
-    if (file) fd.append("file", file);
+    fd.append("upload_label:design", "Design file");
+    if (file) fd.append("file:design", file);
+    for (const u of config.uploads ?? []) {
+      fd.append(`upload_label:${u.id}`, u.label);
+      for (const f of uploads[u.id] ?? []) fd.append(`file:${u.id}`, f);
+    }
 
     try {
       const res = await fetch("/api/order", { method: "POST", body: fd });
@@ -87,10 +182,13 @@ export default function CategoryOrderForm({
         <p className="mt-3 text-slate-400">
           Thanks — we&apos;ve logged your{" "}
           <strong className="text-white">{itemLabel}</strong> request
-          {file ? (
+          {allFiles.length > 0 ? (
             <>
               {" "}
-              with <strong className="text-white">{file.name}</strong>
+              with{" "}
+              <strong className="text-white">
+                {allFiles.map((f) => f.name).join(", ")}
+              </strong>
             </>
           ) : null}
           . We&apos;ll reply on WhatsApp or email with a quote and proof before
@@ -153,46 +251,105 @@ export default function CategoryOrderForm({
         </label>
       </div>
 
-      <label className="mb-6 block">
-        <span className="mb-2 block text-sm font-medium text-slate-300">
-          Design file{" "}
-          <span className="text-slate-500">(PNG, JPG, SVG, PDF, AI)</span>
-        </span>
-        <span className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-700 bg-slate-950/50 px-6 py-10 text-center transition-colors hover:border-[#FFD60A]/50">
-          <svg
-            className="mb-3 h-8 w-8 text-slate-500"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden
-          >
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <path d="M17 8l-5-5-5 5" />
-            <path d="M12 3v12" />
-          </svg>
-          {file ? (
-            <span className="text-sm font-medium text-emerald-400">
-              {file.name}
+      {showSizeShape ? (
+        <div className="mb-6 grid gap-4 sm:grid-cols-2">
+          <label className="block">
+            <span className="mb-2 block text-sm font-medium text-slate-300">
+              Size
             </span>
-          ) : (
-            <span className="text-sm text-slate-400">
-              Click to upload or drag &amp; drop
+            <select
+              value={size}
+              onChange={(e) => setSize(e.target.value)}
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white focus:border-[#FFD60A] focus:outline-none"
+            >
+              {SIZE_OPTIONS.map((s) => (
+                <option key={s} value={s}>
+                  {s}cm
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block">
+            <span className="mb-2 block text-sm font-medium text-slate-300">
+              Shape
             </span>
-          )}
-          <span className="mt-1 text-xs text-slate-600">
-            Transparent PNG works best for die-cut
+            <input
+              value={shape}
+              onChange={(e) => setShape(e.target.value)}
+              placeholder="e.g. round, square, custom logo"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-[#FFD60A] focus:outline-none"
+            />
+          </label>
+          <p className="text-xs leading-relaxed text-slate-500 sm:col-span-2">
+            Shape is subject to Nelson&apos;s approval — if it cannot be made as
+            requested, he will suggest other shapes or cancel the order.
+          </p>
+        </div>
+      ) : null}
+
+      {config.vinylSelector ? (
+        <label className="mb-6 block">
+          <span className="mb-2 block text-sm font-medium text-slate-300">
+            Vinyl printed on
           </span>
-        </span>
-        <input
-          type="file"
-          accept="image/*,.pdf,.svg"
-          className="sr-only"
-          onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+          <select
+            value={vinyl}
+            onChange={(e) => setVinyl(e.target.value)}
+            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white focus:border-[#FFD60A] focus:outline-none"
+          >
+            <option value="">— Select vinyl —</option>
+            {VINYL_FINISHES.map((f) => (
+              <option key={f} value={f}>
+                {f}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : null}
+
+      {config.whiteOffset ? (
+        <label className="mb-6 flex cursor-pointer items-start gap-3 rounded-xl border border-slate-700 bg-slate-950/50 px-4 py-3">
+          <input
+            type="checkbox"
+            checked={whiteOffset}
+            onChange={(e) => setWhiteOffset(e.target.checked)}
+            className="mt-0.5 h-4 w-4 accent-[#FFD60A]"
+          />
+          <span>
+            <span className="block text-sm font-medium text-slate-200">
+              White offset
+            </span>
+            <span className="mt-0.5 block text-xs text-slate-500">
+              Add a white border around each sticker.
+            </span>
+          </span>
+        </label>
+      ) : null}
+
+      <UploadField
+        label={
+          <>
+            Design file{" "}
+            <span className="text-slate-500">(PNG, JPG, SVG, PDF, AI)</span>
+          </>
+        }
+        hint="Transparent PNG works best for die-cut"
+        files={file ? [file] : []}
+        onChange={(fs) => setFile(fs[0] ?? null)}
+      />
+
+      {(config.uploads ?? []).map((u: QuoteUploadField) => (
+        <UploadField
+          key={u.id}
+          label={u.label}
+          hint={u.hint}
+          multiple={u.multiple}
+          files={uploads[u.id] ?? []}
+          onChange={(fs) =>
+            setUploads((prev) => ({ ...prev, [u.id]: fs }))
+          }
         />
-      </label>
+      ))}
 
       <label className="mb-6 block">
         <span className="mb-2 block text-sm font-medium text-slate-300">

@@ -6,10 +6,10 @@ import type { ProductRow } from "@/lib/catalog";
 // Buyable products use the Stripe checkout instead.
 const QUOTE_HREF: Record<string, string> = {
   signs: "/products/signs#order",
-  "vinyl-decals": "/products/vinyl-decals#order",
+  "vinyl-decals": "/products/vinyl-decals",
   "printable-vinyl": "/products/printable-vinyl#order",
   keychains: "/products/keychains#order",
-  laser: "/products/laser#order",
+  laser: "/products/laser",
 };
 
 export default async function ProductDetail({

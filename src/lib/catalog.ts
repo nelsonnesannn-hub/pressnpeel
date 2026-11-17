@@ -150,7 +150,7 @@ export const products: ProductRow[] = [
     slug: "coasters",
     category: "laser",
     description:
-      "Laser-engraved coasters made to order — birch ply, pine, or acrylic. Sold as a pack of 5 coasters with your design, name, or message.",
+      "Laser-engraved coaster packs — birch ply, pine, or acrylic. Sold as a pack of 5 with random motivational quotes; no custom designs.",
     material: "birch ply / pine / acrylic",
     cut_type: "laser engraved",
     min_qty: 1,
@@ -160,7 +160,7 @@ export const products: ProductRow[] = [
     price: 10.3,
     price_unit: "per pack of 5",
     size: "Pack of 5 coasters",
-    buyable: true,
+    buyable: false,
     options: [
       { id: "birch-ply", label: "Birch ply", price: 10.3 },
       { id: "pine", label: "Pine", price: 12.6 },
@@ -251,5 +251,38 @@ export const products: ProductRow[] = [
     price: 4.5,
     price_unit: "per 5cm x 5cm piece",
     options: [{ id: "5x5", label: "5cm x 5cm", price: 4.5 }],
+  },
+];
+
+// Coaster packs — coming soon. Prices and photos are the live Laser-page set.
+export type CoasterPack = {
+  id: string;
+  label: string;
+  price: number;
+  image: string;
+  blurb: string;
+};
+
+export const COASTER_PACKS: CoasterPack[] = [
+  {
+    id: "birch-ply",
+    label: "Birch ply",
+    price: 10.3,
+    image: "/images/work/coasters-pine/02.jpg",
+    blurb: "Pack of 5 laser-engraved birch ply coasters — random motivational quotes.",
+  },
+  {
+    id: "pine",
+    label: "Pine",
+    price: 12.6,
+    image: "/images/work/coasters-pine/01.jpg",
+    blurb: "Pack of 5 laser-engraved pine coasters — random motivational quotes.",
+  },
+  {
+    id: "acrylic",
+    label: "Acrylic",
+    price: 14.0,
+    image: "/images/work/coasters-holo/04.jpg",
+    blurb: "Pack of 5 laser-engraved acrylic coasters — random motivational quotes.",
   },
 ];
