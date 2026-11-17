@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Category, CategorySample } from "@/lib/categories";
 import CategoryOrderForm from "./category-order-form";
+import OrderJumpBar, { orderSectionIds } from "./order-jump-bar";
 import { WHATSAPP_URL } from "./nav";
 
 function SampleGrid({ samples }: { samples: CategorySample[] }) {
@@ -55,6 +56,7 @@ function SampleGrid({ samples }: { samples: CategorySample[] }) {
 
 export default function CategoryPage({ category }: { category: Category }) {
   const comingSoon = category.orderable === false;
+  const sectionIds = orderSectionIds(category);
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-16">
@@ -70,6 +72,9 @@ export default function CategoryPage({ category }: { category: Category }) {
           {category.description}
         </p>
       </div>
+
+      {/* Quick-jump shortcuts to the order sections (orderable pages only) */}
+      <OrderJumpBar category={category} />
 
       {/* Samples */}
       <section className="mb-16">
@@ -196,8 +201,12 @@ export default function CategoryPage({ category }: { category: Category }) {
             </a>
           </div>
         ) : category.quoteSections ? (
-          category.quoteSections.map((section) => (
-            <div key={section.id} className="mb-14 last:mb-0">
+          category.quoteSections.map((section, index) => (
+            <div
+              key={section.id}
+              id={sectionIds[index]}
+              className="mb-14 scroll-mt-24 last:mb-0"
+            >
               <div className="mb-6 text-center">
                 <h3 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
                   {section.title}

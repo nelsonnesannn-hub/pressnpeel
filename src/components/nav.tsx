@@ -7,8 +7,16 @@ export const BRONZE_LIGHT = "#FACC15";
 export const WHATSAPP_URL = "https://wa.me/6587674511";
 export const EMAIL = "nelsonnesan.nn@gmail.com";
 
-// "Products" is a dropdown of the six shop categories, so it is rendered
+// The Products dropdown lists the six shop categories, so it is rendered
 // separately from the plain links.
+//
+// NAV_LINKS are the plain top-nav links. They are also used by the footer,
+// so a link taken out of the top bar can be kept in the footer by listing it
+// in FOOTER_ONLY_LINKS.
+//
+// A link may only be dropped from the top nav once it is still reachable from
+// the Products dropdown. "Signs & Labels" (/b2b) and "Custom Upload" (/custom)
+// are NOT category pages, so the dropdown does not carry them — they stay.
 export const NAV_LINKS = [
   { href: "/custom", label: "Custom Upload" },
   { href: "/b2b", label: "Signs & Labels" },
