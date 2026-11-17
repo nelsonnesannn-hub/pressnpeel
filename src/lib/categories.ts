@@ -15,6 +15,19 @@ export type CategorySample = {
 
 export type CategoryOrderItem = { id: string; label: string };
 
+export type SampleGroup = {
+  /** Optional heading rendered above this group of sample cards. */
+  title?: string;
+  samples: CategorySample[];
+};
+
+export type QuoteSection = {
+  id: string;
+  title: string;
+  blurb?: string;
+  samples: CategorySample[];
+};
+
 export type Category = {
   slug: string;
   /** Short label used in the header dropdown. */
@@ -25,8 +38,12 @@ export type Category = {
   description: string;
   cardImage: string;
   samples: CategorySample[];
+  /** Grouped layout for the samples section (optional). */
+  sampleGroups?: SampleGroup[];
   samplesIntro?: string;
   samplesNote?: string;
+  /** Split quote sections; falls back to one form when absent. */
+  quoteSections?: QuoteSection[];
   orderTitle: string;
   orderSubtitle: string;
   orderItems: CategoryOrderItem[];
@@ -48,6 +65,41 @@ const buyHref = (slug: string, optionId?: string) =>
     ? `/order?product=${slug}&option=${encodeURIComponent(optionId)}`
     : `/order?product=${slug}`;
 
+// Stickers & labels samples — kept as a named list so the category page can
+// group the two label-sheet shots under their own heading without duplicating
+// data. GAMX equipment labels appears once (the duplicate shot was removed).
+const labelSheetSrcs = new Set([
+  "/images/work/safety-labels/01.jpg",
+  "/images/work/safety-labels/05.jpg",
+]);
+
+const stickerSamples: CategorySample[] = [
+  { src: "/images/work/motivational/03.jpg", caption: "Keep Going sticker pile" },
+  { src: "/images/work/brand/01.jpg", caption: "Eaispire mascot assortment" },
+  { src: "/images/work/brand/09.jpg", caption: "Eaispire sticker pile" },
+  { src: "/images/work/b2b/01.jpg", caption: "JGR Fit For Use inspection labels" },
+  { src: "/images/work/namecards/01.jpg", caption: "Keep Going sticker on black packet" },
+  { src: "/images/work/namecards/02.jpg", caption: "Eaispire logo sticker" },
+  {
+    src: "/images/work/childrens-day/01.jpg",
+    caption: "Coach Julia — Shine Brightly, Little Gymnast",
+  },
+  {
+    src: "/images/work/childrens-day/02.jpg",
+    caption: "Coach Rey / KGA — Happy Children's Day",
+  },
+  { src: "/images/work/eaispire/01.jpg", caption: "Eaispire mascot sticker assortment" },
+  { src: "/images/work/eaispire/04.jpg", caption: "Eaispire mascot and logo stickers" },
+  { src: "/images/work/motivational/08.jpg", caption: "Keep Going — sea-creature sticker range" },
+  { src: "/images/work/motivational/16.jpg", caption: "It's a new day — motivational sticker" },
+  { src: "/images/work/events/01.jpg", caption: "Children's Day gymnastics stickers" },
+  { src: "/images/work/events/02.jpg", caption: "Sarah unicorn birthday stickers" },
+  { src: "/images/work/small-business/01.jpg", caption: "Small-business brand stickers" },
+  { src: "/images/work/safety-labels/01.jpg", caption: "GAMX equipment labels" },
+  { src: "/images/work/safety-labels/05.jpg", caption: "Safety Inducted tags" },
+  { src: "/images/work/pnp-cards/01.jpg", caption: "Press N Peel branded cards" },
+];
+
 export const categories: Category[] = [
   {
     slug: "stickers-and-labels",
@@ -59,32 +111,59 @@ export const categories: Category[] = [
     cardImage: "/images/stickers-labels-lifestyle.jpg",
     samplesIntro:
       "Samples of finished work — quoted per job, no published prices.",
-    samples: [
-      { src: "/images/work/motivational/03.jpg", caption: "Keep Going sticker pile" },
-      { src: "/images/work/brand/01.jpg", caption: "Eaispire mascot assortment" },
-      { src: "/images/work/brand/09.jpg", caption: "Eaispire sticker pile" },
-      { src: "/images/work/b2b/01.jpg", caption: "JGR Fit For Use inspection labels" },
-      { src: "/images/work/b2b/03.jpg", caption: "GAMX equipment labels" },
-      { src: "/images/work/namecards/01.jpg", caption: "Keep Going sticker on black packet" },
-      { src: "/images/work/namecards/02.jpg", caption: "Eaispire logo sticker" },
+    samples: stickerSamples,
+    sampleGroups: [
+      { samples: stickerSamples.filter((s) => !labelSheetSrcs.has(s.src)) },
       {
-        src: "/images/work/childrens-day/01.jpg",
-        caption: "Coach Julia — Shine Brightly, Little Gymnast",
+        title: "Label sheets / Kiss cut",
+        samples: stickerSamples.filter((s) => labelSheetSrcs.has(s.src)),
+      },
+    ],
+    quoteSections: [
+      {
+        id: "kiss-cut",
+        title: "Kiss cut",
+        blurb: "Sticker sheets with peelable stickers, used as labels.",
+        samples: [
+          {
+            src: "/images/kiss-cut-sample-shazana-shaik.jpg",
+            caption: "By Shazana Shaik — purple round kiss-cut sticker sheet",
+          },
+          {
+            src: "/images/kiss-cut-sample-av-engineering.jpg",
+            caption: "AV ENGINEERING — kiss-cut label sheet",
+          },
+          {
+            src: "/images/kiss-cut-sample-hyp.jpg",
+            caption: "HYP — kiss-cut label sheet",
+          },
+        ],
       },
       {
-        src: "/images/work/childrens-day/02.jpg",
-        caption: "Coach Rey / KGA — Happy Children's Day",
+        id: "die-cut",
+        title: "Die cut",
+        blurb: "Die-cut stickers cut to the exact shape of your design.",
+        samples: [
+          { src: "/images/work/motivational/03.jpg", caption: "Keep Going sticker pile" },
+          {
+            src: "/images/work/motivational/08.jpg",
+            caption: "Keep Going — sea-creature sticker range",
+          },
+          {
+            src: "/images/work/motivational/16.jpg",
+            caption: "It's a new day — motivational sticker",
+          },
+          { src: "/images/work/brand/01.jpg", caption: "Eaispire mascot assortment" },
+          {
+            src: "/images/work/eaispire/04.jpg",
+            caption: "Eaispire mascot and logo stickers",
+          },
+          {
+            src: "/images/work/events/02.jpg",
+            caption: "Sarah unicorn birthday stickers",
+          },
+        ],
       },
-      { src: "/images/work/eaispire/01.jpg", caption: "Eaispire mascot sticker assortment" },
-      { src: "/images/work/eaispire/04.jpg", caption: "Eaispire mascot and logo stickers" },
-      { src: "/images/work/motivational/08.jpg", caption: "Keep Going — sea-creature sticker range" },
-      { src: "/images/work/motivational/16.jpg", caption: "It's a new day — motivational sticker" },
-      { src: "/images/work/events/01.jpg", caption: "Children's Day gymnastics stickers" },
-      { src: "/images/work/events/02.jpg", caption: "Sarah unicorn birthday stickers" },
-      { src: "/images/work/small-business/01.jpg", caption: "Small-business brand stickers" },
-      { src: "/images/work/safety-labels/01.jpg", caption: "GAMX equipment labels" },
-      { src: "/images/work/safety-labels/05.jpg", caption: "Safety Inducted tags" },
-      { src: "/images/work/pnp-cards/01.jpg", caption: "Press N Peel branded cards" },
     ],
     orderTitle: "Request a Quote — Stickers & Labels",
     orderSubtitle:

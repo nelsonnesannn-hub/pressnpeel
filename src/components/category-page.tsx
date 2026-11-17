@@ -1,6 +1,51 @@
 import Link from "next/link";
-import type { Category } from "@/lib/categories";
+import type { Category, CategorySample } from "@/lib/categories";
 import CategoryOrderForm from "./category-order-form";
+
+function SampleGrid({ samples }: { samples: CategorySample[] }) {
+  return (
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {samples.map((sample) => (
+        <article
+          key={sample.src + sample.caption}
+          className="group flex flex-col overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900/40 transition-all hover:border-[#FFD60A]/30 hover:bg-slate-900/70"
+        >
+          <span className="block overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={sample.src}
+              alt={sample.caption}
+              className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              loading="lazy"
+            />
+          </span>
+          <div className="flex flex-1 flex-col p-5">
+            <p className="flex-1 text-sm font-medium leading-relaxed text-slate-200">
+              {sample.caption}
+            </p>
+            {sample.priceLabel ? (
+              <p
+                className="mt-3 text-lg font-bold"
+                style={{ color: "#FFD60A" }}
+              >
+                {sample.priceLabel}
+              </p>
+            ) : null}
+            {sample.orderHref ? (
+              <Link
+                href={sample.orderHref}
+                className="mt-3 inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold text-slate-950 transition-transform hover:scale-[1.02]"
+                style={{ backgroundColor: "#FFD60A" }}
+              >
+                Buy Now
+              </Link>
+            ) : null}
+          </div>
+        </article>
+      ))}
+    </div>
+  );
+}
 
 export default function CategoryPage({ category }: { category: Category }) {
   return (
@@ -42,47 +87,28 @@ export default function CategoryPage({ category }: { category: Category }) {
           </Link>
         </div>
 
-        {category.samples.length > 0 ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {category.samples.map((sample) => (
-              <article
-                key={sample.src + sample.caption}
-                className="group flex flex-col overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900/40 transition-all hover:border-[#FFD60A]/30 hover:bg-slate-900/70"
-              >
-                <span className="block overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={sample.src}
-                    alt={sample.caption}
-                    className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    loading="lazy"
+        {category.sampleGroups ? (
+          category.sampleGroups.map((group, index) => (
+            <div
+              key={group.title ?? `samples-${index}`}
+              className={index > 0 ? "mt-12" : undefined}
+            >
+              {group.title ? (
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+                    {group.title}
+                  </h3>
+                  <span
+                    className="mt-3 block h-1 w-16 rounded-full"
+                    style={{ backgroundColor: "#FFD60A" }}
                   />
-                </span>
-                <div className="flex flex-1 flex-col p-5">
-                  <p className="flex-1 text-sm font-medium leading-relaxed text-slate-200">
-                    {sample.caption}
-                  </p>
-                  {sample.priceLabel ? (
-                    <p
-                      className="mt-3 text-lg font-bold"
-                      style={{ color: "#FFD60A" }}
-                    >
-                      {sample.priceLabel}
-                    </p>
-                  ) : null}
-                  {sample.orderHref ? (
-                    <Link
-                      href={sample.orderHref}
-                      className="mt-3 inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold text-slate-950 transition-transform hover:scale-[1.02]"
-                      style={{ backgroundColor: "#FFD60A" }}
-                    >
-                      Buy Now
-                    </Link>
-                  ) : null}
                 </div>
-              </article>
-            ))}
-          </div>
+              ) : null}
+              <SampleGrid samples={group.samples} />
+            </div>
+          ))
+        ) : category.samples.length > 0 ? (
+          <SampleGrid samples={category.samples} />
         ) : (
           <div className="rounded-2xl border border-dashed border-slate-700 bg-slate-900/30 px-6 py-16 text-center text-slate-400">
             Samples coming soon — send us your design and we&apos;ll quote it.
@@ -98,7 +124,7 @@ export default function CategoryPage({ category }: { category: Category }) {
 
       {/* Custom order form */}
       <section id="order" className="scroll-mt-24">
-        <div className="mb-8 text-center">
+        <div className="mb-10 text-center">
           <span className="mb-3 inline-block rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-slate-950" style={{ backgroundColor: "#FFD60A" }}>
             Custom Order
           </span>
@@ -109,7 +135,32 @@ export default function CategoryPage({ category }: { category: Category }) {
             {category.orderSubtitle}
           </p>
         </div>
-        <CategoryOrderForm category={category} />
+
+        {category.quoteSections ? (
+          category.quoteSections.map((section) => (
+            <div key={section.id} className="mb-14 last:mb-0">
+              <div className="mb-6 text-center">
+                <h3 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+                  {section.title}
+                </h3>
+                {section.blurb ? (
+                  <p className="mx-auto mt-2 max-w-2xl text-slate-400">
+                    {section.blurb}
+                  </p>
+                ) : null}
+              </div>
+              <div className="mb-8">
+                <SampleGrid samples={section.samples} />
+              </div>
+              <CategoryOrderForm
+                category={category}
+                sectionTitle={section.title}
+              />
+            </div>
+          ))
+        ) : (
+          <CategoryOrderForm category={category} />
+        )}
       </section>
     </div>
   );

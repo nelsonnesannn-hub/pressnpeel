@@ -5,7 +5,13 @@ import { useState } from "react";
 import type { Category } from "@/lib/categories";
 import { WHATSAPP_URL } from "./nav";
 
-export default function CategoryOrderForm({ category }: { category: Category }) {
+export default function CategoryOrderForm({
+  category,
+  sectionTitle,
+}: {
+  category: Category;
+  sectionTitle?: string;
+}) {
   const [item, setItem] = useState(category.orderItems[0]?.id ?? "");
   const [quantity, setQuantity] = useState("1");
   const [notes, setNotes] = useState("");
@@ -30,7 +36,12 @@ export default function CategoryOrderForm({ category }: { category: Category }) 
 
     const ref = "PNP-" + Date.now().toString(36).toUpperCase().slice(-6);
     const fd = new FormData();
-    fd.append("source", `${category.title} — Custom Order`);
+    fd.append(
+      "source",
+      sectionTitle
+        ? `${category.title} — ${sectionTitle}`
+        : `${category.title} — Custom Order`
+    );
     fd.append("ref", ref);
     fd.append("type", category.title);
     fd.append("item", itemLabel);
