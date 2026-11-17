@@ -6,10 +6,15 @@ import type { Category, OrderFormConfig, QuoteUploadField } from "@/lib/categori
 import { VINYL_FINISHES } from "@/lib/categories";
 import { WHATSAPP_URL } from "./nav";
 
-// 4cm in 0.5cm steps up to 10cm.
-const SIZE_OPTIONS = Array.from({ length: 13 }, (_, i) =>
-  (4 + i * 0.5).toFixed(1).replace(/\.0$/, "")
-);
+// 4cm in 0.5cm steps, capped at `max` cm (10cm by default; keychains use 6cm).
+function sizeOptions(max: number): string[] {
+  const steps = Math.floor((max - 4) / 0.5) + 1;
+  return Array.from({ length: steps }, (_, i) =>
+    (4 + i * 0.5).toFixed(1).replace(/\.0$/, "")
+  );
+}
+
+const DEFAULT_SIZE_OPTIONS = sizeOptions(10);
 
 function UploadField({
   label,
@@ -306,7 +311,10 @@ export default function CategoryOrderForm({
               onChange={(e) => setSize(e.target.value)}
               className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-white focus:border-[#FFD60A] focus:outline-none"
             >
-              {SIZE_OPTIONS.map((s) => (
+              {(config.sizeMaxCm
+                ? sizeOptions(config.sizeMaxCm)
+                : DEFAULT_SIZE_OPTIONS
+              ).map((s) => (
                 <option key={s} value={s}>
                   {s}cm
                 </option>

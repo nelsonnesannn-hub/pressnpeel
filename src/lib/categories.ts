@@ -64,6 +64,8 @@ export type OrderFormConfig = {
   sizeShape?: boolean;
   /** Only show size/shape when the selected item id is in this list. */
   sizeShapeItems?: string[];
+  /** Cap the size selector (cm). Defaults to 10cm. */
+  sizeMaxCm?: number;
   /** "White offset" choice. */
   whiteOffset?: boolean;
   /** Require at least one design image before the form can submit. */
@@ -461,7 +463,12 @@ export const categories: Category[] = [
       { id: "nfc", label: "NFC keychain (4cm x 4cm)" },
       { id: "other", label: "Other custom keychain" },
     ],
-    form: { sizeShape: true, sizeShapeItems: ["nfc"], requireDesign: true },
+    form: {
+      sizeShape: true,
+      sizeShapeItems: ["nfc"],
+      sizeMaxCm: 6,
+      requireDesign: true,
+    },
   },
   {
     slug: "laser",
