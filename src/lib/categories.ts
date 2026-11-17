@@ -60,7 +60,6 @@ export const categories: Category[] = [
     samplesIntro:
       "Samples of finished work — quoted per job, no published prices.",
     samples: [
-      { src: "/images/work/motivational/01.jpg", caption: "Motivational die-cut assortment" },
       { src: "/images/work/motivational/03.jpg", caption: "Keep Going sticker pile" },
       { src: "/images/work/brand/01.jpg", caption: "Eaispire mascot assortment" },
       { src: "/images/work/brand/09.jpg", caption: "Eaispire sticker pile" },
