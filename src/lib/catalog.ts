@@ -117,7 +117,7 @@ export const products: ProductRow[] = [
     cut_type: "die-cut",
     min_qty: 1,
     available: true,
-    image: "/images/nfc-keychains-listing.png",
+    image: "/images/work/keychains/07.jpg",
     price: 5.1,
     price_unit: "each",
     size: "4cm x 4cm",
