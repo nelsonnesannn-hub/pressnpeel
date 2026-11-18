@@ -194,12 +194,12 @@ export const categories: Category[] = [
     slug: "stickers-and-labels",
     name: "Stickers and labels",
     title: "Stickers and Labels",
-    tagline: "Finished stickers & labels — quoted per job",
+    tagline: "Finished stickers & labels — printed to order",
     description:
-      "Finished die-cut stickers and printed labels — motivational sticker ranges, brand and logo stickers, B2B equipment labels, and event stickers. Send us your design and we’ll quote it.",
+      "Finished die-cut stickers and printed labels — motivational sticker ranges, brand and logo stickers, B2B equipment labels, and event stickers. Upload your design and add to cart.",
     cardImage: "/images/stickers-labels-lifestyle.jpg",
     samplesIntro:
-      "Samples of finished work — quoted per job, no published prices.",
+      "Samples of finished work — printed to order, no published prices.",
     samples: stickerSamples,
     sampleGroups: [
       { samples: stickerSamples.filter((s) => !labelSheetSrcs.has(s.src)) },
@@ -309,9 +309,9 @@ export const categories: Category[] = [
         cartType: "sticker-packs",
       },
     ],
-    orderTitle: "Request a Quote — Stickers & Labels",
+    orderTitle: "Order Stickers & Labels",
     orderSubtitle:
-      "Upload your artwork and tell us the size, finish, and quantity. We’ll reply on WhatsApp or email with a quote before any payment.",
+      "Pick your finish and size, upload your artwork, and add to cart. Pay securely at checkout — no account needed.",
     orderItems: [
       { id: "die-cut-stickers", label: "Custom die-cut stickers" },
       { id: "logo-stickers", label: "Logo / brand stickers" },
@@ -400,7 +400,7 @@ export const categories: Category[] = [
       "Cut-only vinyl, not printed. Vinyl decals are cut names, words, and shapes applied to bottles, vehicles, laptops, and walls. HTV (heat transfer vinyl) is cut and pressed onto fabric — shirts, jerseys, and tote bags.",
     cardImage: "/images/decal-lifestyle.jpg",
     samplesIntro:
-      "Decals for bottles, vehicles, laptops, and walls · HTV pressed onto fabric. Quoted per job — no published prices.",
+      "Decals for bottles, vehicles, laptops, and walls · HTV pressed onto fabric. Made to order — no published prices.",
     samples: [
       {
         src: "/images/decal-listing.jpg",
@@ -579,7 +579,7 @@ export const categories: Category[] = [
     description:
       "Printed signs and labels for workplaces, events, and spaces — safety signs, hazard warnings, no-smoking, and custom text. Send us your artwork or text and we’ll typeset it.",
     cardImage: "/images/signs-lifestyle.jpg",
-    samplesIntro: "Printed to order — quoted per job.",
+    samplesIntro: "Printed to order — coming soon.",
     samples: [
       {
         src: "/images/work/signs/01.jpg",

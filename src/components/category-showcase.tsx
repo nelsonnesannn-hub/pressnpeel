@@ -68,22 +68,6 @@ const ITEMS = [
     purpose: "Acrylic & holographic coasters",
     href: "/products/laser",
   },
-  {
-    src: "/images/work/signs/01.jpg",
-    category: "Signs",
-    slug: "signs",
-    caption: "Hydrojetting safety sign",
-    purpose: "Printed safety signs",
-    href: "/products/signs",
-  },
-  {
-    src: "/images/work/signs/03.jpg",
-    category: "Signs",
-    slug: "signs",
-    caption: "No-smoking sign",
-    purpose: "Printed signs & labels",
-    href: "/products/signs",
-  },
 ];
 
 export default function CategoryShowcase() {

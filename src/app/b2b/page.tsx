@@ -1,6 +1,7 @@
 import Link from "next/link";
 import WorkGallery from "@/components/work-gallery";
 import { workGroups } from "@/lib/work";
+import { WHATSAPP_URL } from "@/components/nav";
 
 export const metadata = {
   title: "Signs & Safety Labels | Press N Peel",
@@ -28,18 +29,20 @@ export default function B2BPage() {
           no-smoking. A4 or A3 on durable vinyl.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link
-            href="/products/signs#order"
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             className="rounded-xl px-7 py-3.5 text-base font-semibold text-slate-950 shadow-lg transition-transform hover:scale-[1.03]"
             style={{ backgroundColor: "#FFD60A" }}
           >
-            Request a Quote
-          </Link>
+            Chat on WhatsApp
+          </a>
           <Link
-            href="/products/signs#order"
+            href="/products/signs"
             className="rounded-xl border border-slate-700 px-7 py-3.5 text-base font-medium text-slate-300 transition-colors hover:bg-slate-900/60 hover:text-white"
           >
-            Upload Your Artwork
+            View Signs &amp; Labels
           </Link>
         </div>
       </div>
@@ -92,8 +95,8 @@ export default function B2BPage() {
         <div className="mt-6 grid gap-6 sm:grid-cols-3">
           {[
             {
-              title: "Quoted per job",
-              body: "Send your spec and quantity — we quote individually. No published prices, no surprises.",
+              title: "Made to order",
+              body: "Send your spec and quantity — we confirm everything on WhatsApp. No published prices, no surprises.",
             },
             {
               title: "Durable materials",

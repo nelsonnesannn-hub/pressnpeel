@@ -273,7 +273,7 @@ export default function CategoryOrderForm({
               </strong>
             </>
           ) : null}
-          . We&apos;ll reply on WhatsApp or email with a quote and proof before
+          . We&apos;ll reply on WhatsApp or email with a proof before
           anything is printed.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -545,7 +545,7 @@ export default function CategoryOrderForm({
         {submitting ? "Sending…" : "Send Custom Order Request"}
       </button>
       <p className="mt-3 text-center text-xs text-slate-500">
-        We&apos;ll confirm your quote before any payment is taken.
+        We&apos;ll confirm your order before anything is printed.
       </p>
     </form>
   );

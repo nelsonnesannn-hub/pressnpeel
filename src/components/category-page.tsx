@@ -139,7 +139,7 @@ export default function CategoryPage({ category }: { category: Category }) {
           <SampleGrid samples={category.samples} buySlug={category.buySlug} />
         ) : (
           <div className="rounded-2xl border border-dashed border-slate-700 bg-slate-900/30 px-6 py-16 text-center text-slate-400">
-            Samples coming soon — send us your design and we&apos;ll quote it.
+            Samples coming soon — upload your design and we&apos;ll print it.
           </div>
         )}
 

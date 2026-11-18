@@ -23,8 +23,8 @@ function check(label: string, actual: unknown, expected: unknown) {
 // --- fixed products ---
 check("NFC x2", fixedItemFromCatalog("nfc-keychains", "4x4", 2)?.lineCents, 1020);
 check("acrylic x3", fixedItemFromCatalog("acrylic-keychains", "5x5", 3)?.lineCents, 1260);
-check("vinyl matte x1", fixedItemFromCatalog("printable-vinyl", "matte-white", 1)?.lineCents, 820);
-check("vinyl confetti x2", fixedItemFromCatalog("printable-vinyl", "confetti-holographic", 2)?.lineCents, 1850);
+check("vinyl matte x1", fixedItemFromCatalog("printable-vinyl", "matte-white", 1)?.lineCents, 1020);
+check("vinyl confetti x2", fixedItemFromCatalog("printable-vinyl", "confetti-holographic", 2)?.lineCents, 2250);
 check("min qty clamp (custom-stickers not buyable)", fixedItemFromCatalog("custom-stickers", "matte", 5), null);
 check("unknown product", fixedItemFromCatalog("nope", "x", 1), null);
 

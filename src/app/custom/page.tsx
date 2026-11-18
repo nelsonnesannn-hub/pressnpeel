@@ -70,8 +70,7 @@ export default function CustomPage() {
         <p className="mt-2 text-sm text-slate-300">
           Fixed-price products are checked out securely with{" "}
           <strong className="text-white">Stripe</strong>. Made-to-order work is
-          quoted first — we&apos;ll confirm everything on WhatsApp before any
-          payment is taken.
+          confirmed on WhatsApp before any payment is taken.
         </p>
         <a
           href={WHATSAPP_URL}

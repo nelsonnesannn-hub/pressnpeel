@@ -56,7 +56,7 @@ const SECTIONS = [
     id: "stickers-and-labels",
     title: "Stickers and labels",
     subtitle:
-      "Finished die-cut stickers and printed labels — quoted per job.",
+      "Finished die-cut stickers and printed labels — printed to order.",
     image: "/images/stickers-labels-lifestyle.jpg",
     href: "/products/stickers-and-labels",
   },
@@ -335,8 +335,8 @@ export default function HomePage() {
                 Featured Products
               </h2>
               <p className="mt-2 max-w-2xl text-slate-400">
-                Every line is printed and cut to order. Send your design or ask
-                for a quote.
+                Every line is printed and cut to order. Add to cart and check
+                out securely.
               </p>
             </div>
 
@@ -383,7 +383,6 @@ export default function HomePage() {
                   {product.buyable ? (
                     <p className="mt-3 text-xs text-slate-500">
                       {product.price_unit}
-                      {product.size ? ` · ${product.size}` : ""}
                     </p>
                   ) : null}
 

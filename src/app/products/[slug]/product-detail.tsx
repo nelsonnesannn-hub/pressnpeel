@@ -118,7 +118,7 @@ export default async function ProductDetail({
             <>
               <div className="mt-6 flex items-baseline gap-3">
                 <span className="text-lg font-medium text-slate-400">
-                  Quoted individually
+                  Made to order
                 </span>
               </div>
               <p className="mt-1 text-sm text-slate-500">
@@ -184,7 +184,7 @@ export default async function ProductDetail({
                 className="inline-flex items-center gap-2 rounded-xl px-7 py-3.5 text-base font-semibold text-slate-950 shadow-lg transition-transform hover:scale-[1.03]"
                 style={{ backgroundColor: "#FFD60A" }}
               >
-                Request a Quote
+                Start an Order
               </Link>
               <Link
                 href="/custom"

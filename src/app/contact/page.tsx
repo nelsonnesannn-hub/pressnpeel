@@ -4,7 +4,7 @@ import { EMAIL, WHATSAPP_URL } from "@/components/nav";
 export const metadata = {
   title: "Contact | Press N Peel",
   description:
-    "Chat with Press N Peel on WhatsApp, email us, or send a quote request. Based in Singapore.",
+    "Chat with Press N Peel on WhatsApp, email us, or start an order. Based in Singapore.",
 };
 
 const CHANNELS = [
@@ -25,12 +25,12 @@ const CHANNELS = [
     cta: "Send an Email",
   },
   {
-    title: "Quote Form",
+    title: "Order Form",
     detail: "Online form",
-    hint: "Tell us the product, size, finish, and quantity — we'll quote it.",
+    hint: "Tell us the product, size, finish, and quantity — we'll confirm your order.",
     href: "/order",
     external: false,
-    cta: "Request a Quote",
+    cta: "Start an Order",
   },
 ];
 
@@ -42,7 +42,7 @@ export default function ContactPage() {
           Contact Us
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-400">
-          Questions, artwork, or a quote — reach us whichever way suits you.
+          Questions, artwork, or an order — reach us whichever way suits you.
           We&apos;re based in Singapore and ship locally.
         </p>
       </div>
@@ -97,11 +97,11 @@ export default function ContactPage() {
           {[
             {
               q: "Do you have a shop I can visit?",
-              a: "We work to order from Singapore — no walk-in store. Everything is printed and cut once you confirm your quote, then shipped or collected locally.",
+              a: "We work to order from Singapore — no walk-in store. Everything is printed and cut once you confirm your order, then shipped or collected locally.",
             },
             {
               q: "How long does an order take?",
-              a: "Most jobs are printed and cut within 2–4 working days after you approve the proof. Larger or specialty runs may take longer — we'll confirm the timeline with your quote.",
+              a: "Most jobs are printed and cut within 2–4 working days after you approve the proof. Larger or specialty runs may take longer — we'll confirm the timeline with your order.",
             },
             {
               q: "Can I send my own design?",
@@ -109,7 +109,7 @@ export default function ContactPage() {
             },
             {
               q: "Do you do bulk or business orders?",
-              a: "Yes — safety signs, labels, and sticker sheets at volume. Send your spec for a tailored quote.",
+              a: "Yes — safety signs, labels, and sticker sheets at volume. Send your spec and we'll confirm your order.",
             },
           ].map((f) => (
             <div key={f.q}>

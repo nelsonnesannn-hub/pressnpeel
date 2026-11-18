@@ -617,7 +617,7 @@ function OrderForm({ stripeReady }: Props) {
         >
           Upload your artwork
         </Link>{" "}
-        and we&apos;ll quote it.
+        and we&apos;ll print it.
       </p>
     </div>
   );
