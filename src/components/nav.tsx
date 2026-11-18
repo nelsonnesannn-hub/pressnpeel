@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { categories } from "@/lib/categories";
+import CartIcon from "./cart-icon";
+import CartDrawer from "./cart-drawer";
 
 export const BRONZE = "#FFD60A";
 export const BRONZE_LIGHT = "#FACC15";
@@ -115,6 +117,7 @@ export function Header() {
         </ul>
 
         <div className="flex items-center gap-2">
+          <CartIcon />
           <a
             href={WHATSAPP_URL}
             target="_blank"
@@ -188,6 +191,10 @@ export function Header() {
       </div>
     </nav>
   );
+}
+
+export function CartChrome() {
+  return <CartDrawer />;
 }
 
 export function Footer() {

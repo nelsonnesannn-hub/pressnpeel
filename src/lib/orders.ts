@@ -28,12 +28,50 @@ export type OrderRecord = {
   option_label: string | null;
   unit_price: number | null;
   quantity: number | null;
+  /** Cart checkout: every line, with per-line totals in cents. */
+  items: OrderItemRecord[] | null;
+  /** Cart checkout: order-level fees in cents (e.g. the $3.00 sheet fee). */
+  fees: OrderFeeRecord[] | null;
+  /** Discount in cents (cart checkout). */
+  discount_cents: number | null;
+  discount_code: string | null;
+  /** Cart checkout: any line is made-to-order work → payment is held. */
+  capture_method: string | null;
   stripe_session_id: string | null;
   stripe_payment_status: string | null;
   notified_submitted: number;
   notified_paid: number;
   created_at: string;
   updated_at: string;
+};
+
+export type OrderItemRecord = {
+  kind: "fixed" | "custom";
+  name: string;
+  detail: string;
+  unitCents: number;
+  quantity: number;
+  lineCents: number;
+  image?: string;
+  productSlug?: string;
+  optionId?: string;
+  priceUnit?: string;
+  custom?: {
+    type: "kiss-cut" | "die-cut" | "sticker-packs";
+    finish: string;
+    sizeCm: number;
+    stickerCount: number;
+    stickersPerPack?: number;
+    shape?: string;
+    whiteOffset?: boolean;
+    notes?: string;
+    files: { name: string; size: number; type: string }[];
+  };
+};
+
+export type OrderFeeRecord = {
+  label: string;
+  amountCents: number;
 };
 
 export type NewOrder = {
@@ -49,6 +87,11 @@ export type NewOrder = {
   optionLabel: string;
   unitPrice: number;
   quantity: number;
+  items?: OrderItemRecord[];
+  fees?: OrderFeeRecord[];
+  discountCents?: number;
+  discountCode?: string;
+  captureMethod?: string;
 };
 
 const KEY_PREFIX = "pnp:order:";
@@ -143,6 +186,11 @@ export async function createOrder(input: NewOrder): Promise<number> {
     option_label: input.optionLabel,
     unit_price: input.unitPrice,
     quantity: input.quantity,
+    items: input.items ?? null,
+    fees: input.fees ?? null,
+    discount_cents: input.discountCents ?? null,
+    discount_code: input.discountCode ?? null,
+    capture_method: input.captureMethod ?? null,
     stripe_session_id: null,
     stripe_payment_status: null,
     notified_submitted: 0,
@@ -150,7 +198,6 @@ export async function createOrder(input: NewOrder): Promise<number> {
     created_at: now,
     updated_at: now,
   };
-
   const c = client();
   if (c) {
     try {

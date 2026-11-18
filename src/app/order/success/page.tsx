@@ -6,8 +6,10 @@ import {
   getOrderBySession,
   markOrderPaid,
   setNotified,
+  type OrderItemRecord,
   type OrderRecord,
 } from "@/lib/orders";
+import { formatCents } from "@/lib/cart";
 import {
   sendTelegramMessage,
   buildPaymentNotification,
@@ -37,9 +39,26 @@ type OrderView = {
   customerEmail: string;
   customerPhone: string;
   notes: string;
+  /** Cart orders: the full line list. */
+  items: OrderItemRecord[] | null;
+  fees: { label: string; amountCents: number }[] | null;
+  captureMethod: string | null;
+  /** True when the payment is a hold waiting for Nelson's design approval. */
+  held: boolean;
 };
 
 function viewFromRecord(order: OrderRecord): OrderView {
+  const hasItems = Array.isArray(order.items) && order.items.length > 0;
+  const subtotalCents = hasItems
+    ? (order.items as OrderItemRecord[]).reduce(
+        (sum, item) => sum + item.lineCents,
+        0
+      )
+    : null;
+  const discountCents = order.discount_cents ?? 0;
+  const fees = Array.isArray(order.fees) ? order.fees : null;
+  const feeCents = fees ? fees.reduce((sum, f) => sum + f.amountCents, 0) : 0;
+  const captureMethod = order.capture_method ?? "automatic";
   return {
     orderNumber: order.id,
     productName: order.product_name ?? "Your order",
@@ -50,13 +69,19 @@ function viewFromRecord(order: OrderRecord): OrderView {
       order.unit_price != null && order.quantity != null
         ? Math.round(order.unit_price * order.quantity * 100) / 100
         : null,
-    discountLabel: null,
-    discountAmount: 0,
+    discountLabel: order.discount_code
+      ? `${order.discount_code}${discountCents ? "" : ""}`
+      : null,
+    discountAmount: discountCents / 100,
     total: order.total,
     customerName: order.customer_name,
     customerEmail: order.customer_email,
     customerPhone: order.customer_phone ?? "",
     notes: order.notes ?? "",
+    items: hasItems ? (order.items as OrderItemRecord[]) : null,
+    fees,
+    captureMethod,
+    held: captureMethod === "manual",
   };
 }
 
@@ -89,6 +114,10 @@ function viewFromSession(session: Stripe.Checkout.Session): OrderView {
     notes: [m.notes, m.nfcLink ? `NFC link to program: ${m.nfcLink}` : ""]
       .filter(Boolean)
       .join("\n"),
+    items: null,
+    fees: m.sheetFee && Number(m.sheetFee) > 0 ? [{ label: "Kiss cut sheet fee", amountCents: Math.round(Number(m.sheetFee) * 100) }] : null,
+    captureMethod: m.captureMethod || "automatic",
+    held: m.captureMethod === "manual",
   };
 }
 
@@ -198,13 +227,31 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
           {paid ? "✓" : "•"}
         </div>
         <h1 className="text-3xl font-bold text-white">
-          {paid ? "Order confirmed" : "Order received"}
+          {paid ? "Order confirmed" : view?.held ? "Order received" : "Order received"}
         </h1>
         <p className="mt-3 text-slate-400">
           {paid
             ? `Thanks${view?.orderNumber ? ` — order #${view.orderNumber}` : ""}. Your payment was successful.`
+            : view?.held
+            ? `Thanks${view?.orderNumber ? ` — order #${view.orderNumber}` : ""}. Your card has been authorised but not charged yet.`
             : "We've received your order details."}
         </p>
+
+        {view?.held ? (
+          <div className="mt-6 rounded-xl border border-[#FFD60A]/30 bg-[#FFD60A]/10 p-5 text-left text-sm leading-relaxed text-slate-200">
+            <p className="font-semibold text-[#FFD60A]">
+              Payment on hold — not charged yet
+            </p>
+            <p className="mt-2">
+              Because this order includes custom work, your card is authorised
+              (a hold) but <strong className="text-white">no money has been taken</strong>.
+              Nelson will review your design and approve it. Once approved, the
+              hold is captured and your card is charged. The hold lasts about 7
+              days — if the design is not approved in time, the hold is
+              released and you are not charged.
+            </p>
+          </div>
+        ) : null}
 
         {view ? (
           <dl className="mx-auto mt-8 max-w-md space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-5 text-left text-sm">
@@ -214,36 +261,78 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
                 <dd className="font-medium text-white">#{view.orderNumber}</dd>
               </div>
             ) : null}
+
+            {view.items ? (
+              <div className="space-y-2 border-b border-slate-800 pb-3">
+                {view.items.map((item, i) => (
+                  <div key={`${item.kind}-${item.name}-${i}`} className="text-xs">
+                    <div className="flex items-start justify-between gap-3">
+                      <dd className="font-medium text-white">{item.name}</dd>
+                      <dd className="flex-shrink-0 font-semibold text-white">
+                        {formatCents(item.lineCents)}
+                      </dd>
+                    </div>
+                    <dd className="mt-0.5 leading-relaxed text-slate-400">
+                      {item.detail}
+                    </dd>
+                    <dd className="mt-0.5 text-slate-500">
+                      {item.kind === "fixed"
+                        ? `${item.quantity} × ${formatCents(item.unitCents)}`
+                        : `${item.quantity} sticker${item.quantity === 1 ? "" : "s"} × ${formatCents(item.unitCents)}`}
+                    </dd>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <>
+                <div className="flex justify-between gap-4">
+                  <dt className="text-slate-500">Product</dt>
+                  <dd className="text-right font-medium text-white">
+                    {view.productName}
+                    {view.optionLabel ? ` (${view.optionLabel})` : ""}
+                  </dd>
+                </div>
+                {view.quantity ? (
+                  <div className="flex justify-between gap-4">
+                    <dt className="text-slate-500">Quantity</dt>
+                    <dd className="font-medium text-white">{view.quantity}</dd>
+                  </div>
+                ) : null}
+                {view.unitPrice != null ? (
+                  <div className="flex justify-between gap-4">
+                    <dt className="text-slate-500">Unit price</dt>
+                    <dd className="font-medium text-white">
+                      ${view.unitPrice.toFixed(2)} SGD
+                    </dd>
+                  </div>
+                ) : null}
+              </>
+            )}
+
             <div className="flex justify-between gap-4">
-              <dt className="text-slate-500">Product</dt>
-              <dd className="text-right font-medium text-white">
-                {view.productName}
-                {view.optionLabel ? ` (${view.optionLabel})` : ""}
+              <dt className="text-slate-500">Subtotal</dt>
+              <dd className="font-medium text-white">
+                $
+                {(
+                  (view.items
+                    ? view.items.reduce((sum, item) => sum + item.lineCents, 0)
+                    : Math.round((view.subtotal ?? 0) * 100)
+                  ) / 100
+                ).toFixed(2)}{" "}
+                SGD
               </dd>
             </div>
-            {view.quantity ? (
-              <div className="flex justify-between gap-4">
-                <dt className="text-slate-500">Quantity</dt>
-                <dd className="font-medium text-white">{view.quantity}</dd>
-              </div>
-            ) : null}
-            {view.unitPrice != null ? (
-              <div className="flex justify-between gap-4">
-                <dt className="text-slate-500">Unit price</dt>
-                <dd className="font-medium text-white">
-                  ${view.unitPrice.toFixed(2)} SGD
-                </dd>
-              </div>
-            ) : null}
-            {view.subtotal != null ? (
-              <div className="flex justify-between gap-4">
-                <dt className="text-slate-500">Subtotal</dt>
-                <dd className="font-medium text-white">
-                  ${view.subtotal.toFixed(2)} SGD
-                </dd>
-              </div>
-            ) : null}
-            {view.discountLabel ? (
+            {view.fees
+              ? view.fees.map((fee) => (
+                  <div key={fee.label} className="flex justify-between gap-4">
+                    <dt className="text-slate-500">{fee.label}</dt>
+                    <dd className="font-medium text-white">
+                      {formatCents(fee.amountCents)} SGD
+                    </dd>
+                  </div>
+                ))
+              : null}
+            {view.discountLabel && view.discountAmount > 0 ? (
               <div className="flex justify-between gap-4">
                 <dt className="text-emerald-400">
                   Discount ({view.discountLabel})
@@ -264,9 +353,15 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
             <div className="flex justify-between gap-4">
               <dt className="text-slate-500">Payment</dt>
               <dd
-                className={`font-medium ${paid ? "text-emerald-400" : "text-amber-300"}`}
+                className={`font-medium ${
+                  paid
+                    ? "text-emerald-400"
+                    : view.held
+                    ? "text-amber-300"
+                    : "text-amber-300"
+                }`}
               >
-                {paid ? "Paid" : "Awaiting payment"}
+                {paid ? "Paid" : view.held ? "On hold" : "Awaiting payment"}
               </dd>
             </div>
 

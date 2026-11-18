@@ -1,10 +1,20 @@
 import Link from "next/link";
 import type { Category, CategorySample } from "@/lib/categories";
+import { products } from "@/lib/catalog";
 import CategoryOrderForm from "./category-order-form";
+import CustomOrderForm from "./custom-order-form";
+import AddToCartButton from "./add-to-cart-button";
+import SampleBuyButton from "./sample-buy-button";
 import OrderJumpBar, { orderSectionIds } from "./order-jump-bar";
 import { WHATSAPP_URL } from "./nav";
 
-function SampleGrid({ samples }: { samples: CategorySample[] }) {
+function SampleGrid({
+  samples,
+  buySlug,
+}: {
+  samples: CategorySample[];
+  buySlug?: string;
+}) {
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {samples.map((sample) => (
@@ -38,7 +48,9 @@ function SampleGrid({ samples }: { samples: CategorySample[] }) {
                 {sample.priceLabel}
               </p>
             ) : null}
-            {sample.orderHref ? (
+            {sample.buyOption && buySlug ? (
+              <SampleBuyButton slug={buySlug} optionId={sample.buyOption} />
+            ) : sample.orderHref ? (
               <Link
                 href={sample.orderHref}
                 className="mt-3 inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold text-slate-950 transition-transform hover:scale-[1.02]"
@@ -57,6 +69,9 @@ function SampleGrid({ samples }: { samples: CategorySample[] }) {
 export default function CategoryPage({ category }: { category: Category }) {
   const comingSoon = category.orderable === false;
   const sectionIds = orderSectionIds(category);
+  const buyProduct = category.buySlug
+    ? products.find((p) => p.slug === category.buySlug && p.buyable)
+    : undefined;
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-16">
@@ -117,11 +132,11 @@ export default function CategoryPage({ category }: { category: Category }) {
                   />
                 </div>
               ) : null}
-              <SampleGrid samples={group.samples} />
+              <SampleGrid samples={group.samples} buySlug={category.buySlug} />
             </div>
           ))
         ) : category.samples.length > 0 ? (
-          <SampleGrid samples={category.samples} />
+          <SampleGrid samples={category.samples} buySlug={category.buySlug} />
         ) : (
           <div className="rounded-2xl border border-dashed border-slate-700 bg-slate-900/30 px-6 py-16 text-center text-slate-400">
             Samples coming soon — send us your design and we&apos;ll quote it.
@@ -169,7 +184,7 @@ export default function CategoryPage({ category }: { category: Category }) {
             className="mb-3 inline-block rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-slate-950"
             style={{ backgroundColor: "#FFD60A" }}
           >
-            {comingSoon ? "Coming Soon" : "Custom Order"}
+            {comingSoon ? "Coming Soon" : buyProduct ? "Add to Cart" : "Custom Order"}
           </span>
           <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
             {category.orderTitle}
@@ -218,15 +233,23 @@ export default function CategoryPage({ category }: { category: Category }) {
                 ) : null}
               </div>
               <div className="mb-8">
-                <SampleGrid samples={section.samples} />
+                <SampleGrid samples={section.samples} buySlug={category.buySlug} />
               </div>
-              <CategoryOrderForm
-                category={category}
-                sectionTitle={section.title}
-                form={section.form}
-              />
+              {section.cartType ? (
+                <CustomOrderForm type={section.cartType} sectionId={section.id} />
+              ) : (
+                <CategoryOrderForm
+                  category={category}
+                  sectionTitle={section.title}
+                  form={section.form}
+                />
+              )}
             </div>
           ))
+        ) : buyProduct ? (
+          <div className="mx-auto max-w-xl rounded-2xl border border-slate-800/70 bg-slate-900/40 p-8">
+            <AddToCartButton slug={buyProduct.slug} />
+          </div>
         ) : (
           <CategoryOrderForm category={category} form={category.form} />
         )}

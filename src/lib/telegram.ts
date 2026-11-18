@@ -1,5 +1,7 @@
 // Telegram order notifications — SERVER ONLY.
 // Sends a message to Nelson's chat through the Press N Peel bot.
+import type { CartItem } from "./cart";
+
 const DEFAULT_CHAT_ID = "1388929935";
 
 function escapeHtml(value: string): string {
@@ -119,6 +121,73 @@ export function buildOrderNotification(order: OrderNotification): string {
   ];
   if (order.customerPhone) {
     lines.push(`Phone: ${escapeHtml(order.customerPhone)}`);
+  }
+  if (order.notes) {
+    lines.push(`Notes: ${escapeHtml(order.notes)}`);
+  }
+  lines.push(`Payment: ${escapeHtml(order.status)}`);
+  return lines.join("\n");
+}
+
+export type CartNotification = {
+  orderId: number | null;
+  lines: CartItem[];
+  sheetFee: number;
+  discountCode: string;
+  discountPercent: number;
+  discountCents: number;
+  totalCents: number;
+  captureMethod: string;
+  captureLabel: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone?: string;
+  notes?: string;
+  designFileNames: string[];
+  status: string;
+};
+
+function formatCents(value: number): string {
+  return `$${(value / 100).toFixed(2)}`;
+}
+
+/** A multi-line cart order — every line, the fees, the discount, the capture. */
+export function buildCartNotification(order: CartNotification): string {
+  const lines = [
+    `<b>New cart order${order.orderId ? ` #${order.orderId}` : ""} — Press N Peel</b>`,
+  ];
+  for (const item of order.lines) {
+    const unit =
+      item.kind === "fixed"
+        ? `${formatCents(item.unitCents)} each`
+        : `${formatCents(item.unitCents)} per sticker`;
+    lines.push(
+      `• ${escapeHtml(item.name)} — ${escapeHtml(item.detail)}\n  ${item.quantity} × ${unit} = <b>${formatCents(item.lineCents)}</b>`
+    );
+  }
+  if (order.sheetFee > 0) {
+    lines.push(`• Kiss cut sheet fee = <b>${formatCents(order.sheetFee)}</b>`);
+  }
+  lines.push(`Subtotal: <b>${formatCents(order.totalCents + order.discountCents - order.sheetFee)}</b>`);
+  if (order.discountCents > 0) {
+    lines.push(
+      `Discount (${escapeHtml(order.discountCode)} −${order.discountPercent}%): −<b>${formatCents(order.discountCents)}</b>`
+    );
+  }
+  lines.push(`Total: <b>${formatCents(order.totalCents)} SGD</b>`);
+  lines.push(`Capture: <b>${escapeHtml(order.captureLabel)}</b>`);
+  if (order.captureMethod === "manual") {
+    lines.push(
+      `<i>Card held, not charged. Capture in Stripe Dashboard → Payments → UNCAPTURED after design approval.</i>`
+    );
+  }
+  lines.push(`Customer: ${escapeHtml(order.customerName)}`);
+  lines.push(`Email: ${escapeHtml(order.customerEmail)}`);
+  if (order.customerPhone) {
+    lines.push(`Phone: ${escapeHtml(order.customerPhone)}`);
+  }
+  if (order.designFileNames.length > 0) {
+    lines.push(`Design files: ${escapeHtml(order.designFileNames.join(", "))}`);
   }
   if (order.notes) {
     lines.push(`Notes: ${escapeHtml(order.notes)}`);

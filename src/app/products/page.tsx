@@ -2,6 +2,7 @@ import Link from "next/link";
 import { products } from "@/lib/catalog";
 import { categories, categoryBadge } from "@/lib/categories";
 import { formatSGD } from "@/lib/pricing";
+import AddToCartButton from "@/components/add-to-cart-button";
 
 export const metadata = {
   title: "Products | Press N Peel",
@@ -110,13 +111,13 @@ export default function ProductsPage() {
                     {product.price_unit}
                   </span>
                 </div>
-                <Link
-                  href={`/order?product=${product.slug}`}
-                  className="mt-4 inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold text-slate-950 transition-transform hover:scale-[1.02]"
-                  style={{ backgroundColor: "#FFD60A" }}
-                >
-                  Buy Now
-                </Link>
+                <div className="mt-4">
+                  <AddToCartButton
+                    slug={product.slug}
+                    optionId={product.options[0].id}
+                    image={product.image}
+                  />
+                </div>
               </div>
             </article>
           ))}

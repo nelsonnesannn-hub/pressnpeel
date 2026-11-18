@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { formatSGD } from "@/lib/pricing";
 import type { ProductRow } from "@/lib/catalog";
+import AddToCartButton from "@/components/add-to-cart-button";
 
 // Where a made-to-order (non-buyable) product sends its quote request.
 // Buyable products use the Stripe checkout instead.
@@ -168,31 +169,31 @@ export default async function ProductDetail({
             </div>
           ) : null}
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href={
-                buyable
-                  ? hasFinishImages
-                    ? `/order?product=${product.slug}&option=${encodeURIComponent(
-                        selectedOption.id
-                      )}`
-                    : `/order?product=${product.slug}`
-                  : quoteHref
-              }
-              className="inline-flex items-center gap-2 rounded-xl px-7 py-3.5 text-base font-semibold text-slate-950 shadow-lg transition-transform hover:scale-[1.03]"
-              style={{ backgroundColor: "#FFD60A" }}
-            >
-              {buyable
-                ? `Buy Now — ${formatSGD(selectedPrice)}`
-                : "Request a Quote"}
-            </Link>
-            <Link
-              href="/custom"
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-700 px-7 py-3.5 text-base font-medium text-slate-300 transition-colors hover:bg-slate-900/60 hover:text-white"
-            >
-              Make It Custom
-            </Link>
-          </div>
+          {buyable ? (
+            <div className="mt-8">
+              <AddToCartButton
+                slug={product.slug}
+                optionId={selectedOption.id}
+                image={product.image}
+              />
+            </div>
+          ) : (
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href={quoteHref}
+                className="inline-flex items-center gap-2 rounded-xl px-7 py-3.5 text-base font-semibold text-slate-950 shadow-lg transition-transform hover:scale-[1.03]"
+                style={{ backgroundColor: "#FFD60A" }}
+              >
+                Request a Quote
+              </Link>
+              <Link
+                href="/custom"
+                className="inline-flex items-center gap-2 rounded-xl border border-slate-700 px-7 py-3.5 text-base font-medium text-slate-300 transition-colors hover:bg-slate-900/60 hover:text-white"
+              >
+                Make It Custom
+              </Link>
+            </div>
+          )}
 
           <dl className="mt-10 grid grid-cols-2 gap-4 border-t border-slate-800/70 pt-8 text-sm">
             <div>

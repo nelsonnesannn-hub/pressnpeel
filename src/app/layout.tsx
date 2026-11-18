@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Header, Footer } from "@/components/nav";
+import CartDrawer from "@/components/cart-drawer";
+import { CartProvider } from "@/components/cart-store";
 
 export const metadata: Metadata = {
   title: "Press N Peel | Custom Die-Cut Stickers, Vinyl Decals & B2B Labels",
@@ -19,9 +21,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="scroll-smooth bg-slate-950 text-slate-100 antialiased">
-        <Header />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
+        <CartProvider>
+          <Header />
+          <CartDrawer />
+          <main className="min-h-screen">{children}</main>
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   );

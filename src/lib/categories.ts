@@ -11,6 +11,11 @@ export type CategorySample = {
   priceLabel?: string;
   /** Link to the existing Stripe order flow for this sample. */
   orderHref?: string;
+  /**
+   * Fixed-price catalog option this card adds straight to the cart.
+   * Rendered as a Buy Now button instead of an orderHref link.
+   */
+  buyOption?: string;
   /** Small pill shown on the card (e.g. "Coming soon"). */
   badge?: string;
 };
@@ -58,27 +63,24 @@ export type QuoteUploadField = {
 
 /** Optional extra fields rendered by the category order form. */
 export type OrderFormConfig = {
-  /** "Vinyl printed on" selector with the 7 finishes. */
+  /** DEPRECATED — the quote form is gone; custom work is add-to-cart. */
   vinylSelector?: boolean;
-  /** Size + shape fields. */
+  /** DEPRECATED — the quote form is gone; custom work is add-to-cart. */
   sizeShape?: boolean;
-  /** Only show size/shape when the selected item id is in this list. */
+  /** DEPRECATED — the quote form is gone; custom work is add-to-cart. */
   sizeShapeItems?: string[];
-  /** Cap the size selector (cm). Defaults to 10cm. */
+  /** DEPRECATED — the quote form is gone; custom work is add-to-cart. */
   sizeMaxCm?: number;
-  /** "White offset" choice. */
+  /** DEPRECATED — the quote form is gone; custom work is add-to-cart. */
   whiteOffset?: boolean;
-  /** Require at least one design image before the form can submit. */
+  /** DEPRECATED — the quote form is gone; custom work is add-to-cart. */
   requireDesign?: boolean;
-  /**
-   * Kiss-cut sticker pricing: quantity is the total number of stickers, and
-   * the form shows the live per-sticker price + order total (per-sticker x
-   * count + $3 flat sheet fee). The server recomputes the same price on
-   * submit. Die cut and Sticker packs must never set this.
-   */
+  /** DEPRECATED — the quote form is gone; custom work is add-to-cart. */
   kissCutPricing?: boolean;
-  /** Extra upload fields carried through to the enquiry. */
+  /** DEPRECATED — the quote form is gone; custom work is add-to-cart. */
   uploads?: QuoteUploadField[];
+  /** DEPRECATED — kept only so old data still typechecks. */
+  quoteOnly?: boolean;
 };
 
 export type QuoteSection = {
@@ -86,6 +88,11 @@ export type QuoteSection = {
   title: string;
   blurb?: string;
   samples: CategorySample[];
+  /**
+   * Custom-work sections are add-to-cart (kiss cut / die cut / sticker packs).
+   * Absent on the quote-only pages that keep the enquiry form.
+   */
+  cartType?: "kiss-cut" | "die-cut" | "sticker-packs";
   /** Per-section form extras. */
   form?: OrderFormConfig;
 };
@@ -119,6 +126,11 @@ export type Category = {
   colours?: string[];
   /** Form extras for the single-form layout (when quoteSections is absent). */
   form?: OrderFormConfig;
+  /**
+   * Fixed-price product sold from this page: the order section renders an
+   * add-to-cart block for this catalog product instead of the quote form.
+   */
+  buySlug?: string;
 };
 
 const product = (slug: string) => {
@@ -134,8 +146,8 @@ const option = (slug: string, optionId: string): PriceOption => {
 
 const buyHref = (slug: string, optionId?: string) =>
   optionId
-    ? `/order?product=${slug}&option=${encodeURIComponent(optionId)}`
-    : `/order?product=${slug}`;
+    ? `/products/${slug}?option=${encodeURIComponent(optionId)}`
+    : `/products/${slug}`;
 
 /** Badge shown on category cards (home + /products index). */
 export function categoryBadge(category: Category): string | undefined {
@@ -221,6 +233,7 @@ export const categories: Category[] = [
           requireDesign: true,
           kissCutPricing: true,
         },
+        cartType: "kiss-cut",
       },
       {
         id: "die-cut",
@@ -246,6 +259,7 @@ export const categories: Category[] = [
           whiteOffset: true,
           requireDesign: true,
         },
+        cartType: "die-cut",
       },
       {
         id: "sticker-packs",
@@ -292,6 +306,7 @@ export const categories: Category[] = [
             },
           ],
         },
+        cartType: "sticker-packs",
       },
     ],
     orderTitle: "Request a Quote — Stickers & Labels",
@@ -319,48 +334,49 @@ export const categories: Category[] = [
         src: "/images/v2-matte-white-listing.jpg",
         caption: "Matte vinyl white",
         priceLabel: `${formatSGD(option("printable-vinyl", "matte-white").price)} per pack`,
-        orderHref: buyHref("printable-vinyl", "matte-white"),
+        buyOption: "matte-white",
       },
       {
         src: "/images/v2-glossy-white-listing.jpg",
         caption: "Glossy vinyl white",
         priceLabel: `${formatSGD(option("printable-vinyl", "glossy-white").price)} per pack`,
-        orderHref: buyHref("printable-vinyl", "glossy-white"),
+        buyOption: "glossy-white",
       },
       {
         src: "/images/v2-gold-reflective-listing.jpg",
         caption: "Gold reflective vinyl",
         priceLabel: `${formatSGD(option("printable-vinyl", "gold-reflective").price)} per pack`,
-        orderHref: buyHref("printable-vinyl", "gold-reflective"),
+        buyOption: "gold-reflective",
       },
       {
         src: "/images/v2-silver-reflective-listing.jpg",
         caption: "Silver reflective vinyl",
         priceLabel: `${formatSGD(option("printable-vinyl", "silver-reflective").price)} per pack`,
-        orderHref: buyHref("printable-vinyl", "silver-reflective"),
+        buyOption: "silver-reflective",
       },
       {
         src: "/images/v2-silver-holographic-listing.jpg",
         caption: "Silver holographic vinyl",
         priceLabel: `${formatSGD(option("printable-vinyl", "silver-holographic").price)} per pack`,
-        orderHref: buyHref("printable-vinyl", "silver-holographic"),
+        buyOption: "silver-holographic",
       },
       {
         src: "/images/v2-broken-glass-listing.jpg",
         caption: "Broken glass silver holographic",
         priceLabel: `${formatSGD(option("printable-vinyl", "broken-glass").price)} per pack`,
-        orderHref: buyHref("printable-vinyl", "broken-glass"),
+        buyOption: "broken-glass",
       },
       {
         src: "/images/v2-confetti-holographic-listing.jpg",
         caption: "Confetti/dotted silver holographic vinyl",
         priceLabel: `${formatSGD(option("printable-vinyl", "confetti-holographic").price)} per pack`,
-        orderHref: buyHref("printable-vinyl", "confetti-holographic"),
+        buyOption: "confetti-holographic",
       },
     ],
     orderTitle: "Order Printable Vinyl Sheets",
     orderSubtitle:
-      "Tell us the finish and quantity, or upload your design and we’ll print and cut it for you.",
+      "Pick a finish, set the quantity, and add the packs to your cart. Pay securely at checkout — no account needed.",
+    buySlug: "printable-vinyl",
     orderItems: [
       { id: "matte-white", label: "Matte vinyl white" },
       { id: "glossy-white", label: "Glossy vinyl white" },

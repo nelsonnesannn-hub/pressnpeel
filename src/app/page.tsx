@@ -2,6 +2,7 @@ import Link from "next/link";
 import { products, COASTER_PACKS } from "@/lib/catalog";
 import { formatSGD } from "@/lib/pricing";
 import { WHATSAPP_URL } from "@/components/nav";
+import AddToCartButton from "@/components/add-to-cart-button";
 import WorkGallery from "@/components/work-gallery";
 import VideoGallery from "@/components/video-gallery";
 import NfcSection from "@/components/nfc-section";
@@ -380,40 +381,29 @@ export default function HomePage() {
                     {product.description}
                   </p>
 
-                  <div className="mt-4 flex items-baseline gap-3">
-                    {product.buyable ? (
-                      <span
-                        className="text-xl font-bold"
-                        style={{ color: BRONZE }}
-                      >
-                        {formatSGD(product.price)}
-                      </span>
-                    ) : null}
-                    <span className="text-sm font-medium text-slate-400">
-                      Min. order: {product.min_qty}
-                    </span>
-                  </div>
                   {product.buyable ? (
-                    <p className="mt-1 text-xs text-slate-500">
+                    <p className="mt-3 text-xs text-slate-500">
                       {product.price_unit}
                       {product.size ? ` · ${product.size}` : ""}
                     </p>
                   ) : null}
 
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <Link
-                      href={`/order?product=${product.slug}`}
-                      className="inline-flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold text-slate-950 transition-transform hover:scale-[1.02]"
-                      style={{ backgroundColor: BRONZE }}
-                    >
-                      {product.buyable ? "Buy Now" : "Enquire"}
-                    </Link>
-                    <Link
-                      href={`/products/${product.slug}`}
-                      className="inline-flex items-center gap-1 rounded-lg border border-slate-700 px-4 py-2 text-sm font-medium text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
-                    >
-                      Details
-                    </Link>
+                    {product.buyable ? (
+                      <AddToCartButton
+                        slug={product.slug}
+                        optionId={product.options[0].id}
+                        image={product.image}
+                      />
+                    ) : (
+                      <Link
+                        href={`/products/${product.slug}`}
+                        className="inline-flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold text-slate-950 transition-transform hover:scale-[1.02]"
+                        style={{ backgroundColor: BRONZE }}
+                      >
+                        Enquire
+                      </Link>
+                    )}
                   </div>
                 </div>
               </article>
