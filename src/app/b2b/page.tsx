@@ -8,7 +8,9 @@ export const metadata = {
     "Printed safety and compliance signs — hazard, danger, caution, no-smoking, and equipment labels. A4 or A3 on durable vinyl.",
 };
 
-const clientWork = workGroups.filter((g) => g.id === "brand" || g.id === "b2b");
+const clientWork = workGroups.filter(
+  (g) => !g.hidden && (g.id === "brand" || g.id === "b2b")
+);
 
 export default function B2BPage() {
   return (

@@ -16,6 +16,10 @@ import { videoGroups } from "@/lib/videos";
 /*  Theme: deep-navy + yellow accent, comic halftone + speed lines     */
 /* ------------------------------------------------------------------ */
 
+// Landing-page B2B pull — hidden for now (Nelson will decide later).
+// The JSX and the /b2b route are untouched; flip to true to bring it back.
+const SHOW_B2B_PULL = false;
+
 const BRONZE = "#FFD60A";
 const BRONZE_LIGHT = "#FACC15";
 
@@ -318,11 +322,6 @@ export default function HomePage() {
       </section>
 
       {/* =============================================================
-          SHOP BY CATEGORY — new photos, labelled, click to order
-          ============================================================= */}
-      <CategoryShowcase />
-
-      {/* =============================================================
           FEATURED PRODUCTS
           ============================================================= */}
       <section id="products" className="border-t border-slate-800/60 bg-slate-950 py-16 sm:py-20">
@@ -420,6 +419,11 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* =============================================================
+          SHOP BY CATEGORY — new photos, labelled, click to order
+          ============================================================= */}
+      <CategoryShowcase />
 
       {/* =============================================================
           COMING SOON — COASTER PACKS
@@ -529,75 +533,79 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* =============================================================
-          B2B PULL
-          ============================================================= */}
-      <section
-        id="b2b"
-        className="relative overflow-hidden bg-gradient-to-b from-slate-900 to-slate-950 py-16 sm:py-20"
-      >
-        <div
-          className="pointer-events-none absolute -right-20 top-0 h-72 w-72 rounded-full blur-3xl"
-          style={{ backgroundColor: BRONZE, opacity: 0.08 }}
-          aria-hidden
-        />
+      {SHOW_B2B_PULL ? (
+        <>
+        {/* =============================================================
+            B2B PULL
+            ============================================================= */}
+        <section
+          id="b2b"
+          className="relative overflow-hidden bg-gradient-to-b from-slate-900 to-slate-950 py-16 sm:py-20"
+        >
+          <div
+            className="pointer-events-none absolute -right-20 top-0 h-72 w-72 rounded-full blur-3xl"
+            style={{ backgroundColor: BRONZE, opacity: 0.08 }}
+            aria-hidden
+          />
 
-        <div className="relative mx-auto max-w-4xl px-6 text-center sm:px-8">
-          {/* product thumbnails */}
-          <div className="mb-8 flex justify-center gap-4">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/work/b2b/01.jpg"
-              alt="JGR Fit For Use inspection labels"
-              className="h-24 w-24 rounded-2xl border border-slate-700 object-cover shadow-lg"
-              loading="lazy"
-            />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/work/b2b/02.jpg"
-              alt="Scaffold and safety tags"
-              className="h-24 w-24 rounded-2xl border border-slate-700 object-cover shadow-lg"
-              loading="lazy"
-            />
-          </div>
+          <div className="relative mx-auto max-w-4xl px-6 text-center sm:px-8">
+            {/* product thumbnails */}
+            <div className="mb-8 flex justify-center gap-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/work/b2b/01.jpg"
+                alt="JGR Fit For Use inspection labels"
+                className="h-24 w-24 rounded-2xl border border-slate-700 object-cover shadow-lg"
+                loading="lazy"
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/work/b2b/02.jpg"
+                alt="Scaffold and safety tags"
+                className="h-24 w-24 rounded-2xl border border-slate-700 object-cover shadow-lg"
+                loading="lazy"
+              />
+            </div>
 
-          <span
-            className="mb-4 inline-block rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest"
-            style={{
-              backgroundColor: "#FFD60A",
-              color: "#0f172a",
-            }}
-          >
-            For Businesses
-          </span>
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Workplace Safety Signs &amp; Labels
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-slate-400">
-            Printed hazard, danger, and caution signs plus equipment labels and
-            sticker sheets — made to Singapore workplace safety requirements, in
-            quantities that fit your operation.
-          </p>
-
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
-            <Link
-              href="/b2b"
-              className="inline-flex items-center gap-2 rounded-xl px-7 py-3 text-sm font-semibold text-slate-950 shadow transition-transform hover:scale-[1.03]"
-              style={{ backgroundColor: "#FFD60A" }}
+            <span
+              className="mb-4 inline-block rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest"
+              style={{
+                backgroundColor: "#FFD60A",
+                color: "#0f172a",
+              }}
             >
-              View Signs &amp; Labels
-            </Link>
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-7 py-3 text-sm font-semibold text-emerald-300 transition-colors hover:bg-emerald-500/20"
-            >
-              Chat on WhatsApp
-            </a>
+              For Businesses
+            </span>
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Workplace Safety Signs &amp; Labels
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-slate-400">
+              Printed hazard, danger, and caution signs plus equipment labels and
+              sticker sheets — made to Singapore workplace safety requirements, in
+              quantities that fit your operation.
+            </p>
+
+            <div className="mt-10 flex flex-wrap justify-center gap-4">
+              <Link
+                href="/b2b"
+                className="inline-flex items-center gap-2 rounded-xl px-7 py-3 text-sm font-semibold text-slate-950 shadow transition-transform hover:scale-[1.03]"
+                style={{ backgroundColor: "#FFD60A" }}
+              >
+                View Signs &amp; Labels
+              </Link>
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-7 py-3 text-sm font-semibold text-emerald-300 transition-colors hover:bg-emerald-500/20"
+              >
+                Chat on WhatsApp
+              </a>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+        </>
+      ) : null}
 
       {/* =============================================================
           OUR WORK

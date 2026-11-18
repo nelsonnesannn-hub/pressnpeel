@@ -7,8 +7,13 @@ import type { WorkGroup } from "@/lib/work";
 export default function WorkGallery({ groups }: { groups: WorkGroup[] }) {
   const [active, setActive] = useState<string>("all");
 
+  // Hidden groups (e.g. the B2B sets Nelson is revamping) stay in the data
+  // but are never rendered.
+  const visibleGroups = groups.filter((g) => !g.hidden);
   const visible =
-    active === "all" ? groups : groups.filter((g) => g.id === active);
+    active === "all"
+      ? visibleGroups
+      : visibleGroups.filter((g) => g.id === active);
 
   return (
     <div>
@@ -26,7 +31,7 @@ export default function WorkGallery({ groups }: { groups: WorkGroup[] }) {
         >
           All Work
         </button>
-        {groups.map((g) => (
+        {visibleGroups.map((g) => (
           <button
             key={g.id}
             type="button"

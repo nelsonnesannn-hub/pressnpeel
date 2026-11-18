@@ -16,6 +16,11 @@ export type WorkGroup = {
   /** Where cards in this group link (order section anchor or teaser page). */
   href: string;
   items: WorkItem[];
+  /**
+   * Hidden groups stay in the data (and in git) but are not rendered.
+   * Used for the B2B sets Nelson is revamping.
+   */
+  hidden?: boolean;
 };
 
 const w = (group: string, n: number) =>
@@ -33,10 +38,7 @@ export const workGroups: WorkGroup[] = [
       { src: w("motivational", 3), caption: "Keep Going sticker pile" },
       { src: w("motivational", 4), caption: "Sea-creature and quote mix" },
       { src: w("motivational", 5), caption: "Die-cut assortment on white" },
-      { src: w("motivational", 8), caption: "Keep Going — octopus and quote stickers" },
-      { src: w("motivational", 9), caption: "Keep Going / Keep It Up sticker range" },
       { src: w("motivational", 10), caption: "Motivational die-cut assortment" },
-      { src: w("motivational", 12), caption: "Motivational sticker pile" },
       { src: w("motivational", 13), caption: "Quote and sea-creature stickers" },
       { src: w("motivational", 16), caption: "It's a new day — rainbow quote sticker" },
       { src: w("motivational", 17), caption: "There is time — sea turtle sticker" },
@@ -48,16 +50,16 @@ export const workGroups: WorkGroup[] = [
   {
     id: "pnp-cards",
     href: "/products/stickers-and-labels#order-die-cut",
-    title: "Press N Peel Branded Cards",
+    title: "Press N Peel Logo Stickers",
     blurb:
-      "Press N Peel wordmark cards and logo sheets — the brand we print for ourselves and our clients.",
+      "Press N Peel wordmark and logo stickers — the brand stickers we print for ourselves and our clients.",
     items: [
       { src: w("pnp-cards", 1), caption: "Press N Peel logo vinyl stickers" },
-      { src: w("pnp-cards", 2), caption: "Press N Peel wordmark cards" },
-      { src: w("pnp-cards", 3), caption: "Press N Peel logo cards" },
-      { src: w("pnp-cards", 4), caption: "Press N Peel card pile" },
-      { src: w("pnp-cards", 5), caption: "Press N Peel branded card stack" },
-      { src: w("pnp-cards", 6), caption: "Press N Peel logo card display" },
+      { src: w("pnp-cards", 2), caption: "Press N Peel wordmark stickers" },
+      { src: w("pnp-cards", 3), caption: "Press N Peel logo stickers" },
+      { src: w("pnp-cards", 4), caption: "Press N Peel sticker pile" },
+      { src: w("pnp-cards", 5), caption: "Press N Peel branded sticker stack" },
+      { src: w("pnp-cards", 6), caption: "Press N Peel logo sticker display" },
     ],
   },
   {
@@ -135,6 +137,7 @@ export const workGroups: WorkGroup[] = [
   },
   {
     id: "b2b",
+    hidden: true,
     href: "/products/stickers-and-labels#order-kiss-cut",
     title: "B2B & Company Labels",
     blurb:
@@ -150,6 +153,7 @@ export const workGroups: WorkGroup[] = [
   },
   {
     id: "safety-labels",
+    hidden: true,
     href: "/products/stickers-and-labels#order-kiss-cut",
     title: "Safety & Equipment Labels",
     blurb:
@@ -254,6 +258,7 @@ export const workGroups: WorkGroup[] = [
   },
   {
     id: "signs",
+    hidden: true,
     href: "/products/signs",
     title: "Printed Signs",
     blurb:

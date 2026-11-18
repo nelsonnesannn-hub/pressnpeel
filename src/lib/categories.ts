@@ -443,7 +443,7 @@ export const categories: Category[] = [
       "NFC keychains $5.10 each (4cm x 4cm, min 1) · Acrylic keychains $4.20 each (5cm x 5cm, min 1).",
     samples: [
       {
-        src: "/images/work/keychains/07.jpg",
+        src: "/images/nfc-keychains-listing.png",
         caption: "NFC Keychains — 4cm x 4cm · tap to open a link",
         priceLabel: `${formatSGD(product("nfc-keychains").price)} each`,
         orderHref: buyHref("nfc-keychains"),
