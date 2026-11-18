@@ -251,9 +251,7 @@ export const workGroups: WorkGroup[] = [
       { src: w("keychains", 16), caption: "Keychain collection" },
       { src: w("keychains", 17), caption: "Acrylic keychain display" },
       { src: w("keychains", 18), caption: "NFC keychains" },
-      { src: w("keychains", 19), caption: "NFC keychain" },
       { src: w("keychains", 20), caption: "NFC keychain — tap to open" },
-      { src: w("keychains", 21), caption: "NFC keychain with dog sticker" },
     ],
   },
   {

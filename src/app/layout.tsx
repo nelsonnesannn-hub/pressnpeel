@@ -3,6 +3,7 @@ import "./globals.css";
 import { Header, Footer } from "@/components/nav";
 import CartDrawer from "@/components/cart-drawer";
 import { CartProvider } from "@/components/cart-store";
+import BackToTop from "@/components/back-to-top";
 
 export const metadata: Metadata = {
   title: "Press N Peel | Custom Die-Cut Stickers, Vinyl Decals & B2B Labels",
@@ -28,6 +29,7 @@ export default function RootLayout({
           <Footer />
         </CartProvider>
       </body>
+      <BackToTop />
     </html>
   );
 }
