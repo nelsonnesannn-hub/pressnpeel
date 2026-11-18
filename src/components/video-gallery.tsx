@@ -1,9 +1,10 @@
 import type { VideoGroup } from "@/lib/videos";
 
 export default function VideoGallery({ groups }: { groups: VideoGroup[] }) {
+  const visibleGroups = groups.filter((g) => !g.hidden);
   return (
     <div className="space-y-14">
-      {groups.map((g) => (
+      {visibleGroups.map((g) => (
         <div key={g.id}>
           <h3
             className="mb-6 text-xl font-semibold sm:text-2xl"

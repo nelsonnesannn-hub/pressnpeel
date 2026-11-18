@@ -44,18 +44,11 @@ function rememberUpload(token: string, itemId: string) {
   }
 }
 
-function clearUploads() {
-  if (typeof window === "undefined") return;
-  try {
-    const keys: string[] = [];
-    for (let i = 0; i < window.sessionStorage.length; i++) {
-      const key = window.sessionStorage.key(i);
-      if (key && key.startsWith(UPLOAD_PREFIX)) keys.push(key);
-    }
-    for (const key of keys) window.sessionStorage.removeItem(key);
-  } catch {
-    // ignore
-  }
+function formatBytes(bytes: number): string {
+  if (!Number.isFinite(bytes) || bytes <= 0) return "";
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
 /** Map the staged tokens to the cart lines they belong to. */
@@ -72,7 +65,7 @@ function tokensForItems(
 
 function CheckoutInner() {
   const router = useRouter();
-  const { items, ready, setQuantity, removeItem, clear } = useCart();
+  const { items, ready, setQuantity, removeItem } = useCart();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -102,6 +95,9 @@ function CheckoutInner() {
     : 0;
   const total = subtotal + sheetFee - discount;
   const hasCustom = lines.some((item) => item.kind === "custom");
+  const customLines = lines.filter((item) => item.kind === "custom");
+  const tokenByItemId = useMemo(() => tokensForItems(lines, uploads), [lines, uploads]);
+  const allCustomAttached = customLines.every((item) => Boolean(tokenByItemId[item.id]));
 
   function applyDiscount() {
     const found = findDiscountCode(discountInput);
@@ -172,8 +168,9 @@ function CheckoutInner() {
       if (!res.ok && !data.whatsappUrl) {
         throw new Error(data.error || "Could not start checkout.");
       }
-      clear();
-      clearUploads();
+      // The cart is NOT cleared here. It is only cleared on the success page
+      // once the payment is confirmed, so a customer who returns from Stripe
+      // without paying keeps every item and total exactly as it was.
       if (!data.stripeReady || !data.url) {
         router.push(data.whatsappUrl || "https://wa.me/6587674511");
         return;
@@ -287,20 +284,19 @@ function CheckoutInner() {
             </div>
           </section>
 
-          <section className="rounded-2xl border border-slate-800/70 bg-slate-900/40 p-6">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-slate-500">
-              Design files
-            </h2>
-            <p className="mb-4 text-xs leading-relaxed text-slate-500">
-              These travel with your order and are sent to Nelson when you check
-              out. A design image is required for custom work.
-            </p>
-            <ul className="space-y-2">
-              {lines
-                .filter((item) => item.kind === "custom")
-                .map((item) => {
-                  const token = tokensForItems(lines, uploads)[item.id];
-                  const uploaded = Boolean(token);
+          {customLines.length > 0 ? (
+            <section className="rounded-2xl border border-slate-800/70 bg-slate-900/40 p-6">
+              <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-slate-500">
+                Design files
+              </h2>
+              <p className="mb-4 text-xs leading-relaxed text-slate-500">
+                {allCustomAttached
+                  ? "These travel with your order and are sent to Nelson when you check out."
+                  : "These travel with your order and are sent to Nelson when you check out. A design image is required for custom work — upload the missing file below."}
+              </p>
+              <ul className="space-y-2">
+                {customLines.map((item) => {
+                  const uploaded = Boolean(tokenByItemId[item.id]);
                   const files = item.custom?.files ?? [];
                   return (
                     <li
@@ -312,8 +308,14 @@ function CheckoutInner() {
                           {item.name}
                         </p>
                         <p className="truncate text-xs text-slate-400">
-                          {files.map((f) => f.name).join(", ") || "No file"}
+                          {files.map((f) => f.name).join(", ") || "No file attached"}
                         </p>
+                        {files.length > 0 ? (
+                          <p className="mt-0.5 text-[11px] text-slate-500">
+                            {formatBytes(files.reduce((sum, f) => sum + f.size, 0))}
+                            {uploaded ? " · ready to send" : " · file needs uploading"}
+                          </p>
+                        ) : null}
                       </div>
                       {uploaded ? (
                         <span className="text-xs font-semibold text-emerald-400">
@@ -331,8 +333,9 @@ function CheckoutInner() {
                     </li>
                   );
                 })}
-            </ul>
-          </section>
+              </ul>
+            </section>
+          ) : null}
 
           <section className="rounded-2xl border border-slate-800/70 bg-slate-900/40 p-6">
             <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-slate-500">

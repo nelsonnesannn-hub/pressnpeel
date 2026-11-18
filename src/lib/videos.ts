@@ -12,6 +12,8 @@ export type VideoGroup = {
   id: string;
   title: string;
   items: VideoItem[];
+  /** Hidden groups stay in the data (owner may revive them) but never render. */
+  hidden?: boolean;
 };
 
 const v = (name: string, title: string, caption: string): VideoItem => ({
@@ -99,6 +101,7 @@ export const videoGroups: VideoGroup[] = [
   {
     id: "b2b",
     title: "B2B Work",
+    hidden: true,
     items: [
       v(
         "20260710_050302_1",

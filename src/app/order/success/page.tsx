@@ -14,6 +14,7 @@ import {
   sendTelegramMessage,
   buildPaymentNotification,
 } from "@/lib/telegram";
+import ClearCartOnPaid from "@/components/clear-cart-on-paid";
 
 export const dynamic = "force-dynamic";
 
@@ -210,6 +211,7 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-24 text-center">
+      <ClearCartOnPaid paid={paid} />
       <div
         className={`rounded-2xl border p-10 ${
           paid

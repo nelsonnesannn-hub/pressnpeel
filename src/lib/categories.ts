@@ -482,8 +482,8 @@ export const categories: Category[] = [
         caption: "NFC keychains — tap to open a link",
       },
       {
-        src: "/images/work/keychains/21.jpg",
-        caption: "NFC keychain with dog sticker",
+        src: "/images/work/keychains/14.jpg",
+        caption: "Keychain pile",
       },
     ],
     orderTitle: "Order Custom Keychains",
