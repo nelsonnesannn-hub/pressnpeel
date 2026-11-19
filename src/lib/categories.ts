@@ -189,6 +189,53 @@ const stickerSamples: CategorySample[] = [
   { src: "/images/work/pnp-cards/01.jpg", caption: "Press N Peel logo vinyl stickers" },
 ];
 
+// Printable-vinyl finish cards — shared by `samples` and the page's sampleGroups
+// so the two cannot drift.
+const vinylSamples: CategorySample[] = [
+      {
+        src: "/images/v2-matte-white-listing.jpg",
+        caption: "Matte vinyl white",
+        priceLabel: `${formatSGD(option("printable-vinyl", "matte-white").price)} per pack`,
+        buyOption: "matte-white",
+      },
+      {
+        src: "/images/v2-glossy-white-listing.jpg",
+        caption: "Glossy vinyl white",
+        priceLabel: `${formatSGD(option("printable-vinyl", "glossy-white").price)} per pack`,
+        buyOption: "glossy-white",
+      },
+      {
+        src: "/images/v2-gold-reflective-listing.jpg",
+        caption: "Gold reflective vinyl",
+        priceLabel: `${formatSGD(option("printable-vinyl", "gold-reflective").price)} per pack`,
+        buyOption: "gold-reflective",
+      },
+      {
+        src: "/images/v2-silver-reflective-listing.jpg",
+        caption: "Silver reflective vinyl",
+        priceLabel: `${formatSGD(option("printable-vinyl", "silver-reflective").price)} per pack`,
+        buyOption: "silver-reflective",
+      },
+      {
+        src: "/images/v2-silver-holographic-listing.jpg",
+        caption: "Silver holographic vinyl",
+        priceLabel: `${formatSGD(option("printable-vinyl", "silver-holographic").price)} per pack`,
+        buyOption: "silver-holographic",
+      },
+      {
+        src: "/images/v2-broken-glass-listing.jpg",
+        caption: "Broken glass silver holographic",
+        priceLabel: `${formatSGD(option("printable-vinyl", "broken-glass").price)} per pack`,
+        buyOption: "broken-glass",
+      },
+      {
+        src: "/images/v2-confetti-holographic-listing.jpg",
+        caption: "Confetti/dotted silver holographic vinyl",
+        priceLabel: `${formatSGD(option("printable-vinyl", "confetti-holographic").price)} per pack`,
+        buyOption: "confetti-holographic",
+      },
+];
+
 export const categories: Category[] = [
   {
     slug: "stickers-and-labels",
@@ -329,48 +376,17 @@ export const categories: Category[] = [
       "Printable vinyl sold by the pack — 20 A4 sheets per pack, in seven finishes. Print your own stickers and labels, or send us your design and we’ll print and cut them for you.",
     cardImage: "/images/vinyl-sheets-lifestyle.jpg",
     samplesIntro: "1 pack = 20 A4 sheets. Prices are per pack.",
-    samples: [
+    samples: vinylSamples,
+    sampleGroups: [
+      { samples: vinylSamples },
       {
-        src: "/images/v2-matte-white-listing.jpg",
-        caption: "Matte vinyl white",
-        priceLabel: `${formatSGD(option("printable-vinyl", "matte-white").price)} per pack`,
-        buyOption: "matte-white",
-      },
-      {
-        src: "/images/v2-glossy-white-listing.jpg",
-        caption: "Glossy vinyl white",
-        priceLabel: `${formatSGD(option("printable-vinyl", "glossy-white").price)} per pack`,
-        buyOption: "glossy-white",
-      },
-      {
-        src: "/images/v2-gold-reflective-listing.jpg",
-        caption: "Gold reflective vinyl",
-        priceLabel: `${formatSGD(option("printable-vinyl", "gold-reflective").price)} per pack`,
-        buyOption: "gold-reflective",
-      },
-      {
-        src: "/images/v2-silver-reflective-listing.jpg",
-        caption: "Silver reflective vinyl",
-        priceLabel: `${formatSGD(option("printable-vinyl", "silver-reflective").price)} per pack`,
-        buyOption: "silver-reflective",
-      },
-      {
-        src: "/images/v2-silver-holographic-listing.jpg",
-        caption: "Silver holographic vinyl",
-        priceLabel: `${formatSGD(option("printable-vinyl", "silver-holographic").price)} per pack`,
-        buyOption: "silver-holographic",
-      },
-      {
-        src: "/images/v2-broken-glass-listing.jpg",
-        caption: "Broken glass silver holographic",
-        priceLabel: `${formatSGD(option("printable-vinyl", "broken-glass").price)} per pack`,
-        buyOption: "broken-glass",
-      },
-      {
-        src: "/images/v2-confetti-holographic-listing.jpg",
-        caption: "Confetti/dotted silver holographic vinyl",
-        priceLabel: `${formatSGD(option("printable-vinyl", "confetti-holographic").price)} per pack`,
-        buyOption: "confetti-holographic",
+        title: "Print test samples — solid-P logo stickers",
+        samples: [
+          {
+            src: "/images/work/pnp-testprints/IMG_0704.jpg",
+            caption: "Gold reflective vinyl — printed sample",
+          },
+        ],
       },
     ],
     orderTitle: "Order Printable Vinyl Sheets",

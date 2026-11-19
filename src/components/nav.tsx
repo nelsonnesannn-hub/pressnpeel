@@ -29,6 +29,7 @@ const FOOTER_ONLY_LINKS = [
   { href: "/custom", label: "Custom Upload" },
   { href: "/b2b", label: "Signs & Labels" },
   { href: "/refund-policy", label: "Refund Policy" },
+  { href: "/privacy-policy", label: "Privacy Policy" },
 ];
 
 const FOOTER_LINKS = [
