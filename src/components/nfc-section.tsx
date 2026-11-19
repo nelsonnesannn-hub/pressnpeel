@@ -1,5 +1,6 @@
-import Link from "next/link";
 import { WHATSAPP_URL } from "@/components/nav";
+import EnquireButton from "@/components/enquire-button";
+import { ENQUIRE_LABELS, ENQUIRE_LINKS } from "@/lib/enquire";
 
 const NFC_POINTS = [
   "Tap a phone on the keychain to open any link",
@@ -60,13 +61,10 @@ export default function NfcSection() {
             </ul>
 
             <div className="mt-10 flex flex-wrap gap-4">
-              <Link
-                href="/products/keychains"
-                className="inline-flex items-center gap-2 rounded-xl px-7 py-3 text-sm font-semibold text-slate-950 shadow transition-transform hover:scale-[1.03]"
-                style={{ backgroundColor: "#FFD60A" }}
-              >
-                Enquire About NFC Keychains
-              </Link>
+              <EnquireButton
+                href={ENQUIRE_LINKS.nfcKeychains}
+                label={ENQUIRE_LABELS.nfcKeychains}
+              />
               <a
                 href={WHATSAPP_URL}
                 target="_blank"
@@ -93,8 +91,8 @@ export default function NfcSection() {
               <span className="block overflow-hidden rounded-2xl border border-slate-800/70 bg-white">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/images/work/keychains/04.jpg"
-                  alt="Acrylic keychain with iridescent jellyfish"
+                  src="/images/work/keychains/18.jpg"
+                  alt="NFC keychains — tap to open a link"
                   className="aspect-square w-full object-cover"
                   loading="lazy"
                 />

@@ -7,6 +7,36 @@ import AddToCartButton from "./add-to-cart-button";
 import SampleBuyButton from "./sample-buy-button";
 import OrderJumpBar, { orderSectionIds } from "./order-jump-bar";
 import { WHATSAPP_URL } from "./nav";
+import EnquireButton from "./enquire-button";
+import { ENQUIRE_LABELS, ENQUIRE_LINKS } from "@/lib/enquire";
+
+// One WhatsApp enquiry button per orderable product type, placed in that
+// product's own order section. Coming-soon pages never reach these branches.
+const SECTION_ENQUIRE: Record<string, { label: string; href: string }> = {
+  "stickers-and-labels:kiss-cut": {
+    label: ENQUIRE_LABELS.kissCut,
+    href: ENQUIRE_LINKS.kissCut,
+  },
+  "stickers-and-labels:die-cut": {
+    label: ENQUIRE_LABELS.dieCut,
+    href: ENQUIRE_LINKS.dieCut,
+  },
+  "stickers-and-labels:sticker-packs": {
+    label: ENQUIRE_LABELS.stickerPacks,
+    href: ENQUIRE_LINKS.stickerPacks,
+  },
+};
+
+const PAGE_ENQUIRE: Record<string, { label: string; href: string }> = {
+  keychains: {
+    label: ENQUIRE_LABELS.acrylicKeychains,
+    href: ENQUIRE_LINKS.acrylicKeychains,
+  },
+  "printable-vinyl": {
+    label: ENQUIRE_LABELS.printableVinyl,
+    href: ENQUIRE_LINKS.printableVinyl,
+  },
+};
 
 function SampleGrid({
   samples,
@@ -72,6 +102,7 @@ export default function CategoryPage({ category }: { category: Category }) {
   const buyProduct = category.buySlug
     ? products.find((p) => p.slug === category.buySlug && p.buyable)
     : undefined;
+  const pageEnquire = PAGE_ENQUIRE[category.slug];
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-16">
@@ -216,36 +247,44 @@ export default function CategoryPage({ category }: { category: Category }) {
             </a>
           </div>
         ) : category.quoteSections ? (
-          category.quoteSections.map((section, index) => (
-            <div
-              key={section.id}
-              id={sectionIds[index]}
-              className="mb-14 scroll-mt-24 last:mb-0"
-            >
-              <div className="mb-6 text-center">
-                <h3 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                  {section.title}
-                </h3>
-                {section.blurb ? (
-                  <p className="mx-auto mt-2 max-w-2xl text-slate-400">
-                    {section.blurb}
-                  </p>
+          category.quoteSections.map((section, index) => {
+            const enquire = SECTION_ENQUIRE[`${category.slug}:${section.id}`];
+            return (
+              <div
+                key={section.id}
+                id={sectionIds[index]}
+                className="mb-14 scroll-mt-24 last:mb-0"
+              >
+                <div className="mb-6 text-center">
+                  <h3 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+                    {section.title}
+                  </h3>
+                  {section.blurb ? (
+                    <p className="mx-auto mt-2 max-w-2xl text-slate-400">
+                      {section.blurb}
+                    </p>
+                  ) : null}
+                </div>
+                <div className="mb-8">
+                  <SampleGrid samples={section.samples} buySlug={category.buySlug} />
+                </div>
+                {section.cartType ? (
+                  <CustomOrderForm type={section.cartType} sectionId={section.id} />
+                ) : (
+                  <CategoryOrderForm
+                    category={category}
+                    sectionTitle={section.title}
+                    form={section.form}
+                  />
+                )}
+                {enquire ? (
+                  <div className="mt-8 text-center">
+                    <EnquireButton href={enquire.href} label={enquire.label} />
+                  </div>
                 ) : null}
               </div>
-              <div className="mb-8">
-                <SampleGrid samples={section.samples} buySlug={category.buySlug} />
-              </div>
-              {section.cartType ? (
-                <CustomOrderForm type={section.cartType} sectionId={section.id} />
-              ) : (
-                <CategoryOrderForm
-                  category={category}
-                  sectionTitle={section.title}
-                  form={section.form}
-                />
-              )}
-            </div>
-          ))
+            );
+          })
         ) : buyProduct ? (
           <div className="mx-auto max-w-xl rounded-2xl border border-slate-800/70 bg-slate-900/40 p-8">
             <AddToCartButton slug={buyProduct.slug} />
@@ -253,6 +292,12 @@ export default function CategoryPage({ category }: { category: Category }) {
         ) : (
           <CategoryOrderForm category={category} form={category.form} />
         )}
+
+        {!comingSoon && !category.quoteSections && pageEnquire ? (
+          <div className="mt-8 text-center">
+            <EnquireButton href={pageEnquire.href} label={pageEnquire.label} />
+          </div>
+        ) : null}
       </section>
     </div>
   );

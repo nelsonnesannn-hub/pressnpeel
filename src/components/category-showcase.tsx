@@ -29,14 +29,6 @@ const ITEMS = [
     href: "/products/stickers-and-labels#order-die-cut",
   },
   {
-    src: "/images/work/safety-labels/01.jpg",
-    category: "Stickers and labels",
-    slug: "stickers-and-labels",
-    caption: "GAMX equipment labels",
-    purpose: "B2B safety & equipment labels",
-    href: "/products/stickers-and-labels#order-kiss-cut",
-  },
-  {
     src: "/images/work/keychains/08.jpg",
     category: "Keychains",
     slug: "keychains",
