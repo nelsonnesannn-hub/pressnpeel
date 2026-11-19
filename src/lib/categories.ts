@@ -386,6 +386,26 @@ export const categories: Category[] = [
             src: "/images/work/pnp-testprints/IMG_0704.jpg",
             caption: "Gold reflective vinyl — printed sample",
           },
+          {
+            src: "/images/work/pnp-testprints/IMG_0699.jpg",
+            caption: "Broken glass silver holographic — printed sample",
+          },
+          {
+            src: "/images/work/pnp-testprints/IMG_0700.jpg",
+            caption: "Glossy vinyl white — printed sample",
+          },
+          {
+            src: "/images/work/pnp-testprints/IMG_0701.jpg",
+            caption: "Silver holographic vinyl — printed sample",
+          },
+          {
+            src: "/images/work/pnp-testprints/IMG_0702.jpg",
+            caption: "Confetti/dotted silver holographic — printed sample",
+          },
+          {
+            src: "/images/work/pnp-testprints/IMG_0703.jpg",
+            caption: "Silver reflective vinyl — printed sample",
+          },
         ],
       },
     ],
