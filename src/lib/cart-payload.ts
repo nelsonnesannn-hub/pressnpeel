@@ -47,6 +47,12 @@ export type CartCheckoutPayload = {
     notes: string;
   };
   discountCode: string;
+  /**
+   * Urgent next-day delivery (vinyl sheets only). The server re-derives
+   * whether the option is even allowed from the basket, so a posted "true"
+   * can never charge urgent on a sticker-only order.
+   */
+  urgentDelivery?: boolean;
 };
 
 export function toPayloadItem(item: CartItem): CartItemPayload {

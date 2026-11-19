@@ -12,6 +12,15 @@ import {
   sheetFeeFor,
   type CartItem,
 } from "@/lib/cart";
+import {
+  DELIVERY_FEE_CENTS,
+  DELIVERY_NOTE,
+  DELIVERY_RULES,
+  deliveryFor,
+  deliveryLabel,
+  pieceCountFor,
+  vinylPackCountFor,
+} from "@/lib/delivery";
 import { findDiscountCode, type DiscountCode } from "@/lib/discount";
 import { toPayloadItem } from "@/lib/cart-payload";
 import { useCart } from "@/components/cart-store";
@@ -73,6 +82,10 @@ function CheckoutInner() {
   const [discountInput, setDiscountInput] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState<DiscountCode | null>(null);
   const [discountError, setDiscountError] = useState<string | null>(null);
+  // Urgent next-day delivery — offered only for vinyl-sheet orders. The server
+  // re-derives eligibility from the basket, so this flag can never charge
+  // urgent on a sticker-only cart.
+  const [urgent, setUrgent] = useState(false);
   const [uploads, setUploads] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -90,10 +103,14 @@ function CheckoutInner() {
 
   const subtotal = lines.reduce((sum, item) => sum + item.lineCents, 0);
   const sheetFee = sheetFeeFor(lines);
+  // Display-only here — /api/checkout recomputes all of it server-side.
+  const delivery = deliveryFor(lines, urgent, true);
+  const vinylPacks = vinylPackCountFor(lines);
+  const pieces = pieceCountFor(lines);
   const discount = appliedDiscount
     ? Math.round(((subtotal + sheetFee) * appliedDiscount.percentOff) / 100)
     : 0;
-  const total = subtotal + sheetFee - discount;
+  const total = subtotal + sheetFee - discount + delivery.feeCents;
   const hasCustom = lines.some((item) => item.kind === "custom");
   const customLines = lines.filter((item) => item.kind === "custom");
   const tokenByItemId = useMemo(() => tokensForItems(lines, uploads), [lines, uploads]);
@@ -153,7 +170,8 @@ function CheckoutInner() {
           notes: notes.trim(),
         },
         discountCode: appliedDiscount?.code ?? "",
-      };
+                urgentDelivery: delivery.urgentAllowed ? urgent : false,
+              };
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -224,6 +242,9 @@ function CheckoutInner() {
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-lg text-slate-400">
           No account needed — Stripe collects your email and payment.
+        </p>
+        <p className="mx-auto mt-3 max-w-xl text-sm text-slate-500">
+          {DELIVERY_NOTE}
         </p>
       </div>
 
@@ -381,6 +402,71 @@ function CheckoutInner() {
             ) : null}
           </section>
 
+          <section className="rounded-2xl border border-slate-800/70 bg-slate-900/40 p-6">
+            <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-slate-500">
+              Delivery
+            </h2>
+            <p className="mb-4 text-xs leading-relaxed text-slate-400">
+              {DELIVERY_NOTE}
+            </p>
+
+            <div className="mb-4 flex flex-wrap gap-2 text-xs">
+              <span className="rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-1.5 text-slate-300">
+                Pieces: {pieces} / 300
+              </span>
+              <span className="rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-1.5 text-slate-300">
+                Vinyl packs: {vinylPacks} / 6
+              </span>
+            </div>
+
+            {delivery.free ? (
+              <p className="mb-3 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-sm font-medium text-emerald-300">
+                Free delivery on this order
+                {delivery.reason === "packs"
+                  ? " — 6+ vinyl packs."
+                  : " — 300+ pieces."}
+              </p>
+            ) : (
+              <p className="mb-3 rounded-lg border border-[#FFD60A]/30 bg-[#FFD60A]/10 px-4 py-2.5 text-sm text-[#FFD60A]">
+                Delivery {formatCents(DELIVERY_FEE_CENTS)} — under 300 pieces and
+                under 6 vinyl packs.
+              </p>
+            )}
+
+            {delivery.urgentAllowed ? (
+              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-700 bg-slate-950/50 px-4 py-3">
+                <input
+                  type="checkbox"
+                  checked={urgent}
+                  onChange={(e) => setUrgent(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 accent-[#FFD60A]"
+                />
+                <span>
+                  <span className="block text-sm font-medium text-slate-200">
+                    Urgent next-day delivery{" "}
+                    <span style={{ color: "#FFD60A" }}>
+                      (+{formatCents(DELIVERY_FEE_CENTS)})
+                    </span>
+                  </span>
+                  <span className="mt-0.5 block text-xs text-slate-500">
+                    Vinyl sheets only. Adds $2.25 to the delivery total.
+                  </span>
+                </span>
+              </label>
+            ) : null}
+
+            <ul className="mt-4 space-y-1.5 border-t border-slate-800 pt-4 text-xs leading-relaxed text-slate-500">
+              {DELIVERY_RULES.map((rule) => (
+                <li key={rule} className="flex gap-2">
+                  <span aria-hidden className="text-slate-600">
+                    •
+                  </span>
+                  <span>{rule}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
           {error ? (
             <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
               {error}
@@ -470,6 +556,16 @@ function CheckoutInner() {
                 <dd className="font-medium text-white">{formatCents(sheetFee)}</dd>
               </div>
             ) : null}
+            <div className="flex justify-between gap-4">
+              <dt className="text-slate-400">{deliveryLabel(delivery)}</dt>
+              <dd
+                className={`font-medium ${
+                  delivery.feeCents === 0 ? "text-emerald-400" : "text-white"
+                }`}
+              >
+                {delivery.feeCents === 0 ? "FREE" : formatCents(delivery.feeCents)}
+              </dd>
+            </div>
             {discount > 0 ? (
               <div className="flex justify-between gap-4">
                 <dt className="text-emerald-400">

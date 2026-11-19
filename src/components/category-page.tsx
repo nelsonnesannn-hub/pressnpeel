@@ -6,6 +6,7 @@ import CustomOrderForm from "./custom-order-form";
 import AddToCartButton from "./add-to-cart-button";
 import SampleBuyButton from "./sample-buy-button";
 import OrderJumpBar, { orderSectionIds } from "./order-jump-bar";
+import DeliveryNote from "./delivery-note";
 import { WHATSAPP_URL } from "./nav";
 import EnquireButton from "./enquire-button";
 import { ENQUIRE_LABELS, ENQUIRE_LINKS } from "@/lib/enquire";
@@ -223,6 +224,11 @@ export default function CategoryPage({ category }: { category: Category }) {
           <p className="mx-auto mt-3 max-w-2xl text-slate-400">
             {category.orderSubtitle}
           </p>
+          {!comingSoon ? (
+            <div className="mx-auto mt-6 max-w-2xl text-left">
+              <DeliveryNote />
+            </div>
+          ) : null}
         </div>
 
         {comingSoon ? (

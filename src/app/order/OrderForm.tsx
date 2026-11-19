@@ -11,6 +11,7 @@ import {
   type DiscountCode,
 } from "@/lib/discount";
 import { WHATSAPP_URL } from "@/components/nav";
+import DeliveryNote from "@/components/delivery-note";
 
 // Only fixed-price products are sold through the Stripe checkout. Made-to-order
 // lines are quoted through each category page's custom order form.
@@ -609,7 +610,11 @@ function OrderForm({ stripeReady }: Props) {
         </form>
       )}
 
-      <p className="mt-8 text-center text-xs text-slate-600">
+      <div className="mx-auto mt-8 max-w-xl text-left">
+        <DeliveryNote />
+      </div>
+
+      <p className="mt-3 text-center text-xs text-slate-500">
         Prefer to send a design first?{" "}
         <Link
           href="/custom"

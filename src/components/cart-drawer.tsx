@@ -4,7 +4,8 @@
 // and a grand total. Opens from the header cart icon.
 import Link from "next/link";
 import { useEffect } from "react";
-import { formatCents } from "@/lib/cart";
+import { formatCents, recomputeLineCents } from "@/lib/cart";
+import { DELIVERY_NOTE, deliveryFor, deliveryLabel } from "@/lib/delivery";
 import { useCart } from "./cart-store";
 
 export default function CartDrawer() {
@@ -22,7 +23,9 @@ export default function CartDrawer() {
 
   if (!open) return null;
 
-  const subtotal = items.reduce((sum, item) => sum + item.lineCents, 0);
+  const lines = items.map((item) => ({ ...item, lineCents: recomputeLineCents(item) }));
+  const subtotal = lines.reduce((sum, item) => sum + item.lineCents, 0);
+  const delivery = deliveryFor(lines);
 
   return (
     <div className="fixed inset-0 z-[60]">
@@ -74,7 +77,9 @@ export default function CartDrawer() {
             </div>
           ) : (
             <ul className="space-y-4">
-              {items.map((item) => (
+              {items.map((item) => {
+                const line = lines.find((l) => l.id === item.id)!;
+                return (
                 <li
                   key={item.id}
                   className="rounded-xl border border-slate-800 bg-slate-900/40 p-4"
@@ -138,33 +143,47 @@ export default function CartDrawer() {
                       </button>
                     </div>
                     <p className="text-sm font-bold text-white">
-                      {formatCents(item.lineCents)}
+                      {formatCents(line.lineCents)}
                     </p>
                   </div>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           )}
         </div>
 
         {items.length > 0 ? (
           <div className="border-t border-slate-800 px-5 py-4">
-            <div className="mb-3 flex items-center justify-between text-sm">
+            <div className="mb-2 flex items-center justify-between text-sm">
               <span className="text-slate-400">Subtotal</span>
               <span className="font-semibold text-white">
                 {formatCents(subtotal)}
               </span>
             </div>
+            <div className="mb-3 flex items-center justify-between text-sm">
+              <span className="text-slate-400">{deliveryLabel(delivery)}</span>
+              <span
+                className={`font-semibold ${
+                  delivery.feeCents === 0 ? "text-emerald-400" : "text-white"
+                }`}
+              >
+                {delivery.feeCents === 0 ? "FREE" : formatCents(delivery.feeCents)}
+              </span>
+            </div>
+            <p className="mb-3 text-[11px] leading-relaxed text-slate-500">
+              {DELIVERY_NOTE}
+            </p>
             <Link
               href="/checkout"
               onClick={() => setOpen(false)}
               className="flex w-full items-center justify-center rounded-xl py-3 text-sm font-semibold text-slate-950 transition-transform hover:scale-[1.01]"
               style={{ backgroundColor: "#FFD60A" }}
             >
-              Checkout — {formatCents(subtotal)}
+              Checkout — {formatCents(subtotal + delivery.feeCents)}
             </Link>
             <p className="mt-2 text-center text-xs text-slate-500">
-              Shipping and discount are confirmed on the checkout page.
+              The total is confirmed on the checkout page.
             </p>
           </div>
         ) : null}

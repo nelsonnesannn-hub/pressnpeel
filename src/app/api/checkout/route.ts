@@ -17,6 +17,12 @@ import {
   stickerUnitCents,
   type CartItem,
 } from "@/lib/cart";
+import {
+  DELIVERY_FEE_CENTS,
+  deliveryFor,
+  pieceCountFor,
+  vinylPackCountFor,
+} from "@/lib/delivery";
 import { itemsFromPayload, toPayloadItem } from "@/lib/cart-payload";
 import { takeUpload } from "@/app/api/upload/route";
 
@@ -36,6 +42,7 @@ type CartBody = {
   uploadTokens: Record<string, string>;
   customer: { name: string; email: string; phone: string; notes: string };
   discountCode: string;
+  urgentDelivery?: boolean;
 };
 
 type SingleBody = {
@@ -473,6 +480,14 @@ async function handleCartCheckout(req: NextRequest, body: CartBody) {
   const hasCustom = lines.some((item) => item.kind === "custom");
   const captureMethod = hasCustom ? "manual" : "automatic";
 
+  // DELIVERY — computed here, from the rebuilt basket. The posted urgent flag
+  // is only ever honoured when the basket actually contains vinyl sheets, so
+  // a sticker-only cart can never be charged (or offered) next-day delivery.
+  const requestedUrgent =
+    typeof body.urgentDelivery === "boolean" ? body.urgentDelivery : false;
+  const delivery = deliveryFor(lines, requestedUrgent, true);
+  const deliveryCents = delivery.feeCents;
+
   let promotion: { promotionCodeId: string | null; discountPercent: number };
   try {
     promotion = await resolvePromotion(discountCode);
@@ -485,7 +500,9 @@ async function handleCartCheckout(req: NextRequest, body: CartBody) {
     promotionCodeId && discountPercent
       ? Math.round(((subtotal + sheetFee) * discountPercent) / 100)
       : 0;
-  const totalCents = Math.max(0, subtotal + sheetFee - discountCents);
+  // The delivery charge is added AFTER the discount: the code is a percentage
+  // off the products (and the flat sheet fee), never off the delivery.
+  const totalCents = Math.max(0, subtotal + sheetFee - discountCents + deliveryCents);
   const total = totalCents / 100;
 
   // Pull the design files before the ping so the documents reach Nelson.
@@ -568,8 +585,22 @@ async function handleCartCheckout(req: NextRequest, body: CartBody) {
           : undefined,
       })),
       fees:
-        sheetFee > 0
-          ? [{ label: "Kiss cut sheet fee (flat per order)", amountCents: sheetFee }]
+        sheetFee > 0 || deliveryCents > 0
+          ? [
+              ...(sheetFee > 0
+                ? [{ label: "Kiss cut sheet fee (flat per order)", amountCents: sheetFee }]
+                : []),
+              ...(deliveryCents > 0
+                ? [
+                    {
+                      label: delivery.urgent
+                        ? "Delivery (urgent next day, vinyl sheets)"
+                        : "Delivery (weekends)",
+                      amountCents: deliveryCents,
+                    },
+                  ]
+                : []),
+            ]
           : [],
       discountCents: discountCents || undefined,
       discountCode: promotionCodeId ? discountCode : undefined,
@@ -589,6 +620,15 @@ async function handleCartCheckout(req: NextRequest, body: CartBody) {
           orderId,
           lines,
           sheetFee,
+          delivery: {
+            feeCents: deliveryCents,
+            baseCents: delivery.baseCents,
+            urgentCents: delivery.urgentCents,
+            free: delivery.free,
+            reason: delivery.reason,
+            urgentAllowed: delivery.urgentAllowed,
+            urgent: delivery.urgent,
+          },
           discountCode: promotionCodeId ? discountCode : "",
           discountPercent: promotionCodeId ? discountPercent : 0,
           discountCents,
@@ -713,6 +753,29 @@ async function handleCartCheckout(req: NextRequest, body: CartBody) {
       });
     }
 
+    // Delivery is order-level too — its own Stripe line, so the session's
+    // amount_total matches the cart total exactly.
+    if (deliveryCents > 0) {
+      const vinylPacks = vinylPackCountFor(lines);
+      const pieces = pieceCountFor(lines);
+      const description = delivery.urgent
+        ? `Urgent next-day delivery — vinyl sheets only (+$2.25). ${vinylPacks} pack${vinylPacks === 1 ? "" : "s"}.`
+        : `Weekend delivery (${vinylPacks} pack${vinylPacks === 1 ? "" : "s"}, ${pieces} piece${pieces === 1 ? "" : "s"}).`;
+      lineItems.push({
+        quantity: 1,
+        price_data: {
+          currency: "sgd",
+          unit_amount: deliveryCents,
+          product_data: {
+            name: delivery.urgent
+              ? "Delivery — urgent next day"
+              : "Delivery (weekends)",
+            description,
+          },
+        },
+      });
+    }
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       customer_email: email,
@@ -732,6 +795,8 @@ async function handleCartCheckout(req: NextRequest, body: CartBody) {
         captureMethod,
         subtotal: (subtotal / 100).toFixed(2),
         sheetFee: (sheetFee / 100).toFixed(2),
+        deliveryFee: (deliveryCents / 100).toFixed(2),
+        deliveryUrgent: delivery.urgent ? "1" : "0",
         discountCode: promotionCodeId ? discountCode : "",
         discountPercent: promotionCodeId ? String(discountPercent) : "",
         discountAmount: (discountCents / 100).toFixed(2),

@@ -1,6 +1,7 @@
 // Telegram order notifications — SERVER ONLY.
 // Sends a message to Nelson's chat through the Press N Peel bot.
 import type { CartItem } from "./cart";
+import type { DeliveryQuote } from "./delivery";
 
 const DEFAULT_CHAT_ID = "1388929935";
 
@@ -133,6 +134,7 @@ export type CartNotification = {
   orderId: number | null;
   lines: CartItem[];
   sheetFee: number;
+  delivery: DeliveryQuote;
   discountCode: string;
   discountPercent: number;
   discountCents: number;
@@ -168,7 +170,19 @@ export function buildCartNotification(order: CartNotification): string {
   if (order.sheetFee > 0) {
     lines.push(`• Kiss cut sheet fee = <b>${formatCents(order.sheetFee)}</b>`);
   }
-  lines.push(`Subtotal: <b>${formatCents(order.totalCents + order.discountCents - order.sheetFee)}</b>`);
+  if (order.delivery.feeCents > 0) {
+    const why = order.delivery.urgent ? " (incl. $2.25 urgent next day)" : "";
+    lines.push(
+      `• Delivery (weekends${why}) = <b>${formatCents(order.delivery.feeCents)}</b>`
+    );
+  } else {
+    lines.push(
+      `• Delivery: <b>FREE</b> (${
+        order.delivery.reason === "packs" ? "6+ vinyl packs" : "300+ pieces"
+      })`
+    );
+  }
+  lines.push(`Subtotal: <b>${formatCents(order.totalCents + order.discountCents - order.sheetFee - order.delivery.feeCents)}</b>`);
   if (order.discountCents > 0) {
     lines.push(
       `Discount (${escapeHtml(order.discountCode)} −${order.discountPercent}%): −<b>${formatCents(order.discountCents)}</b>`

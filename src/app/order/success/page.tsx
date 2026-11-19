@@ -43,6 +43,9 @@ type OrderView = {
   /** Cart orders: the full line list. */
   items: OrderItemRecord[] | null;
   fees: { label: string; amountCents: number }[] | null;
+  /** Cart checkout: order-level delivery charge in cents (0 = free). */
+  deliveryFeeCents: number;
+  deliveryUrgent: boolean;
   captureMethod: string | null;
   /** True when the payment is a hold waiting for Nelson's design approval. */
   held: boolean;
@@ -81,6 +84,17 @@ function viewFromRecord(order: OrderRecord): OrderView {
     notes: order.notes ?? "",
     items: hasItems ? (order.items as OrderItemRecord[]) : null,
     fees,
+    deliveryFeeCents:
+      Array.isArray(order.fees) && order.fees.some((f) => f.label.startsWith("Delivery"))
+        ? order.fees
+            .filter((f) => f.label.startsWith("Delivery"))
+            .reduce((sum, f) => sum + f.amountCents, 0)
+        : 0,
+    deliveryUrgent: Array.isArray(order.fees)
+      ? order.fees.some(
+          (f) => f.label.startsWith("Delivery") && /urgent/i.test(f.label)
+        )
+      : false,
     captureMethod,
     held: captureMethod === "manual",
   };
@@ -117,6 +131,11 @@ function viewFromSession(session: Stripe.Checkout.Session): OrderView {
       .join("\n"),
     items: null,
     fees: m.sheetFee && Number(m.sheetFee) > 0 ? [{ label: "Kiss cut sheet fee", amountCents: Math.round(Number(m.sheetFee) * 100) }] : null,
+    deliveryFeeCents:
+      m.deliveryFee && Number(m.deliveryFee) > 0
+        ? Math.round(Number(m.deliveryFee) * 100)
+        : 0,
+    deliveryUrgent: m.deliveryUrgent === "1",
     captureMethod: m.captureMethod || "automatic",
     held: m.captureMethod === "manual",
   };
@@ -334,6 +353,16 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
                   </div>
                 ))
               : null}
+            {view.deliveryFeeCents > 0 ? (
+              <div className="flex justify-between gap-4">
+                <dt className="text-slate-500">
+                  Delivery{view.deliveryUrgent ? " (urgent next day)" : " (weekends)"}
+                </dt>
+                <dd className="font-medium text-white">
+                  {formatCents(view.deliveryFeeCents)} SGD
+                </dd>
+              </div>
+            ) : null}
             {view.discountLabel && view.discountAmount > 0 ? (
               <div className="flex justify-between gap-4">
                 <dt className="text-emerald-400">
