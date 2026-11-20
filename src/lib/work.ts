@@ -198,8 +198,6 @@ export const workGroups: WorkGroup[] = [
       { src: w("coasters-pine", 1), caption: "Start again — engraved pine" },
       { src: w("coasters-pine", 2), caption: "Engraved pine coaster set" },
       { src: w("coasters-pine", 3), caption: "Engraved coasters in a row" },
-      { src: w("coasters-pine", 4), caption: "Pine coaster designs" },
-      { src: w("coasters-pine", 5), caption: "Pine — engraved coasters" },
       { src: w("coasters-pine", 6), caption: "Pine coaster set" },
       { src: w("coasters-pine", 7), caption: "Engraved coasters in a row" },
       { src: w("coasters-pine", 8), caption: "Pine coaster designs" },
@@ -212,9 +210,7 @@ export const workGroups: WorkGroup[] = [
     blurb:
       "Laser engraving on birch ply — quote coasters with crisp, high-contrast lines.",
     items: [
-      { src: w("coasters-birch", 1), caption: "Birch ply — engraved coasters" },
       { src: w("coasters-birch", 2), caption: "Keep going, you're closer than you think" },
-      { src: w("coasters-birch", 3), caption: "Birch ply coaster set" },
       { src: w("coasters-birch", 4), caption: "Engraved birch coasters" },
       { src: w("coasters-birch", 5), caption: "Birch ply coaster designs" },
     ],
