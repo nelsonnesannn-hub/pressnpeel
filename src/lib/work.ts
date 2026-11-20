@@ -198,7 +198,7 @@ export const workGroups: WorkGroup[] = [
       { src: w("coasters-pine", 2), caption: "Engraved pine coaster set" },
       { src: w("coasters-pine", 3), caption: "Engraved coasters in a row" },
       { src: w("coasters-pine", 6), caption: "Pine coaster set" },
-      { src: w("coasters-pine", 7), caption: "Engraved coasters in a row" },
+      { src: w("coasters-pine", 7), caption: "Engraved coasters in a pile" },
       { src: w("coasters-pine", 8), caption: "Pine coaster designs" },
     ],
   },

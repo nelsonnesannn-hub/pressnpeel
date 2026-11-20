@@ -570,7 +570,7 @@ export const categories: Category[] = [
         src: "/images/work/coasters-holo/09.jpg",
         caption: "Keep Going — holographic coaster",
       },
-      { src: "/images/work/coasters-pine/07.jpg", caption: "Engraved coasters in a row" },
+      { src: "/images/work/coasters-pine/07.jpg", caption: "Engraved coasters in a pile" },
     ],
     orderTitle: "Coaster Packs — Coming Soon",
     orderSubtitle:
