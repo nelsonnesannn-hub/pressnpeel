@@ -182,8 +182,30 @@ function CheckoutInner() {
         stripeReady?: boolean;
         url?: string;
         whatsappUrl?: string;
+        upload?: { itemId: string; itemName: string };
       };
       if (!res.ok && !data.whatsappUrl) {
+        // A design token that can't be resolved must not dead-end the
+        // customer. Drop the stale token for that line so the design panel
+        // shows its upload control again — the cart and details stay put.
+        const issueItemId = data.upload?.itemId;
+        if (issueItemId) {
+          setUploads((prev) => {
+            const next: Record<string, string> = {};
+            for (const [token, id] of Object.entries(prev)) {
+              if (id === issueItemId) {
+                try {
+                  window.sessionStorage.removeItem(`${UPLOAD_PREFIX}${token}`);
+                } catch {
+                  // ignore
+                }
+              } else {
+                next[token] = id;
+              }
+            }
+            return next;
+          });
+        }
         throw new Error(data.error || "Could not start checkout.");
       }
       // The cart is NOT cleared here. It is only cleared on the success page

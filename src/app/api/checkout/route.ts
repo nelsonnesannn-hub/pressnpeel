@@ -24,11 +24,9 @@ import {
   vinylPackCountFor,
 } from "@/lib/delivery";
 import { itemsFromPayload, toPayloadItem } from "@/lib/cart-payload";
-import { takeUpload } from "@/app/api/upload/route";
+import { takeUpload } from "@/lib/uploads";
 
 const WHATSAPP_URL = "https://wa.me/6587674511";
-const DESIGN_REQUIRED_MESSAGE =
-  "A design image is required — orders without an accurate design image will be cancelled.";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -67,6 +65,26 @@ function escapeHtml(value: string): string {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
+}
+
+/** Short human label for a cart line, used in the re-upload error. */
+function itemLabel(item: CartItem): string {
+  return item.detail ? `${item.name} — ${item.detail}` : item.name;
+}
+
+/**
+ * A design token could not be resolved at checkout. Name the affected line and
+ * tell the checkout page which cart item needs a re-upload, so the customer
+ * gets an upload control instead of a dead end. The cart is never lost.
+ */
+function uploadIssue(itemId: string, label: string, reason: string) {
+  return NextResponse.json(
+    {
+      error: `${reason} — upload the design again below to continue. Your cart and details are saved.`,
+      upload: { itemId, itemName: label },
+    },
+    { status: 400 }
+  );
 }
 
 // ---- shared helpers ------------------------------------------------------
@@ -455,16 +473,19 @@ async function handleCartCheckout(req: NextRequest, body: CartBody) {
     if (item.kind === "custom") {
       // Design upload is REQUIRED for custom work. The file name travels with
       // the line; the bytes are pulled from the upload service by token.
+      const label = itemLabel(item);
       if (!item.custom?.files || item.custom.files.length === 0) {
-        return NextResponse.json(
-          { error: DESIGN_REQUIRED_MESSAGE },
-          { status: 400 }
+        return uploadIssue(
+          item.id,
+          label,
+          `No design file is attached to "${label}"`
         );
       }
       if (!uploadTokens[item.id]) {
-        return NextResponse.json(
-          { error: DESIGN_REQUIRED_MESSAGE },
-          { status: 400 }
+        return uploadIssue(
+          item.id,
+          label,
+          `The design file for "${label}" is missing`
         );
       }
     }
@@ -512,19 +533,18 @@ async function handleCartCheckout(req: NextRequest, body: CartBody) {
     if (item.kind !== "custom") continue;
     const token = uploadTokens[item.id];
     if (!token) {
-      return NextResponse.json(
-        { error: DESIGN_REQUIRED_MESSAGE },
-        { status: 400 }
+      return uploadIssue(
+        item.id,
+        itemLabel(item),
+        `The design file for "${itemLabel(item)}" is missing`
       );
     }
-    const file = takeUpload(token);
+    const file = await takeUpload(token);
     if (!file) {
-      return NextResponse.json(
-        {
-          error:
-            "Your design file has expired — please upload it again before checking out.",
-        },
-        { status: 400 }
+      return uploadIssue(
+        item.id,
+        itemLabel(item),
+        `The design file for "${itemLabel(item)}" could not be found (it may have expired)`
       );
     }
     designFiles.push({

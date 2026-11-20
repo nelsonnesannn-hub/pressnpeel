@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { stageUpload } from "@/lib/uploads";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -12,19 +13,11 @@ const MAX_TOTAL_BYTES = 24 * 1024 * 1024; // 24 MB per cart
  * session and can be sent with the order. Returns a token -> file map the
  * checkout page stores in sessionStorage and posts back to /api/checkout.
  *
- * Files are held in memory for the duration of the checkout (a Vercel
- * serverless function has no shared disk), so the token is an in-process
- * handle. It is only valid for this instance and this short window — the
- * checkout is completed immediately after.
+ * The bytes are staged in the shared KV store (see src/lib/uploads.ts), so the
+ * token resolves from ANY serverless instance — the checkout request does not
+ * have to land on the same instance as the upload. Each token expires after
+ * one hour and is deleted as soon as /api/checkout consumes it.
  */
-const bucket = new Map<
-  string,
-  { name: string; mimeType: string; dataBase64: string }
->();
-
-function token(): string {
-  return `u_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
-}
 
 export async function POST(req: NextRequest) {
   let form: FormData;
@@ -62,32 +55,14 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    const data = Buffer.from(await file.arrayBuffer()).toString("base64");
-    const key = token();
-    bucket.set(key, {
+    const dataBase64 = Buffer.from(await file.arrayBuffer()).toString("base64");
+    const { token } = await stageUpload({
       name: file.name,
       mimeType: file.type || "application/octet-stream",
-      dataBase64: data,
+      dataBase64,
     });
-    stored[key] = { name: file.name, mimeType: file.type || "", size: file.size };
+    stored[token] = { name: file.name, mimeType: file.type || "", size: file.size };
   }
 
   return NextResponse.json({ ok: true, files: stored });
-}
-
-/** Read an uploaded file back (used by /api/checkout). */
-export function takeUpload(
-  key: string
-): { name: string; mimeType: string; data: ArrayBuffer } | null {
-  const entry = bucket.get(key);
-  if (!entry) return null;
-  bucket.delete(key);
-  return {
-    name: entry.name,
-    mimeType: entry.mimeType,
-    data: Buffer.from(entry.dataBase64, "base64").buffer.slice(
-      0,
-      Buffer.from(entry.dataBase64, "base64").byteLength
-    ) as ArrayBuffer,
-  };
 }
