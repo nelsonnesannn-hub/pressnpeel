@@ -174,16 +174,14 @@ const stickerSamples: CategorySample[] = [
     caption: "Coach Julia — Shine Brightly, Little Gymnast",
   },
   {
-    src: "/images/work/childrens-day/02.jpg",
+    src: "/images/die-cut-sample-coach-rey.jpg",
     caption: "Coach Rey / KGA — Happy Children's Day",
   },
   { src: "/images/work/eaispire/01.jpg", caption: "Eaispire mascot sticker assortment" },
   { src: "/images/work/eaispire/04.jpg", caption: "Eaispire mascot and logo stickers" },
   { src: "/images/work/motivational/08.jpg", caption: "Motivational stickers" },
   { src: "/images/work/motivational/16.jpg", caption: "It's a new day — motivational sticker" },
-  { src: "/images/work/events/01.jpg", caption: "Children's Day gymnastics stickers" },
   { src: "/images/work/events/02.jpg", caption: "Sarah unicorn birthday stickers" },
-  { src: "/images/work/small-business/01.jpg", caption: "Small-business brand stickers" },
   { src: "/images/work/safety-labels/01.jpg", caption: "GAMX equipment labels" },
   { src: "/images/work/safety-labels/05.jpg", caption: "Safety Inducted tags" },
   { src: "/images/work/pnp-cards/01.jpg", caption: "Press N Peel logo vinyl stickers" },
@@ -494,32 +492,15 @@ export const categories: Category[] = [
         src: "/images/work/keychains/01.jpg",
         caption: "Gold jellyfish keychain",
       },
-      {
-        src: "/images/work/keychains/02.jpg",
-        caption: "Blue jellyfish keychain",
-      },
-      {
-        src: "/images/work/keychains/05.jpg",
-        caption: "Silver jellyfish keychain",
-      },
-      {
-        src: "/images/work/keychains/06.jpg",
-        caption: "Keychain collection",
-      },
       { src: "/images/work/keychains/08.jpg", caption: "Silver jellyfish keychain" },
       { src: "/images/work/keychains/09.jpg", caption: "Blue jellyfish keychain" },
       {
         src: "/images/work/keychains/10.jpg",
         caption: "Sea-creature keychain collection",
       },
-      { src: "/images/work/keychains/13.jpg", caption: "Keychain row" },
       {
         src: "/images/work/keychains/18.jpg",
         caption: "NFC keychains — tap to open a link",
-      },
-      {
-        src: "/images/work/keychains/14.jpg",
-        caption: "Keychain pile",
       },
     ],
     orderTitle: "Order Custom Keychains",
@@ -578,14 +559,9 @@ export const categories: Category[] = [
         caption: "Starfish coaster",
       },
       {
-        src: "/images/work/coasters-birch/01.jpg",
-        caption: "Birch ply — engraved coasters",
-      },
-      {
         src: "/images/work/coasters-birch/02.jpg",
         caption: "Keep going, you're closer than you think",
       },
-      { src: "/images/work/coasters-pine/05.jpg", caption: "Pine — engraved coasters" },
       {
         src: "/images/work/coasters-holo/07.jpg",
         caption: "Starfish holographic coaster",
@@ -631,10 +607,6 @@ export const categories: Category[] = [
       {
         src: "/images/work/b2b/04.jpg",
         caption: "Printed SWL weight sign",
-      },
-      {
-        src: "/images/no-smoking-label.jpg",
-        caption: "No-smoking sign",
       },
     ],
     orderTitle: "Signs — Coming Soon",

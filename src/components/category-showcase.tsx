@@ -45,7 +45,7 @@ const ITEMS = [
     href: "/products/keychains#order",
   },
   {
-    src: "/images/work/coasters-birch/01.jpg",
+    src: "/images/work/coasters-birch/02.jpg",
     category: "Laser",
     slug: "laser",
     caption: "Birch ply engraved coasters",
