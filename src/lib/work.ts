@@ -88,16 +88,15 @@ export const workGroups: WorkGroup[] = [
     blurb:
       "Eaispire mascot die-cut stickers and logo stickers for a repeat B2B client.",
     items: [
+      { src: w("brand", 6), caption: "Eaispire logo and mascot" },
+      { src: w("brand", 7), caption: "Eaispire logo stickers" },
+      { src: w("brand", 8), caption: "Eaispire and Press N Peel logos" },
+      { src: w("brand", 10), caption: "Logo die-cut set" },
       { src: w("brand", 1), caption: "Eaispire mascot assortment" },
       { src: w("brand", 2), caption: "Eaispire mascot sticker row" },
       { src: w("brand", 3), caption: "Eaispire mascot figurine with stickers" },
       { src: w("brand", 4), caption: "Eaispire mascot line-up" },
-      { src: w("brand", 5), caption: "Eaispire flyer — Learn It, Build It, Make It" },
-      { src: w("brand", 6), caption: "Eaispire logo and mascot" },
-      { src: w("brand", 7), caption: "Eaispire logo stickers" },
-      { src: w("brand", 8), caption: "Eaispire and Press N Peel logos" },
       { src: w("brand", 9), caption: "Eaispire sticker pile" },
-      { src: w("brand", 10), caption: "Logo die-cut set" },
       { src: w("eaispire", 1), caption: "Eaispire mascot sticker assortment" },
       { src: w("eaispire", 2), caption: "Eaispire mascot sticker row" },
       { src: w("eaispire", 3), caption: "Eaispire sticker scatter" },
@@ -106,6 +105,7 @@ export const workGroups: WorkGroup[] = [
       { src: w("eaispire", 6), caption: "Eaispire mascot die-cut set" },
       { src: w("eaispire", 7), caption: "Eaispire mascot sticker stack" },
       { src: w("eaispire", 8), caption: "Eaispire mascot sticker display" },
+      { src: w("brand", 5), caption: "Eaispire flyer — Learn It, Build It, Make It" },
     ],
   },
   {
