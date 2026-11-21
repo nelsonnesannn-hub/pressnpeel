@@ -165,7 +165,6 @@ const labelSheetSrcs = new Set([
 ]);
 
 const stickerSamples: CategorySample[] = [
-  { src: "/images/work/motivational/03.jpg", caption: "Keep Going sticker pile" },
   { src: "/images/work/brand/01.jpg", caption: "Eaispire mascot assortment" },
   { src: "/images/work/brand/09.jpg", caption: "Eaispire sticker pile" },
   { src: "/images/work/b2b/01.jpg", caption: "JGR Fit For Use inspection labels" },

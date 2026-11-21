@@ -112,10 +112,6 @@ export const workGroups: WorkGroup[] = [
     blurb:
       "Birthday, thank-you, and school event stickers — die-cut to any shape with the child's name and artwork.",
     items: [
-      {
-        src: w("events", 1),
-        caption: "Shine Brightly, Little Gymnast — Children's Day",
-      },
       { src: w("events", 2), caption: "Sarah unicorn birthday stickers" },
       { src: w("events", 3), caption: "Sarah thank-you unicorn sticker" },
       { src: w("events", 4), caption: "Event sticker labels" },
