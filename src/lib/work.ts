@@ -35,7 +35,6 @@ export const workGroups: WorkGroup[] = [
       "Die-cut motivational sticker ranges — sea creatures, animals, and keep-going quotes, cut to any shape.",
     items: [
       { src: w("motivational", 2), caption: "Keep Going collection" },
-      { src: w("motivational", 3), caption: "Keep Going sticker pile" },
       { src: w("motivational", 4), caption: "Sea-creature and quote mix" },
       { src: w("motivational", 5), caption: "Die-cut assortment on white" },
       { src: w("motivational", 10), caption: "Motivational die-cut assortment" },
@@ -43,7 +42,6 @@ export const workGroups: WorkGroup[] = [
       { src: w("motivational", 16), caption: "It's a new day — rainbow quote sticker" },
       { src: w("motivational", 17), caption: "There is time — sea turtle sticker" },
       { src: w("motivational", 18), caption: "Shine — starfish sticker" },
-      { src: w("motivational", 19), caption: "Turn your pain into purpose — quote sticker" },
       { src: w("motivational", 20), caption: "Motivational die-cut sticker" },
     ],
   },
