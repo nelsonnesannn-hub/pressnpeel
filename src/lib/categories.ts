@@ -555,20 +555,12 @@ export const categories: Category[] = [
         caption: "Jellyfish coaster",
       },
       {
-        src: "/images/work/coasters-holo/05.jpg",
-        caption: "Starfish coaster",
-      },
-      {
         src: "/images/work/coasters-birch/02.jpg",
         caption: "Keep going, you're closer than you think",
       },
       {
         src: "/images/work/coasters-holo/07.jpg",
         caption: "Starfish holographic coaster",
-      },
-      {
-        src: "/images/work/coasters-holo/09.jpg",
-        caption: "Keep Going — holographic coaster",
       },
       { src: "/images/work/coasters-pine/07.jpg", caption: "Engraved coasters in a pile" },
     ],
