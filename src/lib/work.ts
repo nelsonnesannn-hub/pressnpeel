@@ -233,7 +233,6 @@ export const workGroups: WorkGroup[] = [
       { src: w("coasters-holo", 7), caption: "Starfish holographic coaster" },
       { src: w("coasters-holo", 8), caption: "Never give up — coaster pile" },
       { src: w("coasters-holo", 9), caption: "Keep Going — holographic coaster" },
-      { src: w("coasters-holo", 10), caption: "Holographic coaster design" },
       { src: w("coasters-holo", 11), caption: "Holographic coaster" },
       { src: w("coasters-holo", 12), caption: "Holographic quote coaster" },
     ],
