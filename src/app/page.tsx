@@ -60,7 +60,7 @@ type Section = {
   image: string;
   href: string;
   badge?: string;
-  /** Prefilled WhatsApp enquiry link — only on ORDERABLE categories. */
+  /** Prefilled WhatsApp enquiry link — on orderable AND coming-soon categories. */
   enquire?: string;
 };
 
@@ -91,6 +91,7 @@ const SECTIONS: Section[] = [
     image: "/images/decal-lifestyle.jpg",
     href: "/products/vinyl-decals",
     badge: "Coming soon",
+    enquire: ENQUIRE_LINKS.vinylDecals,
   },
   {
     id: "keychains",
@@ -109,6 +110,7 @@ const SECTIONS: Section[] = [
     image: "/images/laser-lifestyle.jpg",
     href: "/products/laser",
     badge: "Coming soon",
+    enquire: ENQUIRE_LINKS.laserCoasters,
   },
   {
     id: "signs",
@@ -118,6 +120,7 @@ const SECTIONS: Section[] = [
     image: "/images/signs-lifestyle.jpg",
     href: "/products/signs",
     badge: "Coming soon",
+    enquire: ENQUIRE_LINKS.signs,
   },
 ];
 
