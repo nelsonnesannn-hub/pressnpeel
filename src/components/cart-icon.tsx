@@ -6,14 +6,20 @@ import Link from "next/link";
 import { useCart } from "./cart-store";
 
 export default function CartIcon() {
-  const { count, setOpen } = useCart();
+  const { count, ready, setOpen } = useCart();
+
+  // The store starts empty and is hydrated from localStorage after mount, so
+  // before `ready` the true count is unknown. Paint 0 rather than a persisted
+  // number: a fresh tab must never show items the visitor did not add in this
+  // session, and the badge must not flicker from a stale value to the real one.
+  const shown = ready ? count : 0;
 
   return (
     <div className="flex items-center gap-2">
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label={`Open cart (${count} item${count === 1 ? "" : "s"})`}
+        aria-label={`Open cart (${shown} item${shown === 1 ? "" : "s"})`}
         className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 text-slate-300 transition-colors hover:bg-slate-900/60 hover:text-white"
       >
         <svg
@@ -30,9 +36,9 @@ export default function CartIcon() {
           <circle cx="20" cy="21" r="1" />
           <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
         </svg>
-        {count > 0 ? (
+        {shown > 0 ? (
           <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[11px] font-bold text-slate-950">
-            {count > 99 ? "99+" : count}
+            {shown > 99 ? "99+" : shown}
           </span>
         ) : null}
       </button>

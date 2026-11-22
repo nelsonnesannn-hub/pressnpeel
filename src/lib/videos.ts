@@ -51,7 +51,7 @@ export const videoGroups: VideoGroup[] = [
       v(
         "20260710_050209",
         "Production and application",
-        "Stickers printed and applied to a laptop."
+        "Pfizer \"NON-SHIFT BUS PERSONNEL\" labels printed on a sheet."
       ),
     ],
   },
