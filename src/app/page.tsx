@@ -8,6 +8,8 @@ import VideoGallery from "@/components/video-gallery";
 import NfcSection from "@/components/nfc-section";
 import HeroCarousel from "@/components/hero-carousel";
 import CategoryShowcase from "@/components/category-showcase";
+import EnquireButton from "@/components/enquire-button";
+import { ENQUIRE_LINKS } from "@/lib/enquire";
 import { workGroups } from "@/lib/work";
 import { videoGroups } from "@/lib/videos";
 
@@ -51,7 +53,18 @@ function speedLinesURI(): string {
   return `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}")`;
 }
 
-const SECTIONS = [
+type Section = {
+  id: string;
+  title: string;
+  subtitle: string;
+  image: string;
+  href: string;
+  badge?: string;
+  /** Prefilled WhatsApp enquiry link — only on ORDERABLE categories. */
+  enquire?: string;
+};
+
+const SECTIONS: Section[] = [
   {
     id: "stickers-and-labels",
     title: "Stickers and labels",
@@ -59,6 +72,7 @@ const SECTIONS = [
       "Finished die-cut stickers and printed labels — printed to order.",
     image: "/images/stickers-labels-lifestyle.jpg",
     href: "/products/stickers-and-labels",
+    enquire: ENQUIRE_LINKS.dieCut,
   },
   {
     id: "printable-vinyl",
@@ -67,6 +81,7 @@ const SECTIONS = [
       "Printable vinyl sheets in 7 finishes — sold as a pack of 20 A4 sheets.",
     image: "/images/vinyl-sheets-lifestyle.jpg",
     href: "/products/printable-vinyl",
+    enquire: ENQUIRE_LINKS.printableVinyl,
   },
   {
     id: "vinyl-decals",
@@ -84,6 +99,7 @@ const SECTIONS = [
       "NFC keychains that tap to open a link, and acrylic keychains in any shape.",
     image: "/images/keychains-lifestyle.jpg",
     href: "/products/keychains",
+    enquire: ENQUIRE_LINKS.nfcKeychains,
   },
   {
     id: "laser",
@@ -285,37 +301,45 @@ export default function HomePage() {
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {SECTIONS.map((s) => (
-              <Link
+              <div
                 key={s.id}
-                href={s.href}
-                className="group relative rounded-2xl border border-slate-800/70 bg-slate-900/40 p-5 transition-all hover:border-[#FFD60A]/40 hover:bg-slate-900/70 hover:shadow-lg"
+                className="group relative flex flex-col rounded-2xl border border-slate-800/70 bg-slate-900/40 p-5 transition-all hover:border-[#FFD60A]/40 hover:bg-slate-900/70 hover:shadow-lg"
               >
-                {/* square thumb — no cropping */}
-                <span className="block overflow-hidden rounded-xl ring-1 ring-slate-800">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={s.image}
-                    alt={s.title}
-                    className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    loading="lazy"
-                  />
-                </span>
-
-                <h3
-                  className="mt-4 text-lg font-semibold transition-colors"
-                  style={{ color: BRONZE_LIGHT }}
-                >
-                  {s.title}
-                </h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-slate-400">
-                  {s.subtitle}
-                </p>
-                {s.badge ? (
-                  <span className="mt-3 inline-flex rounded-full border border-[#FFD60A]/40 bg-[#FFD60A]/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-[#FFD60A]">
-                    {s.badge}
+                {/* Card body links to the category page. The Enquire button is a
+                    sibling anchor, never nested inside this Link. */}
+                <Link href={s.href} className="block">
+                  {/* square thumb — no cropping */}
+                  <span className="block overflow-hidden rounded-xl ring-1 ring-slate-800">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={s.image}
+                      alt={s.title}
+                      className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      loading="lazy"
+                    />
                   </span>
+
+                  <h3
+                    className="mt-4 text-lg font-semibold transition-colors"
+                    style={{ color: BRONZE_LIGHT }}
+                  >
+                    {s.title}
+                  </h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-slate-400">
+                    {s.subtitle}
+                  </p>
+                  {s.badge ? (
+                    <span className="mt-3 inline-flex rounded-full border border-[#FFD60A]/40 bg-[#FFD60A]/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-[#FFD60A]">
+                      {s.badge}
+                    </span>
+                  ) : null}
+                </Link>
+                {s.enquire ? (
+                  <div className="mt-4">
+                    <EnquireButton href={s.enquire} label="Enquire" />
+                  </div>
                 ) : null}
-              </Link>
+              </div>
             ))}
           </div>
         </div>
