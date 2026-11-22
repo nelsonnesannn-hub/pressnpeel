@@ -21,10 +21,10 @@ const ITEMS = [
     href: "/products/stickers-and-labels#order-die-cut",
   },
   {
-    src: "/images/work/events/01.jpg",
+    src: "/images/work/events/02.jpg",
     category: "Stickers and labels",
     slug: "stickers-and-labels",
-    caption: "Children's Day gymnastics stickers",
+    caption: "Sarah unicorn birthday stickers",
     purpose: "Event & celebration stickers",
     href: "/products/stickers-and-labels#order-die-cut",
   },

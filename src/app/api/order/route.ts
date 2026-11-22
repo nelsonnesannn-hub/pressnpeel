@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendTelegramMessage, sendTelegramDocument } from "@/lib/telegram";
 import { createEnquiry } from "@/lib/orders";
+import { getStockState, blockReason } from "@/lib/stock";
+import { stockKeyForEnquiry, stockLine } from "@/lib/stock-keys";
 import {
   formatKissCutUnit,
   formatSGD,
@@ -100,6 +102,21 @@ export async function POST(req: NextRequest) {
     const totalCents = kissCutTotalCents(finish, sizeCm, stickerCount);
     if (perStickerCents != null && totalCents != null) {
       kissCut = { sizeCm, finish, stickerCount, perStickerCents, totalCents };
+    }
+  }
+
+  // Stock / availability — a paused or sold-out line cannot be enquired into
+  // either; the admin toggle takes effect immediately.
+  const enquiryStockKey = stockKeyForEnquiry(source, fields.kissCut === "1");
+  if (enquiryStockKey) {
+    const stock = await getStockState();
+    const reason = blockReason(
+      stock,
+      enquiryStockKey,
+      stockLine(enquiryStockKey)?.label ?? "This product line"
+    );
+    if (reason) {
+      return NextResponse.json({ ok: false, error: reason }, { status: 409 });
     }
   }
 

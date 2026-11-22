@@ -25,6 +25,17 @@ import {
 } from "@/lib/delivery";
 import { itemsFromPayload, toPayloadItem } from "@/lib/cart-payload";
 import { takeUpload } from "@/lib/uploads";
+import {
+  getStockState,
+  basketBlockReason,
+  saveStockState,
+  decrementInState,
+} from "@/lib/stock";
+import {
+  stockKeyForFixed,
+  stockKeyForCustom,
+} from "@/lib/stock-keys";
+import { archiveDesign } from "@/lib/designs";
 
 const WHATSAPP_URL = "https://wa.me/6587674511";
 
@@ -70,6 +81,15 @@ function escapeHtml(value: string): string {
 /** Short human label for a cart line, used in the re-upload error. */
 function itemLabel(item: CartItem): string {
   return item.detail ? `${item.name} — ${item.detail}` : item.name;
+}
+
+/** Stock line key + label for a rebuilt cart line. */
+function stockLineFor(item: CartItem): { key: string; label: string } {
+  const key =
+    item.kind === "custom"
+      ? stockKeyForCustom(item.custom?.type ?? "")
+      : stockKeyForFixed(item.productSlug ?? "", item.optionId);
+  return { key, label: itemLabel(item) };
 }
 
 /**
@@ -169,6 +189,16 @@ async function handleSingleCheckout(req: NextRequest, body: SingleBody) {
   const unitPrice = option.price;
   const subtotal = computeTotal(unitPrice, quantity);
 
+  // Stock / availability — a paused or sold-out line can never be ordered.
+  const stock = await getStockState();
+  const stockKey = stockKeyForFixed(product.slug, option.id);
+  const stockBlock = basketBlockReason(stock, [
+    { key: stockKey, label: `${product.name} — ${option.label}` },
+  ]);
+  if (stockBlock) {
+    return NextResponse.json({ error: stockBlock }, { status: 409 });
+  }
+
   // Campaign codes are resolved against Stripe so the promotion code behind
   // the on-page preview is the same one applied to the Checkout Session.
   let promotionCodeId: string | null = null;
@@ -244,6 +274,12 @@ async function handleSingleCheckout(req: NextRequest, body: SingleBody) {
     });
   } catch (err) {
     console.error("Could not persist order:", err);
+  }
+
+  // Selling reduces the counted stock (a sold-out line stops taking orders).
+  if (orderId) {
+    const dec = decrementInState(stock, [{ key: stockKey, qty: quantity }]);
+    if (dec.changed) await saveStockState(dec.state);
   }
 
   // UNCONDITIONAL Telegram ping — Nelson hears about every order, even when
@@ -501,6 +537,14 @@ async function handleCartCheckout(req: NextRequest, body: CartBody) {
   const hasCustom = lines.some((item) => item.kind === "custom");
   const captureMethod = hasCustom ? "manual" : "automatic";
 
+  // Stock / availability — checked here so the toggle and a zero count stop
+  // the order before anything is recorded or charged.
+  const stock = await getStockState();
+  const stockBlock = basketBlockReason(stock, lines.map(stockLineFor));
+  if (stockBlock) {
+    return NextResponse.json({ error: stockBlock }, { status: 409 });
+  }
+
   // DELIVERY — computed here, from the rebuilt basket. The posted urgent flag
   // is only ever honoured when the basket actually contains vinyl sheets, so
   // a sticker-only cart can never be charged (or offered) next-day delivery.
@@ -527,7 +571,11 @@ async function handleCartCheckout(req: NextRequest, body: CartBody) {
   const total = totalCents / 100;
 
   // Pull the design files before the ping so the documents reach Nelson.
+  // The same bytes are archived per order line so the admin's design-approval
+  // view keeps a thumbnail after the single-use upload token is gone.
   const designFiles: { data: ArrayBuffer; filename: string; mimeType: string }[] =
+    [];
+  const archivedDesigns: { itemId: string; name: string; mimeType: string; data: ArrayBuffer }[] =
     [];
   for (const item of lines) {
     if (item.kind !== "custom") continue;
@@ -551,6 +599,12 @@ async function handleCartCheckout(req: NextRequest, body: CartBody) {
       data: file.data,
       filename: file.name,
       mimeType: file.mimeType,
+    });
+    archivedDesigns.push({
+      itemId: item.id,
+      name: file.name,
+      mimeType: file.mimeType,
+      data: file.data,
     });
   }
 
@@ -625,9 +679,31 @@ async function handleCartCheckout(req: NextRequest, body: CartBody) {
       discountCents: discountCents || undefined,
       discountCode: promotionCodeId ? discountCode : undefined,
       captureMethod,
+      designFiles: archivedDesigns.map((file) => ({
+        itemId: file.itemId,
+        name: file.name,
+        mimeType: file.mimeType,
+      })),
     });
   } catch (err) {
     console.error("Could not persist order:", err);
+  }
+
+  // Archive the design files for the admin approval view, then reduce stock.
+  if (orderId) {
+    for (const file of archivedDesigns) {
+      await archiveDesign(orderId, file.itemId, file);
+    }
+    const dec = decrementInState(
+      stock,
+      lines
+        .filter((item) => item.kind === "fixed")
+        .map((item) => ({
+          key: stockKeyForFixed(item.productSlug ?? "", item.optionId),
+          qty: item.quantity,
+        }))
+    );
+    if (dec.changed) await saveStockState(dec.state);
   }
 
   // UNCONDITIONAL Telegram ping. Nelson hears about every order, with the

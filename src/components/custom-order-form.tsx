@@ -23,7 +23,9 @@ import {
   type CartItem,
   type CustomKind,
 } from "@/lib/cart";
+import { stockKeyForCustom } from "@/lib/stock-keys";
 import { useCart } from "./cart-store";
+import { flagsFor, useStock } from "./use-stock";
 
 const FINISH_LABELS = Object.keys(FINISH_BASE_CENTS);
 
@@ -95,6 +97,9 @@ export default function CustomOrderForm({
   const [addedItem, setAddedItem] = useState<CartItem | null>(null);
   const [uploading, setUploading] = useState(false);
   const { addItem, setOpen } = useCart();
+  const stock = useStock();
+  const stockFlags = flagsFor(stock, stockKeyForCustom(type));
+  const stockBlocked = stockFlags.soldOut || !stockFlags.available;
 
   const sizes = useMemo(() => sizeOptions(10), []);
   const unit = isFinish(finish) ? stickerUnitCents(finish, size) : null;
@@ -110,6 +115,14 @@ export default function CustomOrderForm({
 
   async function handleAdd() {
     setError(null);
+    if (stockBlocked) {
+      setError(
+        stockFlags.soldOut
+          ? "This line is sold out — please order via WhatsApp and we will help you."
+          : "This line is not available right now — please order via WhatsApp."
+      );
+      return;
+    }
     if (!isFinish(finish)) {
       setError("Please select a vinyl finish.");
       return;
@@ -380,11 +393,17 @@ export default function CustomOrderForm({
 
       <button
         type="submit"
-        disabled={uploading}
+        disabled={uploading || stockBlocked}
         className="w-full rounded-xl py-3.5 text-base font-semibold text-slate-950 shadow-lg transition-transform hover:scale-[1.01] disabled:opacity-60"
         style={{ backgroundColor: "#FFD60A" }}
       >
-        {uploading ? "Uploading design…" : "Add to Cart"}
+        {stockFlags.soldOut
+          ? "Sold out"
+          : !stockFlags.available
+          ? "Unavailable"
+          : uploading
+          ? "Uploading design…"
+          : "Add to Cart"}
       </button>
       <p className="mt-3 text-center text-xs text-slate-500">
         The design file travels with your cart and is sent to Nelson when you

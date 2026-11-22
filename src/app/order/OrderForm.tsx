@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
+import { stockKeyForFixed } from "@/lib/stock-keys";
+import { flagsFor, useStock } from "@/components/use-stock";
 import { products, type ProductRow } from "@/lib/catalog";
 import { computeTotal, formatSGD } from "@/lib/pricing";
 import {
@@ -67,6 +69,15 @@ function OrderForm({ stripeReady }: Props) {
     ? chosen.options.find((o) => o.id === optionId) ?? chosen.options[0]
     : undefined;
 
+  // Stock / availability — a paused or sold-out line cannot be ordered here
+  // either; the checkout route re-checks the same state server-side.
+  const stock = useStock();
+  const stockFlags =
+    chosen && option
+      ? flagsFor(stock, stockKeyForFixed(chosen.slug, option.id))
+      : { available: true, soldOut: false, low: false };
+  const stockBlocked = stockFlags.soldOut || !stockFlags.available;
+
   const minQty = chosen?.min_qty ?? 1;
   const qty = Math.max(minQty, Math.min(100000, parseInt(quantity) || minQty));
   const total = chosen && option ? computeTotal(option.price, qty) : 0;
@@ -110,6 +121,7 @@ function OrderForm({ stripeReady }: Props) {
 
   function handleContinue(e: React.FormEvent) {
     e.preventDefault();
+    if (stockBlocked) return;
     setStep(2);
   }
 
@@ -133,6 +145,14 @@ function OrderForm({ stripeReady }: Props) {
   async function handleCheckout(e: React.FormEvent) {
     e.preventDefault();
     if (!chosen || !option) return;
+    if (stockBlocked) {
+      setSubmitError(
+        stockFlags.soldOut
+          ? "This line is sold out. Please order via WhatsApp and we will help you."
+          : "This line is not available right now. Please order via WhatsApp."
+      );
+      return;
+    }
     setSubmitting(true);
     setSubmitError(null);
     try {
@@ -395,11 +415,23 @@ function OrderForm({ stripeReady }: Props) {
 
           <button
             type="submit"
-            className="w-full rounded-xl py-3.5 text-base font-semibold text-slate-950 shadow-lg transition-transform hover:scale-[1.01]"
+            disabled={stockBlocked}
+            className="w-full rounded-xl py-3.5 text-base font-semibold text-slate-950 shadow-lg transition-transform hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
             style={{ backgroundColor: "#FFD60A" }}
           >
-            Continue to Payment
+            {stockFlags.soldOut
+              ? "Sold out"
+              : !stockFlags.available
+              ? "Unavailable"
+              : "Continue to Payment"}
           </button>
+          {stockBlocked ? (
+            <p className="mt-3 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-2.5 text-center text-xs text-rose-300">
+              {stockFlags.soldOut
+                ? "This line is sold out — order via WhatsApp and we will help you."
+                : "This line is not available right now — please order via WhatsApp."}
+            </p>
+          ) : null}
         </form>
       ) : (
         <form

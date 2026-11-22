@@ -7,7 +7,9 @@ import { useState } from "react";
 import { products } from "@/lib/catalog";
 import { formatSGD, getOption } from "@/lib/pricing";
 import { fixedItemFromCatalog } from "@/lib/cart";
+import { stockKeyForFixed } from "@/lib/stock-keys";
 import { useCart } from "./cart-store";
+import { flagsFor, useStock } from "./use-stock";
 
 const BUYABLE = products.filter((p) => p.buyable);
 
@@ -27,8 +29,14 @@ export default function AddToCartButton({
   const [quantity, setQuantity] = useState(String(product.min_qty));
   const [added, setAdded] = useState(false);
   const { addItem, setOpen } = useCart();
+  const stock = useStock();
 
   const option = getOption(product, selected);
+  const stockKey = stockKeyForFixed(product.slug, selected);
+  const flags = flagsFor(stock, stockKey);
+  const soldOut = flags.soldOut;
+  const unavailable = !flags.available;
+  const blocked = soldOut || unavailable;
   const qty = Math.max(
     product.min_qty,
     Math.min(100000, parseInt(quantity) || product.min_qty)
@@ -77,23 +85,32 @@ export default function AddToCartButton({
         <button
           type="button"
           onClick={handleAdd}
-          className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold text-slate-950 transition-transform hover:scale-[1.02]"
+          disabled={blocked}
+          className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold text-slate-950 transition-transform hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-40"
           style={{ backgroundColor: "#FFD60A" }}
         >
-          {added ? "Added ✓" : "Add to Cart"}
+          {soldOut ? "Sold out" : unavailable ? "Unavailable" : added ? "Added ✓" : "Add to Cart"}
         </button>
       </div>
 
       <p className="text-xs text-slate-500">
         {formatSGD(option.price)} {product.price_unit} · min {product.min_qty}
       </p>
+      {blocked ? (
+        <p className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs text-rose-300">
+          {soldOut
+            ? "This line is sold out — order via WhatsApp and we will help you."
+            : "This line is not available right now — please order via WhatsApp."}
+        </p>
+      ) : null}
       <button
         type="button"
+        disabled={blocked}
         onClick={() => {
           handleAdd();
           setOpen(true);
         }}
-        className="text-xs font-medium text-[#FACC15] underline-offset-2 hover:underline"
+        className="disabled:opacity-50 text-xs font-medium text-[#FACC15] underline-offset-2 hover:underline"
       >
         Add &amp; view cart
       </button>

@@ -43,6 +43,25 @@ export type OrderRecord = {
   notified_paid: number;
   created_at: string;
   updated_at: string;
+  // ---- admin fields (added for the /admin page) --------------------------
+  /** held / captured / released / refunded / pending / unpaid */
+  payment_status: string | null;
+  /** pending_approval / in_production / ready / done / cancelled */
+  fulfilment_status: string | null;
+  /** Delivery address (manual orders; site orders use the notes field). */
+  address: string | null;
+  /** Saturday of the delivery weekend, YYYY-MM-DD. */
+  delivery_weekend: string | null;
+  /** Urgent next-day delivery requested (vinyl sheets only). */
+  urgent: boolean;
+  /** site = ordered on the website, manual = WhatsApp / phone order. */
+  source: string;
+  /** Nelson's own notes — never shown to the customer. */
+  admin_notes: string | null;
+  /** Returning-customer flag (SASHA10 is first-order only). */
+  repeat_customer: boolean;
+  /** Design files archived for the admin's approval view. */
+  design_files: { itemId: string; name: string; mimeType: string }[] | null;
 };
 
 export type OrderItemRecord = {
@@ -92,6 +111,16 @@ export type NewOrder = {
   discountCents?: number;
   discountCode?: string;
   captureMethod?: string;
+  /** site (website checkout) or manual (WhatsApp / phone order). */
+  source?: "site" | "manual";
+  paymentStatus?: string;
+  fulfilmentStatus?: string;
+  address?: string;
+  deliveryWeekend?: string;
+  urgent?: boolean;
+  adminNotes?: string;
+  repeatCustomer?: boolean;
+  designFiles?: { itemId: string; name: string; mimeType: string }[];
 };
 
 const KEY_PREFIX = "pnp:order:";
@@ -197,6 +226,15 @@ export async function createOrder(input: NewOrder): Promise<number> {
     notified_paid: 0,
     created_at: now,
     updated_at: now,
+    payment_status: input.paymentStatus ?? null,
+    fulfilment_status: input.fulfilmentStatus ?? null,
+    address: input.address ?? null,
+    delivery_weekend: input.deliveryWeekend ?? null,
+    urgent: input.urgent ?? false,
+    source: input.source ?? "site",
+    admin_notes: input.adminNotes ?? null,
+    repeat_customer: input.repeatCustomer ?? false,
+    design_files: input.designFiles ?? null,
   };
   const c = client();
   if (c) {
@@ -362,8 +400,13 @@ export async function setNotified(
 
 /** All stored orders (KV scan) — handy for future admin views. */
 export async function listOrders(limit = 100): Promise<OrderRecord[]> {
+  return listAllOrders(limit);
+}
+
+/** Every stored order (KV scan), newest first. */
+export async function listAllOrders(limit = 1000): Promise<OrderRecord[]> {
   const c = client();
-  if (!c) return [...memoryOrders.values()].slice(-limit);
+  if (!c) return [...memoryOrders.values()].sort((a, b) => b.id - a.id).slice(0, limit);
   const out: OrderRecord[] = [];
   let cursor = "0";
   do {
@@ -379,3 +422,25 @@ export async function listOrders(limit = 100): Promise<OrderRecord[]> {
   } while (cursor !== "0" && out.length < limit);
   return out.sort((a, b) => b.id - a.id).slice(0, limit);
 }
+
+/**
+ * Persist an edited order record. Only the admin screen uses this: status
+ * changes, notes and the returning-customer flag. Nothing is ever deleted.
+ */
+export async function updateOrder(record: OrderRecord): Promise<OrderRecord | null> {
+  const existing = await getOrderById(record.id);
+  if (!existing) return null;
+  const next: OrderRecord = { ...existing, ...record, updated_at: timestamp() };
+  const c = client();
+  if (c) {
+    try {
+      await kvWrite(c, next);
+      return next;
+    } catch (err) {
+      console.error("KV write failed, falling back to memory:", err);
+    }
+  }
+  memoryOrders.set(next.id, next);
+  return next;
+}
+
