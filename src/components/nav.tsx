@@ -136,13 +136,6 @@ export function Header() {
           >
             Start Order
           </Link>
-          <Link
-            href="/contact"
-            className="hidden items-center justify-center rounded-xl border border-slate-700 px-4 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-900/60 hover:text-white sm:inline-flex"
-          >
-            Contact
-          </Link>
-
           {/* Mobile menu (no JS required) */}
           <details className="group relative lg:hidden">
             <summary className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-xl border border-slate-700 text-slate-300 transition-colors hover:bg-slate-900/60 hover:text-white [&::-webkit-details-marker]:hidden">

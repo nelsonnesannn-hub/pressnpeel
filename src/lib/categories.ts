@@ -176,7 +176,7 @@ const stickerSamples: CategorySample[] = [
     src: "/images/die-cut-sample-coach-rey.jpg",
     caption: "Coach Rey / KGA — Happy Children's Day",
   },
-  { src: "/images/work/eaispire/01.jpg", caption: "Eaispire mascot sticker assortment" },
+  { src: "/images/work/eaispire/01.jpg", caption: "Eaispire all stickers" },
   { src: "/images/work/eaispire/04.jpg", caption: "Eaispire mascot and logo stickers" },
   { src: "/images/work/motivational/08.jpg", caption: "Motivational stickers" },
   { src: "/images/work/motivational/16.jpg", caption: "It's a new day — motivational sticker" },

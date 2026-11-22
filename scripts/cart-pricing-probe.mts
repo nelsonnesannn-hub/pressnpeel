@@ -140,8 +140,11 @@ check("TRAP: urgent is not offered for stickers",
   deliveryFor([dieSmall!], true).urgentAllowed, false);
 check("TRAP: urgent on a sticker-only cart charges no urgent fee",
   deliveryFor([dieSmall!], true).feeCents, 225);
-check("TRAP: keychains count in pieces",
-  pieceCountFor([fixedItemFromCatalog("nfc-keychains", "4x4", 5)!]), 5);
+check("TRAP: keychains do NOT count in pieces",
+  pieceCountFor([fixedItemFromCatalog("nfc-keychains", "4x4", 5)!]), 0);
+check("delivery: 300 keychains only still pays $2.25",
+  deliveryFor([fixedItemFromCatalog("nfc-keychains", "4x4", FREE_DELIVERY_PIECES)!]).feeCents,
+  DELIVERY_FEE_CENTS);
 check("TRAP: urgent adds exactly one $2.25 on top of the flat fee",
   deliveryFor(vinyl3, true).urgentCents, DELIVERY_FEE_CENTS);
 check("delivery: free basket reason is null",

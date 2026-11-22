@@ -96,7 +96,7 @@ export const workGroups: WorkGroup[] = [
       { src: w("brand", 2), caption: "Eaispire mascot sticker row" },
       { src: w("eaispire", 2), caption: "Eaispire mascot sticker row" },
       { src: w("brand", 9), caption: "Eaispire sticker pile" },
-      { src: w("eaispire", 1), caption: "Eaispire mascot sticker assortment" },
+      { src: w("eaispire", 1), caption: "Eaispire all stickers" },
       { src: w("brand", 1), caption: "Eaispire mascot assortment" },
       { src: w("brand", 3), caption: "Eaispire mascot figurine with stickers" },
       { src: w("eaispire", 5), caption: "Eaispire robot mascot stickers" },
@@ -189,7 +189,6 @@ export const workGroups: WorkGroup[] = [
       "Laser engraving on pine — motivational coasters with names, quotes, and emblems.",
     items: [
       { src: w("coasters-pine", 1), caption: "Start again — engraved pine" },
-      { src: w("coasters-pine", 2), caption: "Engraved pine coaster set" },
       { src: w("coasters-pine", 3), caption: "Engraved coasters in a row" },
       { src: w("coasters-pine", 6), caption: "Pine coaster set" },
       { src: w("coasters-pine", 7), caption: "Engraved coasters in a pile" },
@@ -221,7 +220,6 @@ export const workGroups: WorkGroup[] = [
       { src: w("coasters-holo", 4), caption: "Jellyfish acrylic coaster" },
       { src: w("coasters-holo", 7), caption: "Starfish holographic coaster" },
       { src: w("coasters-holo", 11), caption: "Holographic coaster" },
-      { src: w("coasters-holo", 12), caption: "Holographic quote coaster" },
     ],
   },
   {
@@ -239,7 +237,6 @@ export const workGroups: WorkGroup[] = [
       { src: w("keychains", 9), caption: "Blue jellyfish keychain" },
       { src: w("keychains", 10), caption: "Sea-creature keychain collection" },
       { src: w("keychains", 15), caption: "Acrylic keychain" },
-      { src: w("keychains", 18), caption: "NFC keychains" },
       { src: w("keychains", 20), caption: "NFC keychain — tap to open" },
     ],
   },

@@ -450,8 +450,8 @@ function CheckoutInner() {
               </p>
             ) : (
               <p className="mb-3 rounded-lg border border-[#FFD60A]/30 bg-[#FFD60A]/10 px-4 py-2.5 text-sm text-[#FFD60A]">
-                Delivery {formatCents(DELIVERY_FEE_CENTS)} — under 300 pieces and
-                under 6 vinyl packs.
+                Delivery {formatCents(DELIVERY_FEE_CENTS)} — under 300 pieces of
+                stickers and labels, and under 6 vinyl packs.
               </p>
             )}
 

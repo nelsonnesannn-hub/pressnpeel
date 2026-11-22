@@ -6,18 +6,17 @@
 // charged — the client totals are display-only, never trusted.
 //
 // The two thresholds are deliberately separate units:
-//   * PIECES — stickers, labels, keychains and similar. Free at 300+ pieces.
+//   * PIECES — stickers and labels only. Free at 300+ pieces.
 //   * PACKS  — printable vinyl sheets (1 pack = 20 A4 sheets). Free at 6+ packs.
 // Vinyl packs NEVER count toward the 300-piece rule, and pieces never count
 // toward the 6-pack rule. A mixed order is free when EITHER threshold is met.
+// Keychains, coasters and signs are not part of either threshold.
 //
 // Urgent next-day delivery is VINYL SHEETS ONLY.
 
 import type { CartItem } from "./cart";
 
 export const DELIVERY_FEE_CENTS = 225;
-/** Pieces counted per keychain unit. */
-export const KEYCHAIN_PIECES_PER_UNIT = 1;
 
 /** Free-delivery thresholds. */
 export const FREE_DELIVERY_PIECES = 300;
@@ -31,18 +30,12 @@ export function isVinylSheetItem(item: CartItem): boolean {
   return item.kind === "fixed" && item.productSlug === "printable-vinyl";
 }
 
-/** Non-vinyl lines are counted in PIECES: custom sticker counts + keychains. */
+/** Non-vinyl lines are counted in PIECES: custom stickers and labels only. */
 export function pieceCountFor(items: CartItem[]): number {
   let pieces = 0;
   for (const item of items) {
     if (isVinylSheetItem(item)) continue;
     if (item.kind === "custom") pieces += item.quantity;
-    else if (
-      item.productSlug === "nfc-keychains" ||
-      item.productSlug === "acrylic-keychains"
-    ) {
-      pieces += item.quantity * KEYCHAIN_PIECES_PER_UNIT;
-    }
     // Any other fixed line contributes nothing to the piece threshold.
   }
   return pieces;
@@ -130,7 +123,7 @@ export const DELIVERY_TERMS_SHORT = [
 
 /** The pricing rules, spelled out on the checkout page. */
 export const DELIVERY_RULES = [
-  "Stickers, labels, keychains and similar (counted in pieces): $2.25 delivery under 300 pieces — free at 300+ pieces.",
+  "Stickers and labels (counted in pieces): $2.25 delivery under 300 pieces — free at 300+ pieces. Keychains, coasters and signs don't count toward the 300-piece threshold.",
   "Printable vinyl sheets (counted in packs of 20 A4 sheets): free at 6+ packs — $2.25 for 5 or fewer packs.",
   "Mixed orders keep the vinyl on its own 6-pack rule. Free when either threshold is met.",
   "Urgent next-day delivery is for vinyl sheets only, and adds $2.25.",

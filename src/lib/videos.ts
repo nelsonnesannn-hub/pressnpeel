@@ -161,11 +161,6 @@ export const videoGroups: VideoGroup[] = [
         "Sticker sheet close-up",
         "Finished logo stickers on the sheet."
       ),
-      v(
-        "20261115_211905",
-        "Press control panel",
-        "Setting up the next print run."
-      ),
     ],
   },
 ];
