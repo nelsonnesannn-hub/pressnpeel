@@ -124,7 +124,7 @@ export const workGroups: WorkGroup[] = [
     blurb:
       "Logo and brand stickers for small businesses — food, retail, and personal brands.",
     items: [
-      { src: w("small-business", 2), caption: "The Shazana Sharak brand stickers" },
+      { src: w("small-business", 2), caption: "The Shazana Shaik brand stickers" },
       { src: w("small-business", 3), caption: "Oldmolly logo stickers" },
     ],
   },
