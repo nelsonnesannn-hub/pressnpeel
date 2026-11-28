@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { categories } from "@/lib/categories";
+import { categories, type Category } from "@/lib/categories";
 import CartIcon from "./cart-icon";
 import CartDrawer from "./cart-drawer";
 
@@ -38,9 +38,11 @@ const FOOTER_LINKS = [
   ...FOOTER_ONLY_LINKS,
 ];
 
-// The Products dropdown lists orderable categories only — teaser categories
-// (e.g. Vinyl Decals, coming soon) are left out.
-const NAV_CATEGORIES = categories.filter((c) => !c.comingSoon);
+// The Products dropdown lists all six shop categories; coming-soon ones are
+// badged so customers can still reach their pages. A category is coming soon
+// when it is flagged comingSoon or its order form is off (orderable: false).
+const isComingSoon = (c: Category) => c.comingSoon || c.orderable === false;
+const NAV_CATEGORIES = categories;
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -100,6 +102,11 @@ export function Header() {
                   >
                     <span className="block text-sm font-medium text-white">
                       {category.name}
+                      {isComingSoon(category) ? (
+                        <span className="ml-2 rounded-full border border-[#FFD60A]/40 bg-[#FFD60A]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#FFD60A]">
+                          Coming soon
+                        </span>
+                      ) : null}
                     </span>
                     <span className="mt-0.5 block text-xs leading-relaxed text-slate-400">
                       {category.tagline}
@@ -155,6 +162,11 @@ export function Header() {
                       className="block rounded-lg px-3 py-2.5 transition-colors hover:bg-slate-900 hover:text-white"
                     >
                       {category.name}
+                      {isComingSoon(category) ? (
+                        <span className="ml-2 rounded-full border border-[#FFD60A]/40 bg-[#FFD60A]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#FFD60A]">
+                          Coming soon
+                        </span>
+                      ) : null}
                     </Link>
                   </li>
                 ))}

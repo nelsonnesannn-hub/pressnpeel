@@ -81,29 +81,32 @@ export default function AboutPage() {
             </div>
           </article>
         ))}
-      </div>
-
-      <div className="mt-16 rounded-2xl border border-slate-800/70 bg-slate-900/40 p-8 text-center sm:p-12">
-        <h2 className="text-2xl font-bold text-white">Have a design ready?</h2>
-        <p className="mx-auto mt-3 max-w-lg text-slate-400">
-          Upload your artwork and we&apos;ll turn it around. Or browse our standard
-          products for ready-to-order options.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link
-            href="/custom"
-            className="rounded-xl px-7 py-3.5 text-base font-semibold text-slate-950 shadow-lg transition-transform hover:scale-[1.03]"
-            style={{ backgroundColor: "#FFD60A" }}
-          >
-            Upload Your Design
-          </Link>
-          <Link
-            href="/products"
-            className="rounded-xl border border-slate-700 px-7 py-3.5 text-base font-medium text-slate-300 transition-colors hover:bg-slate-900/60 hover:text-white"
-          >
-            View Products
-          </Link>
-        </div>
+        <article className="flex flex-col justify-between overflow-hidden rounded-2xl border border-[#FFD60A]/40 bg-[#FFD60A]/10 p-6 transition-all hover:border-[#FFD60A]/60">
+          <div>
+            <h2 className="text-xl font-semibold text-white">
+              Have a design ready?
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-slate-300">
+              Upload your artwork and we&apos;ll turn it around. Or browse our
+              standard products for ready-to-order options.
+            </p>
+          </div>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link
+              href="/custom"
+              className="rounded-xl px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-lg transition-transform hover:scale-[1.03]"
+              style={{ backgroundColor: "#FFD60A" }}
+            >
+              Upload Your Design
+            </Link>
+            <Link
+              href="/products"
+              className="rounded-xl border border-slate-700 px-5 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-900/60 hover:text-white"
+            >
+              View Products
+            </Link>
+          </div>
+        </article>
       </div>
     </div>
   );

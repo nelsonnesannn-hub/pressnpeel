@@ -22,7 +22,7 @@ export default function VideoGallery({ groups }: { groups: VideoGroup[] }) {
                   src={item.src}
                   poster={item.poster}
                   controls
-                  preload="none"
+                  preload="metadata"
                   playsInline
                   className="aspect-video w-full bg-slate-950 object-cover"
                 />

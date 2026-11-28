@@ -102,7 +102,7 @@ export default function NfcSection() {
               src="/videos/VID_20261113_022800_555.mp4"
               poster="/videos/posters/VID_20261113_022800_555.jpg"
               controls
-              preload="none"
+              preload="metadata"
               playsInline
               className="aspect-video w-full rounded-2xl border border-slate-800/70 bg-slate-950 object-cover"
             />

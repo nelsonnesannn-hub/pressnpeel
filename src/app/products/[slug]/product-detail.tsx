@@ -74,7 +74,7 @@ export default async function ProductDetail({
               src={product.video.src}
               poster={product.video.poster}
               controls
-              preload="none"
+              preload="metadata"
               playsInline
               className="mt-4 aspect-video w-full rounded-2xl border border-slate-800/70 bg-slate-950 object-cover"
             />

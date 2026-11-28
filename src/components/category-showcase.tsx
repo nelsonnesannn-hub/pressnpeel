@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { categories } from "@/lib/categories";
 
 // Landing-page category showcase: real recent work, each photo labelled with
 // its category and what it is for. Clicking a card opens that category's
@@ -89,43 +90,56 @@ export default function CategoryShowcase() {
         </div>
 
         <div className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4">
-          {ITEMS.map((item) => (
-            <Link
-              key={item.src}
-              href={item.href}
-              className="group w-64 flex-shrink-0 snap-start overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900/40 transition-all hover:border-[#FFD60A]/40 hover:bg-slate-900/70 hover:shadow-lg"
-            >
-              <span className="block overflow-hidden bg-white">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={item.src}
-                  alt={item.caption}
-                  className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  loading="lazy"
-                />
-              </span>
-              <span className="block p-4">
-                <span className="inline-block rounded-full border border-[#FFD60A]/40 bg-[#FFD60A]/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-[#FACC15]">
-                  {item.category}
+          {ITEMS.map((item) => {
+            const category = categories.find((c) => c.slug === item.slug);
+            const comingSoon =
+              category?.comingSoon || category?.orderable === false;
+            return (
+              <Link
+                key={item.src}
+                href={item.href}
+                className="group w-64 flex-shrink-0 snap-start overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900/40 transition-all hover:border-[#FFD60A]/40 hover:bg-slate-900/70 hover:shadow-lg"
+              >
+                <span className="block overflow-hidden bg-white">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={item.src}
+                    alt={item.caption}
+                    className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                  />
                 </span>
-                <span className="mt-2 block text-sm font-semibold text-white">
-                  {item.caption}
-                </span>
-                <span className="mt-1 block text-xs leading-relaxed text-slate-400">
-                  {item.purpose}
-                </span>
-                <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-slate-200">
-                  Order
-                  <span
-                    className="transition-transform group-hover:translate-x-0.5"
-                    aria-hidden
-                  >
-                    →
+                <span className="block p-4">
+                  <span className="inline-block rounded-full border border-[#FFD60A]/40 bg-[#FFD60A]/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-[#FACC15]">
+                    {item.category}
+                  </span>
+                  <span className="mt-2 block text-sm font-semibold text-white">
+                    {item.caption}
+                  </span>
+                  <span className="mt-1 block text-xs leading-relaxed text-slate-400">
+                    {item.purpose}
+                  </span>
+                  <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-slate-200">
+                    {comingSoon ? (
+                      <span className="rounded-full border border-[#FFD60A]/40 bg-[#FFD60A]/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-[#FFD60A]">
+                        Coming soon
+                      </span>
+                    ) : (
+                      <>
+                        Order
+                        <span
+                          className="transition-transform group-hover:translate-x-0.5"
+                          aria-hidden
+                        >
+                          →
+                        </span>
+                      </>
+                    )}
                   </span>
                 </span>
-              </span>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>

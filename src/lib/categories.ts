@@ -18,6 +18,11 @@ export type CategorySample = {
   buyOption?: string;
   /** Small pill shown on the card (e.g. "Coming soon"). */
   badge?: string;
+  /**
+   * Tall sheet artwork (kiss-cut sheets, label sheets, signs) — show the
+   * whole sheet with object-contain instead of cropping it square.
+   */
+  contain?: boolean;
 };
 
 export type CategoryOrderItem = { id: string; label: string };
@@ -181,7 +186,7 @@ const stickerSamples: CategorySample[] = [
   { src: "/images/work/motivational/08.jpg", caption: "Motivational stickers" },
   { src: "/images/work/motivational/16.jpg", caption: "It's a new day — motivational sticker" },
   { src: "/images/work/events/02.jpg", caption: "Sarah unicorn birthday stickers" },
-  { src: "/images/work/safety-labels/01.jpg", caption: "GAMX equipment labels" },
+  { src: "/images/work/safety-labels/01.jpg", caption: "GAMX equipment labels", contain: true },
   { src: "/images/work/safety-labels/05.jpg", caption: "Safety Inducted tags" },
   { src: "/images/work/pnp-cards/01.jpg", caption: "Press N Peel logo vinyl stickers" },
 ];
@@ -261,14 +266,17 @@ export const categories: Category[] = [
           {
             src: "/images/kiss-cut-sample-shazana-shaik.jpg",
             caption: "By Shazana Shaik — purple round kiss-cut sticker sheet",
+            contain: true,
           },
           {
             src: "/images/kiss-cut-sample-av-engineering.jpg",
             caption: "AV ENGINEERING — kiss-cut label sheet",
+            contain: true,
           },
           {
             src: "/images/kiss-cut-sample-hyp.jpg",
             caption: "HYP — kiss-cut label sheet",
+            contain: true,
           },
         ],
         form: {
@@ -598,6 +606,7 @@ export const categories: Category[] = [
       {
         src: "/images/work/b2b/04.jpg",
         caption: "Printed SWL weight sign",
+        contain: true,
       },
     ],
     orderTitle: "Signs — Coming Soon",
