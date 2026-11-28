@@ -35,7 +35,7 @@ export default function CustomPage() {
             href={`/products/${category.slug}`}
             className="group flex flex-col overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900/40 transition-all hover:border-[#FFD60A]/30 hover:bg-slate-900/70 hover:shadow-lg"
           >
-            <span className="block overflow-hidden">
+            <span className="block overflow-hidden bg-slate-800/60">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={category.cardImage}

@@ -15,7 +15,7 @@ const SERVICES = [
   {
     title: "Vinyl Decals",
     body: "Flat-colour vinyl decals for bottles, vehicles, laptops, and walls. Any size, weatherproof, no white border.",
-    image: "/images/name-bottle-decal.jpg",
+    image: "/images/decal-lifestyle.jpg",
   },
   {
     title: "Custom Stickers",
@@ -66,7 +66,7 @@ export default function AboutPage() {
             key={s.title}
             className="group overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900/40 transition-all hover:border-[#FFD60A]/30 hover:shadow-lg"
           >
-            <span className="block overflow-hidden">
+            <span className="block overflow-hidden bg-slate-800/60">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={s.image}
