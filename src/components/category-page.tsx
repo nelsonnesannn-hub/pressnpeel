@@ -53,12 +53,16 @@ function SampleGrid({
           key={sample.src + sample.caption}
           className="group flex flex-col overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900/40 transition-all hover:border-[#FFD60A]/30 hover:bg-slate-900/70"
         >
-          <span className="block overflow-hidden">
+          <span className="block overflow-hidden bg-slate-800/60">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={sample.src}
               alt={sample.caption}
-              className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              className={
+                sample.contain
+                  ? "aspect-square w-full bg-white object-contain transition-transform duration-300 group-hover:scale-105"
+                  : "aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              }
               loading="lazy"
             />
           </span>

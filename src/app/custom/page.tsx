@@ -9,7 +9,12 @@ export const metadata = {
 };
 
 export default function CustomPage() {
-  const orderableCategories = categories.filter((c) => !c.comingSoon);
+  // Only categories that can actually be ordered — coming-soon ones
+  // (flagged comingSoon or orderable: false, e.g. Laser coasters) have no
+  // upload form, so they stay off this page.
+  const orderableCategories = categories.filter(
+    (c) => !c.comingSoon && c.orderable !== false
+  );
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16">
@@ -30,7 +35,7 @@ export default function CustomPage() {
             href={`/products/${category.slug}`}
             className="group flex flex-col overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900/40 transition-all hover:border-[#FFD60A]/30 hover:bg-slate-900/70 hover:shadow-lg"
           >
-            <span className="block overflow-hidden">
+            <span className="block overflow-hidden bg-slate-800/60">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={category.cardImage}
@@ -70,7 +75,7 @@ export default function CustomPage() {
         <p className="mt-2 text-sm text-slate-300">
           Fixed-price products are checked out securely with{" "}
           <strong className="text-white">Stripe</strong>. Made-to-order work is
-          confirmed on WhatsApp before any payment is taken.
+          authorised now and captured only after Nelson approves your design.
         </p>
         <a
           href={WHATSAPP_URL}

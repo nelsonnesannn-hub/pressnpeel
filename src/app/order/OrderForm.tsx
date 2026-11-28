@@ -52,7 +52,6 @@ function OrderForm({ stripeReady }: Props) {
   const [quantity, setQuantity] = useState("10");
   const [notes, setNotes] = useState("");
   const [nfcLink, setNfcLink] = useState("");
-  const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [discountInput, setDiscountInput] = useState("");
@@ -168,7 +167,6 @@ function OrderForm({ stripeReady }: Props) {
           phone,
           notes,
           nfcLink,
-          fileName: file?.name ?? "",
           discountCode: appliedDiscount?.code ?? "",
         }),
       });
@@ -383,23 +381,6 @@ function OrderForm({ stripeReady }: Props) {
             </label>
           ) : null}
 
-          <label className="mb-6 block">
-            <span className="mb-2 block text-sm font-medium text-slate-300">
-              Design file <span className="text-slate-500">(optional for now)</span>
-            </span>
-            <span className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-700 bg-slate-950/50 px-6 py-8 text-center transition-colors hover:border-[#FFD60A]/50">
-              <span className="text-sm text-slate-400">
-                {file ? file.name : "Click to upload your artwork"}
-              </span>
-            </span>
-            <input
-              type="file"
-              accept="image/*,.pdf,.svg"
-              className="sr-only"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            />
-          </label>
-
           <label className="mb-8 block">
             <span className="mb-2 block text-sm font-medium text-slate-300">
               Notes <span className="text-slate-500">(size, colours, deadline)</span>
@@ -570,12 +551,6 @@ function OrderForm({ stripeReady }: Props) {
               <div className="flex justify-between gap-4">
                 <dt className="text-slate-500">Phone / WhatsApp</dt>
                 <dd className="font-medium text-white">{phone}</dd>
-              </div>
-            ) : null}
-            {file ? (
-              <div className="flex justify-between gap-4">
-                <dt className="text-slate-500">Design file</dt>
-                <dd className="font-medium text-white">{file.name}</dd>
               </div>
             ) : null}
             {notes ? (
